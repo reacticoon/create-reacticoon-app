@@ -8,7 +8,6 @@
 const paths = require("../../../utils/paths");
 
 const fileLoader = function(conf) {
-  console.log(conf)
   return conf && conf.loader && conf.loader.indexOf("/file-loader/") !== -1;
 };
 
