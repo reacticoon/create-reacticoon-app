@@ -25,7 +25,8 @@ const CircularDependencyPlugin = currentPaths.requireReacticoon(
 const defaultOptions = {
   enableSass: false,
   debugMode: false,
-  autoImport: []
+  autoImport: [],
+  webpackAliases: {},
 };
 
 //
@@ -134,7 +135,7 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
         // This plugin is moving in a lib agnostic direction, to become a generic cherry-pick plugin
         // so babel-plugin-lodash is not limited to lodash. It can be used with recompose as well.
         // see https://github.com/acdlite/recompose
-        // TODO: add reacticoon config to allow add 'id'
+        // TODO: add reacticoon config to allow add more
         id: ["lodash", "recompose"]
       }
     ]
@@ -177,7 +178,9 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
     app: paths.appSrc + "/",
 
     // TODO: remove temporary:
-    reacticoon: paths.appSrc + "/modules/reacticoon"
+    reacticoon: paths.appSrc + "/modules/reacticoon",
+
+    ...options.webpackAliases,
   };
 
   config.resolve.alias = Object.assign(
@@ -307,7 +310,9 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
     console.log(JSON.stringify(config, null, 4));
     console.log("-------- options");
     console.log(JSON.stringify(options, null, 4));
-    console.log('Switch off the debug by setting `debugMode` to false in config-overrides options')
+    console.log(
+      "Switch off the debug by setting `debugMode` to false in config-overrides options"
+    );
   }
 
   // do not put config here
