@@ -40,6 +40,7 @@ const createReacticoonApp = path.resolve(__dirname, "../");
 module.exports = Object.assign(
   {
     projectDir,
+    projectSrc: projectDir + '/src',
     libDir: projectDir + "/lib",
     createReacticoonApp,
     appNodeModules,

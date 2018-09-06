@@ -6,10 +6,10 @@
  * - https://github.com/facebook/create-react-app
  */
 
-const currentPaths = require("../../utils/paths");
+const reacticoonPaths = require("../../utils/paths");
 
 const paths = require(require.resolve(
-  currentPaths.scriptVersion + "/config/paths"
+  reacticoonPaths.scriptVersion + "/config/paths"
 ));
 const { injectBabelPreset, injectBabelPlugin } = require("../utils/rewired");
 
@@ -18,7 +18,7 @@ const git = require("../utils/git");
 const appPackageJson = require(paths.appPath + "/package.json");
 
 // webpack imports
-const CircularDependencyPlugin = currentPaths.requireReacticoon(
+const CircularDependencyPlugin = reacticoonPaths.requireReacticoon(
   "circular-dependency-plugin"
 );
 
@@ -69,14 +69,6 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
       from: "reacticoon/i18n",
       functionName: "tr"
     },
-    // react-hot-loader
-    // since the react-hot-loader is on our create-reacticoon-app node modules, we make it available
-    // globally
-    {
-      import: "{ hot }",
-      from: currentPaths.resolveReacticoon("react-hot-loader"),
-      functionName: "hot"
-    }
     // __DEV__
     // TODO: handle propertyName
     // {

@@ -65,6 +65,16 @@ module.exports = createWebpackLibraryOverride = (
     //   from: "reacticoon/environment",
     //   propertyName: "__DEV__"
     // }
+
+    // TODO: move to reacticoon config/overrides
+    // react-hot-loader
+    // since the react-hot-loader is on our create-reacticoon-app node modules, we make it available
+    // globally
+    {
+      import: "{ hot }",
+      from: reacticoonPaths.resolveReacticoon("react-hot-loader"),
+      functionName: "hot"
+    }
   ].concat(options.autoImport || []);
 
   const rewireAutoImport = require("./auto-import/rewire-auto-import");
@@ -129,6 +139,9 @@ module.exports = createWebpackLibraryOverride = (
   const webpackAliases = {
     // TODO: rename?
     app: paths.appSrc + "/",
+
+    // TODO: move to reacticoon config override
+    reacticoon: paths.appSrc + "/",
 
     ...options.webpackAliases
   };
@@ -210,14 +223,47 @@ module.exports = createWebpackLibraryOverride = (
   //
 
   // CRL: library index file instead of app index
-  config.entry = [reacticoonPaths.appLibIndexJs];
 
+  // Mode 1: Allows to create a library with all the sources in index.js
+  // config.entry = [reacticoonPaths.appLibIndexJs];
+
+  // Mode 2: We want to reproduce the file architecture to allows import from '/dir'
+  // https://github.com/webpack/docs/wiki/configuration#entry
+  const modules = [
+    // root index.js
+    // "./", force access to directory
+    "action",
+    "api",
+    "archi",
+    "environment",
+    "event",
+    "format",
+    "i18n",
+    "middleware",
+    "module",
+    "plugin",
+    "reducer",
+    "routing",
+    "selector",
+    "store",
+    "view"
+  ];
+
+  config.entry = {};
+  modules.forEach(moduleName => {
+    // handle "./" specific path
+    const key = moduleName === "./" ? "index" : moduleName
+    config.entry[key] = "./src/" + moduleName + "/index.js";
+  });
 
   // CRL: Updated whole block with library specific info
   config.output = {
     path: reacticoonPaths.libDir,
-    filename: "index.js",
-    libraryTarget: "umd"
+    filename: "[name].js",
+    // library: '',
+    // libraryTarget: "umd"
+    // https://webpack.js.org/configuration/output/#output-librarytarget
+    libraryTarget: "commonjs"
   };
 
   // update rules
@@ -259,11 +305,11 @@ module.exports = createWebpackLibraryOverride = (
   // remove plugin app
   // TODO: use find index
   delete config.plugins[1];
-  delete config.plugins[5] // asset-manifest
-  delete config.plugins[6] // sw-precache-webpack-plugin
+  delete config.plugins[5]; // asset-manifest
+  delete config.plugins[6]; // sw-precache-webpack-plugin
 
   // webpack crash if there is null plugins
-  config.plugins = config.plugins.filter(plugin => plugin != null)
+  config.plugins = config.plugins.filter(plugin => plugin != null);
 
   //
   // No config modification after this
@@ -277,7 +323,7 @@ module.exports = createWebpackLibraryOverride = (
   //
   // debug config
   //
-  // if (options.debugMode) {
+  if (options.debugMode) {
     console.log("-------- config");
     console.log(JSON.stringify(config, null, 4));
     console.log("-------- options");
@@ -285,7 +331,7 @@ module.exports = createWebpackLibraryOverride = (
     console.log(
       "Switch off the debug by setting `debugMode` to false in config-overrides options"
     );
-  // }
+  }
 
   // do not put config here
 
