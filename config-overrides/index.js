@@ -1,5 +1,7 @@
 const paths = require("../utils/paths");
+
 const createWebpackOverride = require("./config/webpack");
+const createWebpackLibraryOverride = require("./config/webpackLibrary")
 
 // load environment variables from .env files
 // before overrides scripts are read
@@ -12,14 +14,25 @@ try {
   // do nothing, the reacticoon user don't have a custom `config-overrides`
   override = {};
 }
+
 const reacticoonWebpack =
   typeof override === "function"
     ? override
     : override.webpack || ((config, env) => config);
 
+const reacticoonWebpackLibrary =
+  typeof override === "function"
+    ? override
+    : override.webpackLibrary || ((config, env) => config);
+
 const reacticoonOptions = override.options || {};
 
 const webpack = createWebpackOverride(reacticoonOptions, reacticoonWebpack);
+
+const webpackLibrary = createWebpackLibraryOverride(
+  reacticoonOptions,
+  reacticoonWebpackLibrary
+);
 
 if (override.devserver) {
   console.log(
@@ -39,6 +52,7 @@ const jest = override.jest || (config => config);
 // normalized overrides functions
 module.exports = {
   webpack,
+  webpackLibrary,
   devServer,
   jest
 };

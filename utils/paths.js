@@ -11,7 +11,7 @@ if (cs_index > -1 && cs_index + 1 <= process.argv.length) {
 
 //Allow custom overrides package location
 const projectDir = path.resolve(fs.realpathSync(process.cwd()));
-var config_overrides = projectDir + "/config-overrides.js";
+var config_overrides = projectDir + "/config/overrides.js";
 const co_index = process.argv.indexOf("--config-overrides");
 
 if (co_index > -1 && co_index + 1 <= process.argv.length) {
@@ -39,8 +39,12 @@ const createReacticoonApp = path.resolve(__dirname, "../");
 
 module.exports = Object.assign(
   {
+    projectDir,
+    libDir: projectDir + "/lib",
     createReacticoonApp,
     appNodeModules,
+    appLibIndexJs: projectDir + '/src/index.js',
+    // TODO: rename to reactScripts
     scriptVersion: modulePath,
     // rewiredScript,
     configOverrides: config_overrides,

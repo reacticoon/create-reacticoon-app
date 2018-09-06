@@ -4,11 +4,18 @@
 
 var spawn = require("cross-spawn");
 
+const scripts = [
+  "build",
+  "build-library",
+  "test",
+  "start",
+]
+
 // const spawn = require("react-dev-utils/crossSpawn");
 const args = process.argv.slice(2);
 
 const scriptIndex = args.findIndex(
-  x => x === "build" || x === "start" || x === "test"
+  x => scripts.indexOf(x !== -1)
 );
 const script = scriptIndex === -1 ? args[0] : args[scriptIndex];
 const nodeArgs = scriptIndex > 0 ? args.slice(0, scriptIndex) : [];
@@ -41,24 +48,13 @@ const execute = (script, filepath) => {
   process.exit(result.status);
 };
 
-switch (script) {
-  case "build":
-  case "test": {
-    // TODO: use our own scripts, remove react-app-rewired dependency
-    execute(script, "../node_modules/react-app-rewired/scripts/");
-    break;
-  }
-
-  case "start": {
-    console.debug("--- reacticoon-scripts start");
-    execute(script, "../scripts/");
-    break;
-  }
-
-  default:
-    console.log('Unknown script "' + script + '".');
-    console.log("You may need to update reacticoon-scripts");
-    // TODO: link documentation
-    console.log("See: TODO LINK");
-    break;
+if (scripts.indexOf(script) !== -1) {
+  console.debug(`--- reacticoon-scripts ${script}`);
+  execute(script, "../scripts/");
+} else {
+  console.log(`Unknown script "${script}."`);
+  console.log(`Available scripts: ${scripts.join(', ')}.`);
+  console.log("You may need to update reacticoon-scripts");
+  // TODO: link documentation
+  console.log("See: TODO LINK");
 }

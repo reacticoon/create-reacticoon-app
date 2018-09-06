@@ -1,15 +1,16 @@
 /**
- * This config allow overriding of the create-react-app config.
+ * This config allow overriding of the create-react-app webpack config to handle library build.
  *
- * see
- * - https://github.com/timarney/react-app-rewired
- * - https://github.com/facebook/create-react-app
+ * See also './webpack.js'.
+ *
+ * - https://github.com/DimiMikadze/create-react-library
  */
 
-const currentPaths = require("../../utils/paths");
+const reacticoonPaths = require("../../utils/paths");
+const find = require("lodash/find");
 
 const paths = require(require.resolve(
-  currentPaths.scriptVersion + "/config/paths"
+  reacticoonPaths.scriptVersion + "/config/paths"
 ));
 const { injectBabelPreset, injectBabelPlugin } = require("../utils/rewired");
 
@@ -17,16 +18,10 @@ const git = require("../utils/git");
 
 const appPackageJson = require(paths.appPath + "/package.json");
 
-// webpack imports
-const CircularDependencyPlugin = currentPaths.requireReacticoon(
-  "circular-dependency-plugin"
-);
-
 const defaultOptions = {
-  enableSass: false,
   debugMode: false,
   autoImport: [],
-  webpackAliases: {},
+  webpackAliases: {}
 };
 
 //
@@ -41,10 +36,10 @@ const defaultOptions = {
 // - enableSass
 // - autoImport
 
-module.exports = createWebpackOverride = (reacticoonOptions, override) => (
-  config,
-  env
-) => {
+module.exports = createWebpackLibraryOverride = (
+  reacticoonOptions,
+  override
+) => (config, env) => {
   const options = { ...defaultOptions, ...reacticoonOptions };
 
   //
@@ -63,20 +58,6 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
   //
 
   const autoImportConfig = [
-    // i18n tr
-    {
-      import: "{ tr }",
-      from: "reacticoon/i18n",
-      functionName: "tr"
-    },
-    // react-hot-loader
-    // since the react-hot-loader is on our create-reacticoon-app node modules, we make it available
-    // globally
-    {
-      import: "{ hot }",
-      from: currentPaths.resolveReacticoon("react-hot-loader"),
-      functionName: "hot"
-    }
     // __DEV__
     // TODO: handle propertyName
     // {
@@ -100,19 +81,12 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
     config = injectBabelPreset(preset, config);
   });
 
-  // - react hot loader
-
-  // TODO: remove react-hot-loader/ dir ?
-  // const rewireReactHotLoader = require("./react-hot-loader/rewire-react-hot-loader");
-  // config = rewireReactHotLoader(config, env);
-
   //
   // Config babel plugins
   // doc: https://github.com/timarney/react-app-rewired#utilities
   //
 
   const babelPlugins = [
-    require.resolve("react-hot-loader/babel"),
     // add decoractors
     // Ex: @debug
     // class ...
@@ -142,10 +116,6 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
     // TODO: add
     // - react-app-rewire-poyfills
     // - react-app-rewire-eslint
-    //
-    // v2: Enable with config:
-    // - react-app-rewire-less
-    // - DONE. react-app-rewire-sass
   ];
 
   // inject the plugins
@@ -157,30 +127,10 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
   // Add webpack aliases
   //
   const webpackAliases = {
-    //
-    // add alias to 'src/modules'
-    // Reacticoon recommand to use 'src/modules' for the app modules
-    // This config allows to:
-    // `import myModule from 'modules/myModule'`
-    //
-    modules: paths.appSrc + "/modules",
-
-    //
-    // add alias to 'src/plugins'
-    // Reacticoon recommand to use 'src/plugins' for the app custom plugins
-    // This config allows to:
-    // `import myPlugin from 'modules/myPlugin'`
-    //
-    plugins: paths.appSrc + "/plugins",
-
-    components: paths.appSrc + "/components",
-
+    // TODO: rename?
     app: paths.appSrc + "/",
 
-    // TODO: remove temporary:
-    reacticoon: paths.appSrc + "/reacticoon",
-
-    ...options.webpackAliases,
+    ...options.webpackAliases
   };
 
   config.resolve.alias = Object.assign(
@@ -233,44 +183,12 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
     envVars
   );
 
-  // webpack crash if there is null plugins
-  config.plugins = config.plugins.filter(plugin => plugin != null)
-
   //
   // add our webpack plugins
   //
 
   // TODO: concat with Reacticoon user plugins config
-  const webpackPlugins = [
-    //
-    // Webpack - CircularDependancy plugin
-    // https://github.com/aackerman/circular-dependency-plugin
-    //
-    new CircularDependencyPlugin({
-      exclude: /node_modules/,
-      // allow import cycles that include an asyncronous import,
-      // e.g. via import(/* webpackMode: "weak" */ './file.js')
-      allowAsyncCycles: true,
-      // set to true to add errors to webpack instead of warnings
-      failOnError: false,
-      // `onDetected` is called for each module that is cyclical
-      onDetected(props = {}) {
-        if (!props) {
-          return;
-        }
-        const { module: webpackModuleRecord, paths, compilation } = props;
-        let errorMsg = "Circular dependency detected:\n";
-
-        paths.forEach(path => {
-          errorMsg += "-> " + path + "\n";
-        });
-
-        // `paths` will be an Array of the relative module paths that make up the cycle
-        // `module` will be the module record generated by webpack that caused the cycle
-        compilatio.warnings.push(new Error(errorMsg));
-      }
-    })
-  ];
+  const webpackPlugins = [];
 
   // TODO:
   // config.plugins = config.plugins.concat(webpackPlugins);
@@ -288,8 +206,64 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
   config.resolve.modules = [paths.appNodeModules, "node_modules"];
 
   //
+  // CRL updates, see https://github.com/DimiMikadze/create-react-library/blob/master/config/webpack.config.prod.js
   //
-  //
+
+  // CRL: library index file instead of app index
+  config.entry = [reacticoonPaths.appLibIndexJs];
+
+
+  // CRL: Updated whole block with library specific info
+  config.output = {
+    path: reacticoonPaths.libDir,
+    filename: "index.js",
+    libraryTarget: "umd"
+  };
+
+  // update rules
+  config.module.rules = config.module.rules.map(rule => {
+    if (rule.enforce === "pre") {
+      // CRL: updated with library src folder
+      rule.include = paths.appLibSrc;
+    }
+
+    if (rule.oneOf) {
+      const mediaRule = rule.oneOf[0];
+
+      mediaRule.options.outputPath = "media/";
+      mediaRule.options.publicPath = "../";
+
+      const fileRule = find(
+        rule.oneOf,
+        subRule => subRule.loader.indexOf("file-loader") !== -1
+      );
+      fileRule.options.outputPath = "media/";
+      fileRule.options.publicPath = "../";
+
+      const babelRule = find(
+        rule.oneOf,
+        subRule => subRule.loader.indexOf("babel-loader") !== -1
+      );
+      // CRL: updated with library src folder
+      babelRule.include = paths.appLibSrc;
+    }
+    return rule;
+  });
+
+  // CRL: added externals block for library
+  config.externals = {
+    react: "react",
+    "react-dom": "react-dom"
+  };
+
+  // remove plugin app
+  // TODO: use find index
+  delete config.plugins[1];
+  delete config.plugins[5] // asset-manifest
+  delete config.plugins[6] // sw-precache-webpack-plugin
+
+  // webpack crash if there is null plugins
+  config.plugins = config.plugins.filter(plugin => plugin != null)
 
   //
   // No config modification after this
@@ -300,15 +274,10 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
   // }
   //
 
-  if (options.enableSass) {
-    const rewireSass = require("../rewire/react-app-rewire-sass");
-    config = rewireSass(config, env);
-  }
-
   //
   // debug config
   //
-  if (options.debugMode) {
+  // if (options.debugMode) {
     console.log("-------- config");
     console.log(JSON.stringify(config, null, 4));
     console.log("-------- options");
@@ -316,7 +285,7 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
     console.log(
       "Switch off the debug by setting `debugMode` to false in config-overrides options"
     );
-  }
+  // }
 
   // do not put config here
 

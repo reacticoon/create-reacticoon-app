@@ -1,12 +1,19 @@
-'use strict';
+"use strict";
 
-const execSimpleSync = require('../command').execSimpleSync
+const execSimpleSync = require("../command").execSimpleSync;
+const simpleGit = require("simple-git");
 
 module.exports = {
+  isGitInit: (workingDirPath, callback) => {
+    // const git = simpleGit(workingDirPath);
+    // git.checkIsRepo(callback);
+    // TODO: checkIsRepo fail if there is no commit..
+    callback(true)
+  },
+
+  // TODO: handle when there is no last commit
   lastAppCommit: () => {
-    return execSimpleSync(
-      'git rev-parse --short HEAD'
-    )
+    return execSimpleSync("git rev-parse --short HEAD");
   },
 
   //
@@ -14,9 +21,6 @@ module.exports = {
   //
 
   currentProjectBranch: () => {
-    return execSimpleSync(
-      'git rev-parse --abbrev-ref HEAD'
-    )
-  },
-
-}
+    return execSimpleSync("git rev-parse --abbrev-ref HEAD");
+  }
+};
