@@ -51,6 +51,10 @@ module.exports = Object.assign(
     configOverrides: config_overrides,
     customScriptsIndex: custom_scripts ? cs_index : -1,
 
+    requireApp: path => {
+      return require(appNodeModules + "/" + path);
+    },
+
     requireReacticoon: path => {
       return require(createReacticoonApp + "/node_modules/" + path);
     },

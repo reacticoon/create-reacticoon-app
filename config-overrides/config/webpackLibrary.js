@@ -5,9 +5,10 @@
  *
  * - https://github.com/DimiMikadze/create-react-library
  */
-
 const reacticoonPaths = require("../../utils/paths");
 const find = require("lodash/find");
+
+const webpack = reacticoonPaths.requireApp('webpack');
 
 const paths = require(require.resolve(
   reacticoonPaths.scriptVersion + "/config/paths"
@@ -252,7 +253,7 @@ module.exports = createWebpackLibraryOverride = (
   config.entry = {};
   modules.forEach(moduleName => {
     // handle "./" specific path
-    const key = moduleName === "./" ? "index" : moduleName
+    const key = moduleName === "./" ? "index" : moduleName;
     config.entry[key] = "./src/" + moduleName + "/index.js";
   });
 
@@ -307,6 +308,25 @@ module.exports = createWebpackLibraryOverride = (
   delete config.plugins[1];
   delete config.plugins[5]; // asset-manifest
   delete config.plugins[6]; // sw-precache-webpack-plugin
+
+  // https://medium.com/@adamrackis/vendor-and-code-splitting-in-webpack-2-6376358f1923
+  const createLibraryPlugins = [
+    // new BundleAnalyzerPlugin({
+    //   analyzerMode: "static"
+    // }),
+    
+
+    // new webpack.optimize.CommonsChunkPlugin({
+    //   name: "node-static",
+    //   filename: "static.js",
+    //   minChunks(module, count) {
+    //     var context = module.context;
+    //     return context && context.indexOf("node_modules") >= 0;
+    //   }
+    // })
+  ];
+
+  config.plugins = config.plugins.concat(createLibraryPlugins);
 
   // webpack crash if there is null plugins
   config.plugins = config.plugins.filter(plugin => plugin != null);

@@ -49,12 +49,12 @@ const execute = (script, filepath) => {
 };
 
 if (scripts.indexOf(script) !== -1) {
-  console.debug(`--- reacticoon-scripts ${script}`);
+  console.debug(`--- create-reacticoon-app ${script}`);
   execute(script, "../scripts/");
 } else {
   console.log(`Unknown script "${script}."`);
   console.log(`Available scripts: ${scripts.join(', ')}.`);
-  console.log("You may need to update reacticoon-scripts");
+  console.log("You may need to update create-reacticoon-app");
   // TODO: link documentation
   console.log("See: TODO LINK");
 }
