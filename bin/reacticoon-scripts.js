@@ -2,15 +2,25 @@
 
 "use strict";
 
-var spawn = require("cross-spawn");
+const spawn = require("cross-spawn");
+const find = require("lodash/find");
 
-const scripts = ["build", "build-library", "test", "start", "generate"];
+// TODO: add scripts installed on node_modules
+// -> on node_modules/.bin/ and prefix with __REACTICOON__
+const scripts = [
+  { name: "build", path: "../scripts" },
+  { name: "build-library", path: "../scripts" },
+  { name: "test", path: "../scripts" },
+  { name: "start", path: "../scripts" },
+  { name: "generate", path: "../reacticoon-cli-generator" },
+  { name: "checkup", path: "../reacticoon-cli-checkup" },
+];
 
 // const spawn = require("react-dev-utils/crossSpawn");
 const args = process.argv.slice(2);
 
 const scriptIndex = args.findIndex(x => scripts.indexOf(x !== -1));
-const script = scriptIndex === -1 ? args[0] : args[scriptIndex];
+const scriptName = scriptIndex === -1 ? args[0] : args[scriptIndex];
 const nodeArgs = scriptIndex > 0 ? args.slice(0, scriptIndex) : [];
 
 const execute = (script, filepath) => {
@@ -41,18 +51,14 @@ const execute = (script, filepath) => {
   process.exit(result.status);
 };
 
-if (scripts.indexOf(script) !== -1) {
-  console.debug(`--- create-reacticoon-app ${script}`);
-  switch (script) {
-    case "generate":
-      execute("generate", "../reacticoon-cli-generator/")
-      break;
-    default:
-      execute(script, "../scripts/", );
-  }
+const script = find(scripts, script => script.name === scriptName)
+
+if (script) {
+  console.debug(`--- create-reacticoon-app ${script.name}`);
+  execute(script.name, script.path + "/");
 } else {
-  console.log(`Unknown script "${script}."`);
-  console.log(`Available scripts: ${scripts.join(", ")}.`);
+  console.log(`Unknown script "${scriptName}."`);
+  console.log(`Available scripts: ${scripts.map(script => script.name).join(", ")}.`);
   console.log("You may need to update create-reacticoon-app");
   // TODO: link documentation
   console.log("See: TODO LINK");
