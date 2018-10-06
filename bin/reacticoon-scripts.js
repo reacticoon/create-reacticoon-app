@@ -4,31 +4,24 @@
 
 var spawn = require("cross-spawn");
 
-const scripts = [
-  "build",
-  "build-library",
-  "test",
-  "start",
-]
+const scripts = ["build", "build-library", "test", "start", "generate"];
 
 // const spawn = require("react-dev-utils/crossSpawn");
 const args = process.argv.slice(2);
 
-const scriptIndex = args.findIndex(
-  x => scripts.indexOf(x !== -1)
-);
+const scriptIndex = args.findIndex(x => scripts.indexOf(x !== -1));
 const script = scriptIndex === -1 ? args[0] : args[scriptIndex];
 const nodeArgs = scriptIndex > 0 ? args.slice(0, scriptIndex) : [];
 
 const execute = (script, filepath) => {
-  const result = spawn.sync(
-    "node",
-    nodeArgs
-      // for now, we delegate to react-app-rewired
-      .concat(require.resolve(filepath + script))
-      .concat(args.slice(scriptIndex + 1)),
-    { stdio: "inherit" }
-  );
+  const finalArgs = nodeArgs
+    // for now, we delegate to react-app-rewired
+    .concat(require.resolve(filepath + script))
+    .concat(args.slice(scriptIndex + 1));
+  // console.log(finalArgs);
+  // die
+
+  const result = spawn.sync("node", finalArgs, { stdio: "inherit" });
   if (result.signal) {
     if (result.signal === "SIGKILL") {
       console.log(
@@ -50,10 +43,16 @@ const execute = (script, filepath) => {
 
 if (scripts.indexOf(script) !== -1) {
   console.debug(`--- create-reacticoon-app ${script}`);
-  execute(script, "../scripts/");
+  switch (script) {
+    case "generate":
+      execute("generate", "../reacticoon-cli-generator/")
+      break;
+    default:
+      execute(script, "../scripts/", );
+  }
 } else {
   console.log(`Unknown script "${script}."`);
-  console.log(`Available scripts: ${scripts.join(', ')}.`);
+  console.log(`Available scripts: ${scripts.join(", ")}.`);
   console.log("You may need to update create-reacticoon-app");
   // TODO: link documentation
   console.log("See: TODO LINK");
