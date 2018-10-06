@@ -1,0 +1,13 @@
+import { createModule } from 'reacticoon/module';
+
+import * as actions from './actions';
+import * as selectors from './selectors';
+import reducer from './reducer';
+
+const <%= moduleName %>Module = createModule('<%= moduleIdentifier %>', {
+  actions,
+  reducer,
+  selectors,
+});
+
+export default <%= moduleName %>Module;

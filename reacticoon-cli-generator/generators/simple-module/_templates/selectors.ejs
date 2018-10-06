@@ -1,0 +1,9 @@
+import { createSelector, getStateForModule } from 'reacticoon/selector';
+
+// create the `getState` function, that will receive the state for the
+// given module.
+const getState = getStateForModule(<% moduleIdentifier %>);
+
+export const <%= selectorName %> = createSelector([getState], state =>
+  state.get('').toJS()
+);

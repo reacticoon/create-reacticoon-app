@@ -1,0 +1,14 @@
+import { createReducer } from 'reacticoon/reducer';
+
+import { <%= actionName %> } from './actions';
+
+const INITIAL_STATE = {
+};
+
+const handle<%= actionNameCapitalized %>Action = (state, action) => state;
+
+const <%= moduleName %>ModuleReducer = createReducer(INITIAL_STATE, {
+  [<%= actionName %>]: handle<%= actionNameCapitalized %>Action,
+});
+
+export default <%= moduleName %>ModuleReducer;
