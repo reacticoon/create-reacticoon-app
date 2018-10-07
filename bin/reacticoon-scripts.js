@@ -14,6 +14,7 @@ const scripts = [
   { name: "start", path: "../scripts" },
   { name: "generate", path: "../reacticoon-cli-generator" },
   { name: "checkup", path: "../reacticoon-cli-checkup" },
+  { name: "debug-plugins", path: "../scripts"}
 ];
 
 // const spawn = require("react-dev-utils/crossSpawn");

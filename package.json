@@ -21,11 +21,13 @@
     "deasync": "0.1.13",
     "ejs": "2.6.1",
     "extract-text-webpack-plugin": "3.0.2",
+    "fs-exists-cached": "1.0.0",
     "mkdirp": "0.5.1",
     "node-sass": "4.9.0",
     "react-hot-loader": "4.3.3",
     "sass-loader": "7.0.3",
     "simple-git": "1.96.0",
+    "slash": "2.0.0",
     "style-loader": "0.21.0"
   },
   "scripts": {

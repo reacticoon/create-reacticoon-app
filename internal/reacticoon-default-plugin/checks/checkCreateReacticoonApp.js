@@ -1,8 +1,8 @@
-const createCheck = require("../utils/createCheck");
-const check = require("../utils/check");
-const warn = require("../utils/warn");
-const getNpmLastVersion = require("../utils/getNpmLastVersion");
-const paths = require("../../utils/paths");
+const createCheck = require("../../../reacticoon-cli-checkup/utils/createCheck");
+const check = require("../../../reacticoon-cli-checkup/utils/check");
+const warn = require("../../../reacticoon-cli-checkup/utils/warn");
+const getNpmLastVersion = require("../../../reacticoon-cli-checkup/utils/getNpmLastVersion");
+const paths = require("../../../utils/paths");
 
 const packageJson = require(paths.projectDir + "/package.json");
 
