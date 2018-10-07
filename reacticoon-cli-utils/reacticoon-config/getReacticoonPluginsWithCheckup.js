@@ -6,9 +6,9 @@ const getReacticoonPlugins = require("./getReacticoonPlugins");
 function getReacticoonPluginsWithCheckup() {
   const plugins = getReacticoonPlugins();
 
-  const pluginsWithCheckUp = plugins.filter(plugin => plugin.hasCheckup);
+  const pluginsWithCheckup = plugins.filter(plugin => plugin.hasCheckup);
 
-  return pluginsWithCheckUp;
+  return pluginsWithCheckup;
 }
 
 module.exports = getReacticoonPluginsWithCheckup;

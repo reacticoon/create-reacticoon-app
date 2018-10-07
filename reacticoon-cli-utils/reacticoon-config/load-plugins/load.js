@@ -23,10 +23,23 @@ function createPluginData(plugin, resolvedPath) {
           check: null // to load
         };
       } else {
+        // TODO: throw
+      }
+    }),
+    generators: (plugin.generators || []).map(generator => {
+      if (isString(generator)) {
+        let resolve = generator[0] === "/" ? generator : `${resolvedPath}/${generator}`;
+        if (!endsWith(resolve, ".js")) {
+          resolve += ".js";
+        }
+        // TODO: check resolve is valid path
+
         return {
-          resolve: null,
-          check // was loaded, add it directly
+          resolve,
+          generator: null // to load
         };
+      } else {
+        // TODO: throw
       }
     }),
     commands: (plugin.commands || []).map(command => {

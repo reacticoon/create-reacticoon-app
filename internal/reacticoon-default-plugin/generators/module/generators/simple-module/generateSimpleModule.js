@@ -2,7 +2,7 @@ const endsWith = require("lodash/endsWith");
 const camelCase = require("lodash/camelCase");
 const upperFirst = require("lodash/upperFirst");
 const lowerFirst = require("lodash/lowerFirst");
-const createTemplateFiles = require("../../../../utils/createTemplateFiles")
+const createTemplateFiles = require("../../../../../../reacticoon-cli-generator/utils/createTemplateFiles")
 
 function error(msg) {
   console.error(msg);

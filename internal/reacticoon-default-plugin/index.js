@@ -6,5 +6,8 @@ module.exports = createReacticoonPlugin({
     require.resolve("./checks/checkCreateReacticoonApp"),
     require.resolve("./checks/checkReactVersion"),
     require.resolve("./checks/checkReacticoon")
-  ]
+  ],
+  generators: [
+    "./generators/module/generate-module.js",
+  ],
 });

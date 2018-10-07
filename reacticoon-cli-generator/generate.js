@@ -1,20 +1,42 @@
 const find = require("lodash/find");
 
-const generateModule = require("./generators/module/generate-module");
 
-const rootGenerators = [generateModule];
+const getReacticoonPluginsWithGenerators = require("../reacticoon-cli-utils/reacticoon-config/getReacticoonPluginsWithGenerators");
+
+function getPluginsGenerators() {
+  return getReacticoonPluginsWithGenerators().reduce((generatorsList, plugin) => {
+    return generatorsList.concat(plugin.generators);
+  }, []);
+}
+
+function loadGenerator(generatorData) {
+  if (generatorData.generator) {
+    // already loaded
+    return generatorData.generator;
+  }
+  const path = generatorData.resolve;
+  try {
+    return require(path);
+  } catch (e) {
+    console.error(`Could not find Generators module on path '${path}'`);
+    console.error(e);
+    process.exit();
+  }
+}
 
 function main(argv) {
   const templateName = argv[2];
 
   // TODO: templateName as a path to the template to provides a custom generator.
+  const rootGenerators = getPluginsGenerators()
 
   let found = false;
-  rootGenerators.forEach(rootGenerator => {
-    if (rootGenerator.hasTemplate(templateName)) {
+  rootGenerators.forEach(rootGeneratorPath => {
+    const generator = loadGenerator(rootGeneratorPath)
+    if (generator.hasTemplate(templateName)) {
       found = true;
 
-      runTemplate(rootGenerator, templateName, argv.splice(3));
+      runTemplate(generator, templateName, argv.splice(3));
     }
   });
 
@@ -38,6 +60,8 @@ function runTemplate(rootGenerator, templateName, generatorArgs) {
     rootGenerator.templates,
     template => template.name === templateName
   );
+  
+  // TODO: template is required(), handle with string path
 
   if (!template) {
     error(`Invalid templateName '${templateName}'. Template not found.`);
@@ -54,6 +78,7 @@ function getTemplateListStr(rootGenerators) {
   let str = "";
 
   rootGenerators.forEach(rootGenerator => {
+    console.log(rootGenerator)
     str = `${str}\n${rootGenerator.getTemplateListStr()}`;
   });
 
