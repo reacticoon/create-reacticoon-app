@@ -1,4 +1,4 @@
-const createReacticoonPlugin = require('../../reacticoon-cli-utils/cli-plugin/createReacticoonPlugin')
+const createReacticoonPlugin = require('../../plugin/createReacticoonPlugin')
 
 module.exports = createReacticoonPlugin({
   checkup: [

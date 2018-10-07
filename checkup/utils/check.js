@@ -1,4 +1,4 @@
-const symbol = require("../../reacticoon-cli-utils/symbol")
+const symbol = require("../../cli-utils/symbol")
 
 function check(isValid, validMessage, invalidMessage) {
   if (isValid) {

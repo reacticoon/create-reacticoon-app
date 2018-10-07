@@ -1,4 +1,4 @@
-const createGenerator = require("../../../../../../reacticoon-cli-generator/utils/createGenerator")
+const createGenerator = require("../../../../../../generator/utils/createGenerator")
 const generateSimpleModule = require("./generateSimpleModule");
 
 const simpleModuleGenerator = createGenerator({

@@ -5,7 +5,7 @@
 const spawn = require("cross-spawn");
 const find = require("lodash/find");
 
-const getReacticoonPluginsWithCommands = require("../reacticoon-cli-utils/reacticoon-config/getReacticoonPluginsWithCommands");
+const getReacticoonPluginsWithCommands = require("../cli-utils/reacticoon-config/getReacticoonPluginsWithCommands");
 
 function getPluginsCommands() {
   return getReacticoonPluginsWithCommands().reduce((commandsList, plugin) => {
@@ -20,8 +20,8 @@ const scripts = [
   { name: "build-library", path: "../scripts" },
   { name: "test", path: "../scripts" },
   { name: "start", path: "../scripts" },
-  { name: "generate", path: "../reacticoon-cli-generator" },
-  { name: "checkup", path: "../reacticoon-cli-checkup" },
+  { name: "generate", path: "../generator" },
+  { name: "checkup", path: "../checkup" },
   { name: "debug-plugins", path: "../scripts" }
 ];
 

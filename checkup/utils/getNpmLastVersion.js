@@ -1,4 +1,4 @@
-const cmd = require("../../reacticoon-cli-utils/cmd");
+const cmd = require("../../cli-utils/cmd");
 
 function getNpmLastVersion(packageName) {
   let lastVersion = null

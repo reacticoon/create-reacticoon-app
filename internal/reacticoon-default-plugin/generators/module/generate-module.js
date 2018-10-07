@@ -1,6 +1,6 @@
 "use strict";
 
-const createRootGenerator = require("../../../../reacticoon-cli-generator/utils/createRootGenerator")
+const createRootGenerator = require("../../../../generator/utils/createRootGenerator")
 
 module.exports = createRootGenerator({
   templates: [

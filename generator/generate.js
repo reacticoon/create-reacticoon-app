@@ -1,12 +1,14 @@
 const find = require("lodash/find");
 
-
-const getReacticoonPluginsWithGenerators = require("../reacticoon-cli-utils/reacticoon-config/getReacticoonPluginsWithGenerators");
+const getReacticoonPluginsWithGenerators = require("../cli-utils/reacticoon-config/getReacticoonPluginsWithGenerators");
 
 function getPluginsGenerators() {
-  return getReacticoonPluginsWithGenerators().reduce((generatorsList, plugin) => {
-    return generatorsList.concat(plugin.generators);
-  }, []);
+  return getReacticoonPluginsWithGenerators().reduce(
+    (generatorsList, plugin) => {
+      return generatorsList.concat(plugin.generators);
+    },
+    []
+  );
 }
 
 function loadGenerator(generatorData) {
@@ -28,11 +30,11 @@ function main(argv) {
   const templateName = argv[2];
 
   // TODO: templateName as a path to the template to provides a custom generator.
-  const rootGenerators = getPluginsGenerators()
+  const rootGenerators = getPluginsGenerators();
 
   let found = false;
   rootGenerators.forEach(rootGeneratorPath => {
-    const generator = loadGenerator(rootGeneratorPath)
+    const generator = loadGenerator(rootGeneratorPath);
     if (generator.hasTemplate(templateName)) {
       found = true;
 
@@ -60,7 +62,7 @@ function runTemplate(rootGenerator, templateName, generatorArgs) {
     rootGenerator.templates,
     template => template.name === templateName
   );
-  
+
   // TODO: template is required(), handle with string path
 
   if (!template) {
@@ -78,7 +80,7 @@ function getTemplateListStr(rootGenerators) {
   let str = "";
 
   rootGenerators.forEach(rootGenerator => {
-    console.log(rootGenerator)
+    console.log(rootGenerator);
     str = `${str}\n${rootGenerator.getTemplateListStr()}`;
   });
 

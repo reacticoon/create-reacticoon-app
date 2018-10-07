@@ -1,7 +1,7 @@
 //
 // Realise a Reacticoon checkup.
 //
-const getReacticoonPluginsWithCheckup = require("../reacticoon-cli-utils/reacticoon-config/getReacticoonPluginsWithCheckup");
+const getReacticoonPluginsWithCheckup = require("../cli-utils/reacticoon-config/getReacticoonPluginsWithCheckup");
 
 function getPluginsChecks() {
   return getReacticoonPluginsWithCheckup().reduce((checkupList, plugin) => {
