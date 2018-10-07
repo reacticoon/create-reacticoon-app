@@ -12,7 +12,7 @@ function createPluginData(plugin, resolvedPath) {
     ...plugin,
     checkup: (plugin.checkup || []).map(check => {
       if (isString(check)) {
-        let resolve = check[0] === '/' ? check : `${resolvedPath}/${check}`;
+        let resolve = check[0] === "/" ? check : `${resolvedPath}/${check}`;
         if (!endsWith(resolve, ".js")) {
           resolve += ".js";
         }
@@ -25,9 +25,30 @@ function createPluginData(plugin, resolvedPath) {
       } else {
         return {
           resolve: null,
-          check, // was loaded, add it directly
+          check // was loaded, add it directly
         };
       }
+    }),
+    commands: (plugin.commands || []).map(command => {
+      // command example:
+      // {
+      //   name: 'test-cmd',
+      //   path: "./commands/test"
+      // }
+      const { name, path } = command
+      let resolveDirectory = path[0] === "/" ? path : `${resolvedPath}/${path}`;
+      let resolve = `${resolveDirectory}/${name}`;
+      if (!endsWith(resolve, ".js")) {
+        resolve += ".js";
+      }
+      // TODO: check resolve is valid path
+
+      return {
+        resolveDirectory,
+        resolve,
+        name,
+        path,
+      };
     })
   };
 }
@@ -93,7 +114,7 @@ function resolvePlugin(pluginName) {
       ...createPluginData(plugin, resolvedPath)
     };
   } catch (err) {
-    console.error(err)
+    console.error(err);
     throw new Error(
       `Unable to find plugin "${pluginName}". Perhaps you need to install its package?`
     );
@@ -149,9 +170,7 @@ function load() {
   };
 
   // Add internal plugins
-  const internalPlugins = [
-    '../../../internal/reacticoon-default-plugin'
-  ];
+  const internalPlugins = ["../../../internal/reacticoon-default-plugin"];
 
   internalPlugins.forEach(relPath => {
     const absPath = path.join(__dirname, relPath);

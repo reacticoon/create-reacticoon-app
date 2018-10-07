@@ -30,7 +30,14 @@ function main() {
     const check = loadCheck(checkData);
 
     console.log(`${check.name}: ${check.description}`);
-    check.run();
+    try {
+      check.run();
+    } catch (e) {
+      console.error(`An exception has been thrown.`);
+      // TODO: add doc what to do in this case -> contact dev / create issue
+      // display plugin package.json issue uri
+      console.error(e);
+    }
     console.log("\n");
   });
 }

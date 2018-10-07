@@ -5,6 +5,14 @@
 const spawn = require("cross-spawn");
 const find = require("lodash/find");
 
+const getReacticoonPluginsWithCommands = require("../reacticoon-cli-utils/reacticoon-config/getReacticoonPluginsWithCommands");
+
+function getPluginsCommands() {
+  return getReacticoonPluginsWithCommands().reduce((commandsList, plugin) => {
+    return commandsList.concat(plugin.commands);
+  }, []);
+}
+
 // TODO: add scripts installed on node_modules
 // -> on node_modules/.bin/ and prefix with __REACTICOON__
 const scripts = [
@@ -14,7 +22,7 @@ const scripts = [
   { name: "start", path: "../scripts" },
   { name: "generate", path: "../reacticoon-cli-generator" },
   { name: "checkup", path: "../reacticoon-cli-checkup" },
-  { name: "debug-plugins", path: "../scripts"}
+  { name: "debug-plugins", path: "../scripts" }
 ];
 
 // const spawn = require("react-dev-utils/crossSpawn");
@@ -52,14 +60,26 @@ const execute = (script, filepath) => {
   process.exit(result.status);
 };
 
-const script = find(scripts, script => script.name === scriptName)
+const script = find(scripts, script => script.name === scriptName);
 
 if (script) {
   console.debug(`--- create-reacticoon-app ${script.name}`);
   execute(script.name, script.path + "/");
 } else {
+  const pluginsCommands = getPluginsCommands();
+  const command = find(pluginsCommands, command => command.name === scriptName);
+  if (command) {
+    execute(command.name, command.resolveDirectory + "/");
+    return;
+  }
+
   console.log(`Unknown script "${scriptName}."`);
-  console.log(`Available scripts: ${scripts.map(script => script.name).join(", ")}.`);
+  console.log(
+    `Available scripts:\n  ${scripts
+      .map(script => script.name)
+      .concat(pluginsCommands.map(command => command.name))
+      .join("\n  ")}.`
+  );
   console.log("You may need to update create-reacticoon-app");
   // TODO: link documentation
   console.log("See: TODO LINK");
