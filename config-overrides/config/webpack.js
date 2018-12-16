@@ -8,6 +8,8 @@
 
 const reacticoonPaths = require("../../utils/paths");
 
+const merge = require("lodash/merge")
+
 const paths = require(require.resolve(
   reacticoonPaths.scriptVersion + "/config/paths"
 ));
@@ -42,11 +44,11 @@ const defaultOptions = {
 // - enableSass
 // - autoImport
 
-module.exports = createWebpackOverride = (reacticoonOptions, override) => (
+module.exports = createWebpackOverride = (reacticoonOptions, override, pluginOverrides) => (
   config,
   env
 ) => {
-  const options = { ...defaultOptions, ...reacticoonOptions };
+  const options = merge({}, defaultOptions, pluginOverrides.options, reacticoonOptions)
 
   //
   // TODO: allow reacticoon user to pass its own config here, by adding in the end of Object.assign

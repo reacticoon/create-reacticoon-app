@@ -28,11 +28,43 @@ const reacticoonWebpackLibrary =
 
 const reacticoonOptions = override.options || {};
 
-const webpack = createWebpackOverride(reacticoonOptions, reacticoonWebpack);
+// take overrides for the defined plugins. 
+let pluginsOverrides = {}
+const getReacticoonPluginsWithOverrides = require("../cli-utils/reacticoon-config/getReacticoonPluginsWithOverrides");
+
+function loadOverrides(overridePath) {
+  const path = overridePath;
+  try {
+    return require(path);
+  } catch (e) {
+    console.error(`Could not find overrides module on path '${path}'`);
+    console.error(e);
+    process.exit();
+  }
+}
+
+function getOverrides() {
+  return getReacticoonPluginsWithOverrides().reduce((overridesFiles, plugin) => {
+    return overridesFiles.concat(`${plugin.resolve}/${plugin.overrides}`);
+  }, []);
+}
+const overridesFiles = getOverrides()
+
+// We take the last plugin and spread, to allow the first defined plugin to have the priority.
+overridesFiles.reverse().forEach(overridePath => {
+  const override = loadOverrides(overridePath)
+  pluginsOverrides = {
+    ...pluginsOverrides,
+    ...override,
+  }
+})
+
+const webpack = createWebpackOverride(reacticoonOptions, reacticoonWebpack, pluginsOverrides);
 
 const webpackLibrary = createWebpackLibraryOverride(
   reacticoonOptions,
-  reacticoonWebpackLibrary
+  reacticoonWebpackLibrary,
+  pluginsOverrides
 );
 
 if (override.devserver) {
