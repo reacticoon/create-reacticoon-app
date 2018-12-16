@@ -1,7 +1,9 @@
 const CommandCheckup = require("./CommandCheckup")
+const CommandDebugPlugin = require("./CommandDebugPlugin")
 
 const commands = {
   'CHECKUP': CommandCheckup,
+  'PLUGINS': CommandDebugPlugin,
 }
 
 function CommandRoute(app, context) {
