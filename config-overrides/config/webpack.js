@@ -27,6 +27,7 @@ const defaultOptions = {
   debugMode: false,
   autoImport: [],
   webpackAliases: {},
+  env: {},
 };
 
 //
@@ -161,7 +162,7 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
     // add alias to 'src/plugins'
     // Reacticoon recommand to use 'src/plugins' for the app custom plugins
     // This config allows to:
-    // `import myPlugin from 'modules/myPlugin'`
+    // `import myPlugin from 'plugins/myPlugin'`
     //
     plugins: paths.appSrc + "/plugins",
 
@@ -170,7 +171,7 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
     app: paths.appSrc + "/",
 
     // TODO: remove temporary:
-    reacticoon: paths.appSrc + "/reacticoon",
+    reacticoon: paths.appSrc + "/reacticoon/src",
 
     ...options.webpackAliases,
   };
@@ -197,7 +198,16 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
     //
     // retrieve the current app version from the package.json file
     //
-    __VERSION__: appPackageJson.version
+    __VERSION__: "" + appPackageJson.version,
+
+
+    __REACTICOON_DOC_URL__: "https://reacticoon.netlify.com",
+
+    __REACTICOON_GITHUB_ORGANISATION_URL__: "https://github.com/reacticoon",
+
+    __REACTICOON_REPOSITORY_URL__: "https://github.com/reacticoon/reacticoon",
+
+    ...options.env,
   };
 
   //
@@ -215,15 +225,21 @@ module.exports = createWebpackOverride = (reacticoonOptions, override) => (
     const currentProjectBranch = git.currentProjectBranch();
     envVars.__APP_GIT_BRANCH__ = currentProjectBranch;
   } catch (e) {
-    envVars.__APP_GIT_COMMIT__ = null;
+    envVars.__APP_GIT_BRANCH__ = null;
   }
 
-  // --> move from replacements to
-  config.plugins[0].replacements = Object.assign(
-    {},
-    config.plugins[0].replacements,
-    envVars
-  );
+  // transform env for webpack.
+  // We need to stringify the env values
+  // https://stackoverflow.com/questions/28145397/injecting-variables-into-webpack
+  const finalVars = {}
+  Object.keys(envVars).forEach(function (key) {
+    finalVars[key] = JSON.stringify(envVars[key])
+  })
+
+  config.plugins[3].definitions["process.env"] = {
+    ...config.plugins[3].definitions["process.env"],
+    ...finalVars,
+  }
 
   // webpack crash if there is null plugins
   config.plugins = config.plugins.filter(plugin => plugin != null)

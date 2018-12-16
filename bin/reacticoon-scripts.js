@@ -13,8 +13,6 @@ function getPluginsCommands() {
   }, []);
 }
 
-// TODO: add scripts installed on node_modules
-// -> on node_modules/.bin/ and prefix with __REACTICOON__
 const scripts = [
   { name: "build", path: "../scripts" },
   { name: "build-library", path: "../scripts" },
@@ -22,7 +20,8 @@ const scripts = [
   { name: "start", path: "../scripts" },
   { name: "generate", path: "../generator" },
   { name: "checkup", path: "../checkup" },
-  { name: "debug-plugins", path: "../scripts" }
+  { name: "debug-plugins", path: "../scripts" },
+  { name: "list-commands", path: "../scripts"}
 ];
 
 // const spawn = require("react-dev-utils/crossSpawn");

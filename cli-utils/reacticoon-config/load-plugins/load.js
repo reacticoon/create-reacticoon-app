@@ -183,7 +183,7 @@ function load() {
   };
 
   // Add internal plugins
-  const internalPlugins = ["../../../internal/reacticoon-default-plugin"];
+  const internalPlugins = ["../../../internal/reacticoon-plugin-default"];
 
   internalPlugins.forEach(relPath => {
     const absPath = path.join(__dirname, relPath);

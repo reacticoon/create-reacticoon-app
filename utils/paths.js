@@ -40,11 +40,11 @@ const createReacticoonApp = path.resolve(__dirname, "../");
 module.exports = Object.assign(
   {
     projectDir,
-    projectSrc: projectDir + '/src',
+    projectSrc: projectDir + "/src",
     libDir: projectDir + "/lib",
     createReacticoonApp,
     appNodeModules,
-    appLibIndexJs: projectDir + '/src/index.js',
+    appLibIndexJs: projectDir + "/src/index.js",
     // TODO: rename to reactScripts
     scriptVersion: modulePath,
     // rewiredScript,
@@ -62,13 +62,21 @@ module.exports = Object.assign(
       try {
         lib = require(createReacticoonApp + "/../" + path);
       } catch (e) {
-        lib = require(createReacticoonApp + "/node_modules/" + path); 
+        lib = require(createReacticoonApp + "/node_modules/" + path);
       }
-      return lib
+      return lib;
     },
 
     resolveReacticoon: path => {
-      return require.resolve(createReacticoonApp + "/node_modules/" + path);
+      // TODO: update. When installed via npm, the depencencies are not in ./node_modules but in
+      // the project node_modules ("../")
+      let lib = null;
+      try {
+        lib = require.resolve(createReacticoonApp + "/../" + path);
+      } catch (e) {
+        lib = require.resolve(createReacticoonApp + "/node_modules/" + path);
+      }
+      return lib;
     }
   },
   paths
