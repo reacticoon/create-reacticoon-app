@@ -44,11 +44,12 @@ const defaultOptions = {
 // - enableSass
 // - autoImport
 
-module.exports = createWebpackOverride = (reacticoonOptions, override, pluginOverrides) => (
+module.exports = createWebpackOverride = (reacticoonOptions, override, pluginData = {}) => (
   config,
   env
 ) => {
-  const options = merge({}, defaultOptions, pluginOverrides.options, reacticoonOptions)
+  const { pluginsOverrides = {}, pluginsOverridesDebugInfo = {} } = pluginData
+  const options = merge({}, defaultOptions, pluginsOverrides.options, reacticoonOptions)
 
   //
   // TODO: allow reacticoon user to pass its own config here, by adding in the end of Object.assign
@@ -321,7 +322,13 @@ module.exports = createWebpackOverride = (reacticoonOptions, override, pluginOve
   if (options.debugMode) {
     console.log("-------- config");
     console.log(JSON.stringify(config, null, 4));
-    console.log("-------- options");
+    console.log("-------- plugins override configuration");
+    console.log(JSON.stringify(pluginsOverridesDebugInfo, null, 4))
+    console.log("-------- plugins override final");
+    console.log(JSON.stringify(pluginsOverrides, null, 4))
+    console.log("-------- reacticoon options");
+    console.log(JSON.stringify(reacticoonOptions, null, 4))
+    console.log("-------- final options");
     console.log(JSON.stringify(options, null, 4));
     console.log(
       "Switch off the debug by setting `debugMode` to false in config-overrides options"

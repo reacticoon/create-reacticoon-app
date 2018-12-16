@@ -1,13 +1,22 @@
 const paths = require("../utils/paths");
 
-// TODO: if build / build-library
-const createWebpackOverride = require("./config/webpack");
-const createWebpackLibraryOverride = require("./config/webpackLibrary")
+const scriptName = process.env.npm_lifecycle_event
+
+const IS_START = scriptName === "start"
+const IS_LIBRARY = scriptName === "build-library"
+
+if (!IS_START && !IS_LIBRARY) {
+  throw new Error("Invalid " + scriptName)
+}
 
 // load environment variables from .env files
 // before overrides scripts are read
+// TODO: test
 require(paths.scriptVersion + "/config/env");
 
+//
+// App config overrides
+//
 let override = null;
 try {
   override = require(paths.configOverrides);
@@ -16,56 +25,45 @@ try {
   override = {};
 }
 
-const reacticoonWebpack =
-  typeof override === "function"
-    ? override
-    : override.webpack || ((config, env) => config);
-
-const reacticoonWebpackLibrary =
-  typeof override === "function"
-    ? override
-    : override.webpackLibrary || ((config, env) => config);
-
 const reacticoonOptions = override.options || {};
 
-// take overrides for the defined plugins. 
-let pluginsOverrides = {}
-const getReacticoonPluginsWithOverrides = require("../cli-utils/reacticoon-config/getReacticoonPluginsWithOverrides");
+//
+// Plugins overrides
+//
 
-function loadOverrides(overridePath) {
-  const path = overridePath;
-  try {
-    return require(path);
-  } catch (e) {
-    console.error(`Could not find overrides module on path '${path}'`);
-    console.error(e);
-    process.exit();
-  }
+const retrievePluginData = require("./utils/retrievePluginData")
+
+const pluginData = retrievePluginData()
+
+//
+// Create webpack data
+//
+
+let webpack = null
+let webpackLibrary = null
+if (IS_START) {
+  const createWebpackOverride = require("./config/webpack");
+
+  const reacticoonWebpack =
+    typeof override === "function"
+      ? override
+      : override.webpack || ((config, env) => config);
+
+  webpack = createWebpackOverride(reacticoonOptions, reacticoonWebpack, pluginData);
+} else if (IS_LIBRARY) {
+  const createWebpackLibraryOverride = require("./config/webpackLibrary")
+
+  const reacticoonWebpackLibrary =
+    typeof override === "function"
+      ? override
+      : override.webpackLibrary || ((config, env) => config);
+
+  webpackLibrary = createWebpackLibraryOverride(
+    reacticoonOptions,
+    reacticoonWebpackLibrary,
+    pluginsOverrides
+  )
 }
-
-function getOverrides() {
-  return getReacticoonPluginsWithOverrides().reduce((overridesFiles, plugin) => {
-    return overridesFiles.concat(`${plugin.resolve}/${plugin.overrides}`);
-  }, []);
-}
-const overridesFiles = getOverrides()
-
-// We take the last plugin and spread, to allow the first defined plugin to have the priority.
-overridesFiles.reverse().forEach(overridePath => {
-  const override = loadOverrides(overridePath)
-  pluginsOverrides = {
-    ...pluginsOverrides,
-    ...override,
-  }
-})
-
-const webpack = createWebpackOverride(reacticoonOptions, reacticoonWebpack, pluginsOverrides);
-
-const webpackLibrary = createWebpackLibraryOverride(
-  reacticoonOptions,
-  reacticoonWebpackLibrary,
-  pluginsOverrides
-);
 
 if (override.devserver) {
   console.log(
