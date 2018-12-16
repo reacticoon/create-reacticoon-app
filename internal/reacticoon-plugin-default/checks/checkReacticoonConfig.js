@@ -1,13 +1,12 @@
 const createCheck = require("../../../checkup/utils/createCheck");
-const check = require("../../../checkup/utils/check");
-const paths = require("../../../checkup/../utils/paths");
+const paths = require("../../../utils/paths");
 const requireOptionnal = require("../../../cli-utils/requireOptionnal")
 
 // const packageJson = require(paths.projectDir + "/package.json");
 
-const run = () => {
+const run = ({ check }) => {
   const reacticoonConfig = requireOptionnal(paths.projectDir + "/config/reacticoon")
-  
+
   check(
     reacticoonConfig !== false,
     `'reacticoon' config found`,

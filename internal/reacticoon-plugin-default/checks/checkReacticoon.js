@@ -1,12 +1,10 @@
 const createCheck = require("../../../checkup/utils/createCheck");
-const check = require("../../../checkup/utils/check");
-const warn = require("../../../checkup/utils/warn");
 const getNpmLastVersion = require("../../../checkup/utils/getNpmLastVersion");
 const paths = require("../../../checkup/../utils/paths");
 
 const packageJson = require(paths.projectDir + "/package.json");
 
-const run = () => {
+const run = ({ check, warn }) => {
   const reacticoonVersion = packageJson.dependencies.reacticoon;
 
   check(

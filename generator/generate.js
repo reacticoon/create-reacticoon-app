@@ -45,6 +45,7 @@ function main(argv) {
   if (!found) {
     console.error(`Could not find template ${templateName}.`);
     console.log(getTemplateListStr(rootGenerators));
+    process.exit()
   }
 }
 
@@ -55,7 +56,7 @@ function error(msg) {
 
 function runTemplate(rootGenerator, templateName, generatorArgs) {
   if (!templateName) {
-    error(`Missing templateName argument`);
+    console.error(`Missing templateName argument`);
   }
 
   const template = find(
@@ -66,7 +67,8 @@ function runTemplate(rootGenerator, templateName, generatorArgs) {
   // TODO: template is required(), handle with string path
 
   if (!template) {
-    error(`Invalid templateName '${templateName}'. Template not found.`);
+    console.error(`Invalid templateName '${templateName}'. Template not found.`);
+    process.exit()
   }
 
   const data = {

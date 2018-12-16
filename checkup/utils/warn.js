@@ -1,10 +1,14 @@
-const symbol = require("../../cli-utils/symbol")
-
 function warn(isValid, validMessage, warnMessage) {
   if (!isValid) {
-    console.log(`${symbol.warning} ${warnMessage}`);
+    return {
+      type: 'WARN',
+      message: `${warnMessage}`,
+    }
   } else {
-    console.log(`${symbol.success} ${validMessage}`);
+    return {
+      type: 'GOOD',
+      message: `${validMessage}`,
+    }
   }
 }
 

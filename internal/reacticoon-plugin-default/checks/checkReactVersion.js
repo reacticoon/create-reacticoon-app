@@ -1,10 +1,9 @@
 const createCheck = require("../../../checkup/utils/createCheck");
-const check = require("../../../checkup/utils/check");
 const paths = require("../../../utils/paths");
 
 const packageJson = require(paths.projectDir + "/package.json");
 
-const run = () => {
+const run = ({ check }) => {
   const reactVersion = packageJson.dependencies.react;
   const reactDomVersion = packageJson.dependencies["react-dom"];
 
