@@ -6,6 +6,7 @@ const ReacticoonChecks = require("../utils/ReacticoonChecks.js");
 ReacticoonChecks.run(() => {
   const paths = require("../utils/paths");
   const overrides = require("../config-overrides");
+
   const webpackConfigPath = paths.scriptVersion + "/config/webpack.config.prod";
 
   // load original config

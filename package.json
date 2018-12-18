@@ -31,6 +31,7 @@
     "sass-loader": "7.0.3",
     "simple-git": "1.96.0",
     "slash": "2.0.0",
+    "source-map-explorer": "1.6.0",
     "style-loader": "0.21.0"
   },
   "scripts": {

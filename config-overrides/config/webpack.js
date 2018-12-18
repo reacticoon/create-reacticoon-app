@@ -44,7 +44,7 @@ const defaultOptions = {
 // - enableSass
 // - autoImport
 
-module.exports = createWebpackOverride = (reacticoonOptions, override, pluginData = {}) => (
+module.exports = createWebpackOverride = (isDev, reacticoonOptions, override, pluginData = {}) => (
   config,
   env
 ) => {
@@ -80,7 +80,7 @@ module.exports = createWebpackOverride = (reacticoonOptions, override, pluginDat
     //   from: "reacticoon/environment",
     //   propertyName: "__DEV__"
     // }
-  ].concat(options.autoImport || []);
+  ].concat(options.autoImport || []).filter(Boolean);
 
   const rewireAutoImport = require("./auto-import/rewire-auto-import");
   config = rewireAutoImport(config, env, autoImportConfig);
@@ -108,7 +108,7 @@ module.exports = createWebpackOverride = (reacticoonOptions, override, pluginDat
   //
 
   const babelPlugins = [
-    require.resolve("react-hot-loader/babel"),
+    isDev && require.resolve("react-hot-loader/babel"),
     // add decoractors
     // Ex: @debug
     // class ...
@@ -142,7 +142,7 @@ module.exports = createWebpackOverride = (reacticoonOptions, override, pluginDat
     // v2: Enable with config:
     // - react-app-rewire-less
     // - DONE. react-app-rewire-sass
-  ];
+  ].filter(Boolean);
 
   // inject the plugins
   babelPlugins.reverse().forEach(plugin => {
@@ -201,7 +201,7 @@ module.exports = createWebpackOverride = (reacticoonOptions, override, pluginDat
     //
     // retrieve the current app version from the package.json file
     //
-    __VERSION__: "" + appPackageJson.version,
+    __VERSION__: appPackageJson.version,
 
 
     __REACTICOON_DOC_URL__: "https://reacticoon.netlify.com",
@@ -239,8 +239,11 @@ module.exports = createWebpackOverride = (reacticoonOptions, override, pluginDat
     finalVars[key] = JSON.stringify(envVars[key])
   })
 
-  config.plugins[3].definitions["process.env"] = {
-    ...config.plugins[3].definitions["process.env"],
+ 
+  // TODO: better way
+  const proccessEnvIndex = isDev ? 3 : 2
+  config.plugins[proccessEnvIndex].definitions["process.env"] = {
+    ...config.plugins[proccessEnvIndex].definitions["process.env"],
     ...finalVars,
   }
 

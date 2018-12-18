@@ -38,6 +38,7 @@ const defaultOptions = {
 // - autoImport
 
 module.exports = createWebpackLibraryOverride = (
+  isDev,
   reacticoonOptions,
   override
 ) => (config, env) => {

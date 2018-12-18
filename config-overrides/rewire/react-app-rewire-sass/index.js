@@ -19,10 +19,6 @@ function rewireSass(config, env) {
 
   fileLoaderConfig.exclude.push(/\.scss$/);
 
-  if (env !== "development") {
-    throw new Exception("TODO: prod react-app-rewire-sass");
-  }
-
   rulesOneOf.push({
     test: /\.scss$/,
     use: [

@@ -1,11 +1,12 @@
+const isFunction = require("lodash/isFunction")
 const paths = require("../utils/paths");
-
 const scriptName = process.env.npm_lifecycle_event
 
-const IS_START = scriptName === "start"
+const IS_DEV = scriptName === "start"
+const IS_BUILD = scriptName === "build"
 const IS_LIBRARY = scriptName === "build-library"
 
-if (!IS_START && !IS_LIBRARY) {
+if (!IS_DEV && !IS_LIBRARY && !IS_BUILD) {
   throw new Error("Invalid " + scriptName)
 }
 
@@ -25,7 +26,8 @@ try {
   override = {};
 }
 
-const reacticoonOptions = override.options || {};
+// allow override to be a function, receives an isDev parameter.
+const reacticoonOptions = isFunction(override) ? override(IS_DEV).options : override.options || {};
 
 //
 // Plugins overrides
@@ -41,7 +43,7 @@ const pluginData = retrievePluginData()
 
 let webpack = null
 let webpackLibrary = null
-if (IS_START) {
+if (IS_DEV || IS_BUILD) {
   const createWebpackOverride = require("./config/webpack");
 
   const reacticoonWebpack =
@@ -49,7 +51,7 @@ if (IS_START) {
       ? override
       : override.webpack || ((config, env) => config);
 
-  webpack = createWebpackOverride(reacticoonOptions, reacticoonWebpack, pluginData);
+  webpack = createWebpackOverride(IS_DEV, reacticoonOptions, reacticoonWebpack, pluginData);
 } else if (IS_LIBRARY) {
   const createWebpackLibraryOverride = require("./config/webpackLibrary")
 
@@ -59,6 +61,7 @@ if (IS_START) {
       : override.webpackLibrary || ((config, env) => config);
 
   webpackLibrary = createWebpackLibraryOverride(
+    IS_DEV,
     reacticoonOptions,
     reacticoonWebpackLibrary,
     pluginsOverrides
