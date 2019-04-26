@@ -1,12 +1,14 @@
 const CommandCheckup = require("./CommandCheckup")
 const CommandDebugPlugin = require("./CommandDebugPlugin")
 const CommandAnalyzeBuild = require("./CommandAnalyzeBuild")
+const CommandBundlePhobia = require("./CommandBundlePhobia")
 const Filesystem = require("../../utils/Filesystem")
 
 const commands = {
   'CHECKUP': CommandCheckup,
   'PLUGINS': CommandDebugPlugin,
   'ANALYZE_BUILD': CommandAnalyzeBuild,
+  'BUNDLE_PHOBIA': CommandBundlePhobia,
 }
 
 function CommandRoute(app, context) {

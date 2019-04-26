@@ -11,7 +11,7 @@ if (!report.success) {
 }
 
 // write html to temporary file
-const path = `/tmp/reacticoon_build_analyze.html` // TODO: change
+const path = `/tmp/reacticoon_build_analyze.${report.buildId}.html`
 Filesystem.saveFile(path, report.result.html)
 
 // open temporary file

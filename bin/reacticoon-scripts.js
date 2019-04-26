@@ -10,10 +10,9 @@ const getReacticoonPluginsWithCommands = require("../cli-utils/reacticoon-config
 // Makes the script crash on unhandled rejections instead of silently
 // ignoring them. In the future, promise rejections that are not handled will
 // terminate the Node.js process with a non-zero exit code.
-process.on('unhandledRejection', err => {
+process.on("unhandledRejection", err => {
   throw err;
 });
-
 
 function getPluginsCommands() {
   return getReacticoonPluginsWithCommands().reduce((commandsList, plugin) => {
@@ -25,12 +24,13 @@ const scripts = [
   { name: "build", path: "../scripts" },
   { name: "build-library", path: "../scripts" },
   { name: "test", path: "../scripts" },
+  { name: "test:integration", path: "../scripts" },
   { name: "start", path: "../scripts" },
   { name: "generate", path: "../generator" },
   { name: "checkup", path: "../checkup" },
   { name: "debug-plugins", path: "../scripts" },
-  { name: "list-commands", path: "../scripts"},
-  { name: "analyze-build", path: "../analyze/build"},
+  { name: "list-commands", path: "../scripts" },
+  { name: "analyze-build", path: "../analyze/build" }
 ];
 
 // const spawn = require("react-dev-utils/crossSpawn");

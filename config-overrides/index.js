@@ -1,13 +1,14 @@
-const isFunction = require("lodash/isFunction")
+const isFunction = require("lodash/isFunction");
 const paths = require("../utils/paths");
-const scriptName = process.env.npm_lifecycle_event
+const scriptName = process.env.npm_lifecycle_event;
 
-const IS_DEV = scriptName === "start"
-const IS_BUILD = scriptName === "build"
-const IS_LIBRARY = scriptName === "build-library"
+const IS_DEV = scriptName === "start";
+const IS_BUILD = scriptName === "build";
+const IS_LIBRARY = scriptName === "build-library";
+const IS_TEST = scriptName === "test" || scriptName === "test:integration";
 
-if (!IS_DEV && !IS_LIBRARY && !IS_BUILD) {
-  throw new Error("Invalid " + scriptName)
+if (!IS_DEV && !IS_LIBRARY && !IS_BUILD && !IS_TEST) {
+  throw new Error("Invalid " + scriptName);
 }
 
 // load environment variables from .env files
@@ -27,22 +28,24 @@ try {
 }
 
 // allow override to be a function, receives an isDev parameter.
-const reacticoonOptions = isFunction(override) ? override(IS_DEV).options : override.options || {};
+const reacticoonOptions = isFunction(override)
+  ? override(IS_DEV).options
+  : override.options || {};
 
 //
 // Plugins overrides
 //
 
-const retrievePluginData = require("./utils/retrievePluginData")
+const retrievePluginData = require("./utils/retrievePluginData");
 
-const pluginData = retrievePluginData()
+const pluginData = retrievePluginData();
 
 //
 // Create webpack data
 //
 
-let webpack = null
-let webpackLibrary = null
+let webpack = null;
+let webpackLibrary = null;
 if (IS_DEV || IS_BUILD) {
   const createWebpackOverride = require("./config/webpack");
 
@@ -51,9 +54,14 @@ if (IS_DEV || IS_BUILD) {
       ? override
       : override.webpack || ((config, env) => config);
 
-  webpack = createWebpackOverride(IS_DEV, reacticoonOptions, reacticoonWebpack, pluginData);
+  webpack = createWebpackOverride(
+    IS_DEV,
+    reacticoonOptions,
+    reacticoonWebpack,
+    pluginData
+  );
 } else if (IS_LIBRARY) {
-  const createWebpackLibraryOverride = require("./config/webpackLibrary")
+  const createWebpackLibraryOverride = require("./config/webpackLibrary");
 
   const reacticoonWebpackLibrary =
     typeof override === "function"
@@ -65,7 +73,7 @@ if (IS_DEV || IS_BUILD) {
     reacticoonOptions,
     reacticoonWebpackLibrary,
     pluginsOverrides
-  )
+  );
 }
 
 if (override.devserver) {
