@@ -8,7 +8,7 @@ const { setup: setupPuppeteer } = paths.requireReacticoon(
 // https://github.com/smooth-code/jest-puppeteer/tree/master/packages/expect-puppeteer
 const expect = paths.requireReacticoon("expect-puppeteer");
 
-const puppeteer = (module.exports = async function(globalConfig) {
+module.exports = async function(globalConfig) {
   await setupPuppeteer(globalConfig);
 
   // Your global setup

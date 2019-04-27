@@ -3,12 +3,12 @@ const getReacticoonPlugins = require("./getReacticoonPlugins");
 //
 //
 //
-function getReacticoonPluginsWithCheckup() {
+function getReacticoonPluginsWithCommands() {
   const plugins = getReacticoonPlugins();
 
-  const pluginsWithCheckUp = plugins.filter(plugin => plugin.hasCommands);
+  const pluginsWithCommands = plugins.filter(plugin => plugin.hasCommands);
 
-  return pluginsWithCheckUp;
+  return pluginsWithCommands;
 }
 
-module.exports = getReacticoonPluginsWithCheckup;
+module.exports = getReacticoonPluginsWithCommands;

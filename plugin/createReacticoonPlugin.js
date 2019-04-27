@@ -1,4 +1,3 @@
-const invariant = require("invariant");
 const isEmpty = require("lodash/isEmpty");
 
 // plugin example:
@@ -18,16 +17,17 @@ const isEmpty = require("lodash/isEmpty");
 // ```
 // TODO: add invariant
 //
-function createReacticoonCliPlugin(plugin) {
+function createReacticoonPlugin(plugin) {
   return {
     ...plugin,
     hasCheckup: !isEmpty(plugin.checkup),
     hasCommands: !isEmpty(plugin.commands),
+    hasServerCommands: !isEmpty(plugin.serverCommands),
     hasGenerators: !isEmpty(plugin.generators),
     hasOverrides: !isEmpty(plugin.overrides),
     // internal to facilitate checks.
-    __IS_REACTICOON_PLUGIN__: true,
+    __IS_REACTICOON_PLUGIN__: true
   };
 }
 
-module.exports = createReacticoonCliPlugin;
+module.exports = createReacticoonPlugin;

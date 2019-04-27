@@ -28,7 +28,8 @@ function createPluginData(plugin, resolvedPath) {
     }),
     generators: (plugin.generators || []).map(generator => {
       if (isString(generator)) {
-        let resolve = generator[0] === "/" ? generator : `${resolvedPath}/${generator}`;
+        let resolve =
+          generator[0] === "/" ? generator : `${resolvedPath}/${generator}`;
         if (!endsWith(resolve, ".js")) {
           resolve += ".js";
         }
@@ -48,7 +49,7 @@ function createPluginData(plugin, resolvedPath) {
       //   name: 'test-cmd',
       //   path: "./commands/test"
       // }
-      const { name, path } = command
+      const { name, path } = command;
       let resolveDirectory = path[0] === "/" ? path : `${resolvedPath}/${path}`;
       let resolve = `${resolveDirectory}/${name}`;
       if (!endsWith(resolve, ".js")) {
@@ -60,7 +61,29 @@ function createPluginData(plugin, resolvedPath) {
         resolveDirectory,
         resolve,
         name,
-        path,
+        path
+      };
+    }),
+
+    serverCommands: (plugin.serverCommands || []).map(serverCommand => {
+      // server command example:
+      // {
+      //   name: 'TEST',
+      //   path: "./server-commands/test"
+      // }
+      const { name, path } = serverCommand;
+      let resolveDirectory = path[0] === "/" ? path : `${resolvedPath}`;
+      let resolve = `${resolveDirectory}/${path}`;
+      if (!endsWith(resolve, ".js")) {
+        resolve += ".js";
+      }
+      // TODO: check resolve is valid path
+
+      return {
+        ...serverCommand,
+        resolve,
+        name,
+        path
       };
     })
   };
