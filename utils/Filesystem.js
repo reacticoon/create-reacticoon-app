@@ -3,6 +3,36 @@
 var fs = require("fs");
 var mkdirp = require("mkdirp");
 var dirname = require("path").dirname;
+var path = require("path");
+
+// List all files in a directory in Node.js recursively in a synchronous fashion
+// https://gist.github.com/kethinov/6658166
+// TODO: handle subfolders
+const getTree = (dir, filelist = []) => {
+  const files = fs.readdirSync(dir);
+  for (const file of files) {
+    const dirFile = path.join(dir, file);
+    const dirent = fs.statSync(dirFile);
+    if (dirent.isDirectory()) {
+      console.log("directory", path.join(dir, file));
+      var odir = {
+        filepath: dirFile,
+        name: file,
+        files: [],
+        isFile: false
+      };
+      odir.files = getTree(dirFile, dir.files);
+      filelist.push(odir);
+    } else {
+      filelist.push({
+        filepath: dirFile,
+        name: file,
+        isFile: true
+      });
+    }
+  }
+  return filelist;
+};
 
 var saveFile = function saveFile(filepath, content) {
   var dir = dirname(filepath);
@@ -26,5 +56,6 @@ var directoryExists = function directoryExists(path) {
 module.exports = {
   saveFile: saveFile,
   readFileSync: readFileSync,
-  directoryExists: directoryExists
+  directoryExists: directoryExists,
+  getTree: getTree
 };

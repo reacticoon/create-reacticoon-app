@@ -2,13 +2,15 @@ const CommandCheckup = require("./CommandCheckup");
 const CommandDebugPlugin = require("./CommandDebugPlugin");
 const CommandAnalyzeBuild = require("./CommandAnalyzeBuild");
 const CommandBundlePhobia = require("./CommandBundlePhobia");
+const CommandReadFile = require("./CommandReadFile");
 const Filesystem = require("../../utils/Filesystem");
 
 const commands = {
   CHECKUP: CommandCheckup,
   PLUGINS: CommandDebugPlugin,
   ANALYZE_BUILD: CommandAnalyzeBuild,
-  BUNDLE_PHOBIA: CommandBundlePhobia
+  BUNDLE_PHOBIA: CommandBundlePhobia,
+  READ_FILE: CommandReadFile
 };
 
 const getReacticoonPluginsWithServerCommands = require("../../cli-utils/reacticoon-config/getReacticoonPluginsWithServerCommands");

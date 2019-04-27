@@ -20,5 +20,13 @@ const context = {};
 
 require("./routes")(app, context);
 app.listen(port, () => {
-  console.log("We are live on " + port);
+  const welcomeMessage = `
+
+      Welcome on Reacticoon server.
+    -----------------------------------------------------------
+      We are live on ${port}
+
+
+  `;
+  console.log(welcomeMessage);
 });
