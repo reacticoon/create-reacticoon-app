@@ -12,7 +12,7 @@ function runCommand(command) {
   exec(command);
 }
 
-function getString(command, callback) {
+async function getString(command, callback) {
   exec(
     command,
     (function() {

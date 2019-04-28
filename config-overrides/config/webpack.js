@@ -8,7 +8,7 @@
 
 const reacticoonPaths = require("../../utils/paths");
 
-const merge = require("lodash/merge")
+const merge = require("lodash/merge");
 
 const paths = require(require.resolve(
   reacticoonPaths.scriptVersion + "/config/paths"
@@ -29,7 +29,7 @@ const defaultOptions = {
   debugMode: false,
   autoImport: [],
   webpackAliases: {},
-  env: {},
+  env: {}
 };
 
 //
@@ -44,12 +44,19 @@ const defaultOptions = {
 // - enableSass
 // - autoImport
 
-module.exports = createWebpackOverride = (isDev, reacticoonOptions, override, pluginData = {}) => (
-  config,
-  env
-) => {
-  const { pluginsOverrides = {}, pluginsOverridesDebugInfo = {} } = pluginData
-  const options = merge({}, defaultOptions, pluginsOverrides.options, reacticoonOptions)
+module.exports = createWebpackOverride = (
+  isDev,
+  reacticoonOptions,
+  override,
+  pluginData = {}
+) => (config, env) => {
+  const { pluginsOverrides = {}, pluginsOverridesDebugInfo = {} } = pluginData;
+  const options = merge(
+    {},
+    defaultOptions,
+    pluginsOverrides.options,
+    reacticoonOptions
+  );
 
   //
   // TODO: allow reacticoon user to pass its own config here, by adding in the end of Object.assign
@@ -72,7 +79,7 @@ module.exports = createWebpackOverride = (isDev, reacticoonOptions, override, pl
       import: "{ tr }",
       from: "reacticoon/i18n",
       functionName: "tr"
-    },
+    }
     // __DEV__
     // TODO: handle propertyName
     // {
@@ -80,7 +87,9 @@ module.exports = createWebpackOverride = (isDev, reacticoonOptions, override, pl
     //   from: "reacticoon/environment",
     //   propertyName: "__DEV__"
     // }
-  ].concat(options.autoImport || []).filter(Boolean);
+  ]
+    .concat(options.autoImport || [])
+    .filter(Boolean);
 
   const rewireAutoImport = require("./auto-import/rewire-auto-import");
   config = rewireAutoImport(config, env, autoImportConfig);
@@ -176,7 +185,7 @@ module.exports = createWebpackOverride = (isDev, reacticoonOptions, override, pl
     // TODO: remove temporary:
     reacticoon: paths.appSrc + "/reacticoon/src",
 
-    ...options.webpackAliases,
+    ...options.webpackAliases
   };
 
   config.resolve.alias = Object.assign(
@@ -203,14 +212,13 @@ module.exports = createWebpackOverride = (isDev, reacticoonOptions, override, pl
     //
     __VERSION__: appPackageJson.version,
 
-
     __REACTICOON_DOC_URL__: "https://reacticoon.netlify.com",
 
     __REACTICOON_GITHUB_ORGANISATION_URL__: "https://github.com/reacticoon",
 
     __REACTICOON_REPOSITORY_URL__: "https://github.com/reacticoon/reacticoon",
 
-    ...options.env,
+    ...options.env
   };
 
   //
@@ -234,21 +242,20 @@ module.exports = createWebpackOverride = (isDev, reacticoonOptions, override, pl
   // transform env for webpack.
   // We need to stringify the env values
   // https://stackoverflow.com/questions/28145397/injecting-variables-into-webpack
-  const finalVars = {}
-  Object.keys(envVars).forEach(function (key) {
-    finalVars[key] = JSON.stringify(envVars[key])
-  })
+  const finalVars = {};
+  Object.keys(envVars).forEach(function(key) {
+    finalVars[key] = JSON.stringify(envVars[key]);
+  });
 
- 
   // TODO: better way
-  const proccessEnvIndex = isDev ? 3 : 2
+  const proccessEnvIndex = isDev ? 3 : 2;
   config.plugins[proccessEnvIndex].definitions["process.env"] = {
     ...config.plugins[proccessEnvIndex].definitions["process.env"],
-    ...finalVars,
-  }
+    ...finalVars
+  };
 
   // webpack crash if there is null plugins
-  config.plugins = config.plugins.filter(plugin => plugin != null)
+  config.plugins = config.plugins.filter(plugin => plugin != null);
 
   //
   // add our webpack plugins
@@ -319,6 +326,9 @@ module.exports = createWebpackOverride = (isDev, reacticoonOptions, override, pl
     config = rewireSass(config, env);
   }
 
+  const rewireEslint = require("../rewire/react-app-rewire-eslint");
+  config = rewireEslint(config, env);
+
   //
   // debug config
   //
@@ -326,11 +336,11 @@ module.exports = createWebpackOverride = (isDev, reacticoonOptions, override, pl
     console.log("-------- config");
     console.log(JSON.stringify(config, null, 4));
     console.log("-------- plugins override configuration");
-    console.log(JSON.stringify(pluginsOverridesDebugInfo, null, 4))
+    console.log(JSON.stringify(pluginsOverridesDebugInfo, null, 4));
     console.log("-------- plugins override final");
-    console.log(JSON.stringify(pluginsOverrides, null, 4))
+    console.log(JSON.stringify(pluginsOverrides, null, 4));
     console.log("-------- reacticoon options");
-    console.log(JSON.stringify(reacticoonOptions, null, 4))
+    console.log(JSON.stringify(reacticoonOptions, null, 4));
     console.log("-------- final options");
     console.log(JSON.stringify(options, null, 4));
     console.log(

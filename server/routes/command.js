@@ -48,10 +48,16 @@ function CommandRoute(app, context) {
   app.post("/commands", (req, res) => {
     console.log(req.body);
 
-    const command = commands[req.body.command];
+    const commandName = req.body.command;
+    const command = commands[commandName];
 
     if (!command) {
-      res.send({ error: true, description: "command not found" });
+      console.log(JSON.stringify(commands, null, 2));
+      res.send({
+        error: true,
+        description: `command not found ${commandName}`
+      });
+      return;
     }
 
     let runner = command;
@@ -59,7 +65,16 @@ function CommandRoute(app, context) {
       runner = loadServerCommand(command);
     }
 
-    runner(req, res);
+    try {
+      runner(req, res);
+    } catch (e) {
+      console.error(e);
+      res.send({
+        error: true,
+        description: `Server command has crashed`,
+        e
+      });
+    }
   });
 
   app.get("/retrieve-file", (req, res) => {
