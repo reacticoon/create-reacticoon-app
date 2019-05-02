@@ -6,18 +6,19 @@
  * - https://github.com/facebook/create-react-app
  */
 
+const forEach = require("lodash/forEach");
 const reacticoonPaths = require("../../utils/paths");
 
 const merge = require("lodash/merge");
 
-const paths = require(require.resolve(
+const reactScriptPaths = require(require.resolve(
   reacticoonPaths.scriptVersion + "/config/paths"
 ));
 const { injectBabelPreset, injectBabelPlugin } = require("../utils/rewired");
 
 const git = require("../utils/git");
 
-const appPackageJson = require(paths.appPath + "/package.json");
+const appPackageJson = require(reactScriptPaths.appPath + "/package.json");
 
 // webpack imports
 const CircularDependencyPlugin = reacticoonPaths.requireReacticoon(
@@ -57,6 +58,9 @@ module.exports = createWebpackOverride = (
     pluginsOverrides.options,
     reacticoonOptions
   );
+
+  const __DEV__ = process.env.NODE_ENV !== "production";
+  const __PROD__ = process.env.NODE_ENV === "production";
 
   //
   // TODO: allow reacticoon user to pass its own config here, by adding in the end of Object.assign
@@ -118,6 +122,7 @@ module.exports = createWebpackOverride = (
 
   const babelPlugins = [
     isDev && require.resolve("react-hot-loader/babel"),
+
     // add decoractors
     // Ex: @debug
     // class ...
@@ -158,6 +163,37 @@ module.exports = createWebpackOverride = (
     config = injectBabelPlugin(plugin, config);
   });
 
+  function getEnvFilepath(__ENV__) {
+    const defaultCustomEnvironmentFilePath =
+      reactScriptPaths.appSrc + "/config/environment";
+    let filePath = defaultCustomEnvironmentFilePath;
+
+    try {
+      const envCustomEnvironmentFilePath =
+        defaultCustomEnvironmentFilePath + "." + __ENV__;
+      require.resolve(envCustomEnvironmentFilePath);
+      // file exists since there is no expection
+      filePath = envCustomEnvironmentFilePath;
+    } catch (e) {
+      // ignore, no custom configuration file
+    }
+
+    return filePath.replace(`${reactScriptPaths.appSrc}`, "app");
+  }
+
+  // allow to define user env using the __ENV__ variable
+  // by default we use 'local' for local development, and
+  let __ENV__ = process.env.__ENV__;
+  if (!__ENV__) {
+    if (__PROD__) {
+      __ENV__ = "production";
+    } else {
+      __ENV__ = "local";
+    }
+  }
+
+  const __ENV_FILEPATH__ = getEnvFilepath(__ENV__);
+
   //
   // Add webpack aliases
   //
@@ -168,7 +204,7 @@ module.exports = createWebpackOverride = (
     // This config allows to:
     // `import myModule from 'modules/myModule'`
     //
-    modules: paths.appSrc + "/modules",
+    modules: reactScriptPaths.appSrc + "/modules",
 
     //
     // add alias to 'src/plugins'
@@ -176,14 +212,18 @@ module.exports = createWebpackOverride = (
     // This config allows to:
     // `import myPlugin from 'plugins/myPlugin'`
     //
-    plugins: paths.appSrc + "/plugins",
+    plugins: reactScriptPaths.appSrc + "/plugins",
 
-    components: paths.appSrc + "/components",
+    components: reactScriptPaths.appSrc + "/components",
 
-    app: paths.appSrc + "/",
+    app: reactScriptPaths.appSrc + "/",
+
+    // define the app-environment alias that points to the user configuration for the current env
+    // by default it points to app/config/environment.js
+    "app-environment": __ENV_FILEPATH__,
 
     // TODO: remove temporary:
-    reacticoon: paths.appSrc + "/reacticoon/src",
+    reacticoon: reactScriptPaths.appSrc + "/reacticoon/src",
 
     ...options.webpackAliases
   };
@@ -200,12 +240,27 @@ module.exports = createWebpackOverride = (
   // Accessible on the app via `process.env`
   // Those variables can be retrieved via `reacticoon/environment`
   //
+
+  // only add env variables that begin with 'REACTICOON_APP__'.
+  // Any other variables except NODE_ENV will be ignored to avoid accidentally exposing a private
+  // key on the machine that could have the same name. Changing any environment variables will
+  // require you to restart the development server if it is running.
+  const processEnvReacticoonVars = {};
+  forEach(process.env, (value, varName) => {
+    if (varName.startsWith("REACTICOON_APP__")) {
+      const varNameSmall = varName.replace("REACTICOON_APP__", "");
+      processEnvReacticoonVars[varNameSmall] = value;
+    }
+  });
+
   const envVars = {
+    ...processEnvReacticoonVars,
+
     //
     // Some vars about the environment
     //
-    __DEV__: process.env.NODE_ENV !== "production",
-    __PROD__: process.env.NODE_ENV === "production",
+    __DEV__,
+    __PROD__,
 
     //
     // retrieve the current app version from the package.json file
@@ -217,6 +272,10 @@ module.exports = createWebpackOverride = (
     __REACTICOON_GITHUB_ORGANISATION_URL__: "https://github.com/reacticoon",
 
     __REACTICOON_REPOSITORY_URL__: "https://github.com/reacticoon/reacticoon",
+
+    __ENV__,
+
+    __ENV_FILEPATH__,
 
     ...options.env
   };
@@ -242,16 +301,16 @@ module.exports = createWebpackOverride = (
   // transform env for webpack.
   // We need to stringify the env values
   // https://stackoverflow.com/questions/28145397/injecting-variables-into-webpack
-  const finalVars = {};
+  const finalEnvVars = {};
   Object.keys(envVars).forEach(function(key) {
-    finalVars[key] = JSON.stringify(envVars[key]);
+    finalEnvVars[key] = JSON.stringify(envVars[key]);
   });
 
   // TODO: better way
   const proccessEnvIndex = isDev ? 3 : 2;
   config.plugins[proccessEnvIndex].definitions["process.env"] = {
     ...config.plugins[proccessEnvIndex].definitions["process.env"],
-    ...finalVars
+    ...finalEnvVars
   };
 
   // webpack crash if there is null plugins
@@ -306,7 +365,7 @@ module.exports = createWebpackOverride = (
   //
   // the "node_modules" makes webpack to not find the app node_modules such as react
 
-  config.resolve.modules = [paths.appNodeModules, "node_modules"];
+  config.resolve.modules = [reactScriptPaths.appNodeModules, "node_modules"];
 
   //
   //
