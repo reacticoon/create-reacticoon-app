@@ -5,16 +5,14 @@
 // https://github.com/webpack-contrib/sass-loader
 // TODO: production configuration
 
-const paths = require("../../../utils/paths");
-
 const fileLoader = function(conf) {
   return conf && conf.loader && conf.loader.indexOf("/file-loader/") !== -1;
 };
 
-function rewireSass(config, env) {
+function rewireSass(config, env, { paths }) {
   // .scss to file-loader exclude array
   // file-loader is in module->rules[]->oneOf[]
-  const rulesOneOf = config.module.rules[1].oneOf
+  const rulesOneOf = config.module.rules[1].oneOf;
   const fileLoaderConfig = rulesOneOf.find(fileLoader);
 
   fileLoaderConfig.exclude.push(/\.scss$/);
@@ -50,8 +48,6 @@ function rewireSass(config, env) {
       }
     ]
   });
-
-  return config;
 }
 
 module.exports = rewireSass;

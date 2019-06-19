@@ -43,18 +43,6 @@ const injectBabelPlugin = function(pluginName, config) {
   return config;
 };
 
-const compose = function(...funcs) {
-  if (funcs.length === 0) {
-    return config => config;
-  }
-
-  if (funcs.length === 1) {
-    return funcs[0];
-  }
-
-  return funcs.reduce((a, b) => (config, env) => a(b(config, env), env));
-};
-
 //
 // Utility that add a babel preset to the babel-loader webpack config
 // inspired by injectBabelPlugin (https://sourcegraph.com/github.com/timarney/react-app-rewired/-/blob/packages/react-app-rewired/index.js#L30)

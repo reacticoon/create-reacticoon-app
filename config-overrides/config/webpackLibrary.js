@@ -8,7 +8,7 @@
 const reacticoonPaths = require("../../utils/paths");
 const find = require("lodash/find");
 
-const webpack = reacticoonPaths.requireApp('webpack');
+const webpack = reacticoonPaths.requireApp("webpack");
 
 const paths = require(require.resolve(
   reacticoonPaths.scriptVersion + "/config/paths"
@@ -298,10 +298,13 @@ module.exports = createWebpackLibraryOverride = (
     return rule;
   });
 
+  const libraryDependencies = appPackageJson.dependencies;
+
   // CRL: added externals block for library
   config.externals = {
     react: "react",
-    "react-dom": "react-dom"
+    "react-dom": "react-dom",
+    ...libraryDependencies
   };
 
   // remove plugin app
@@ -315,8 +318,6 @@ module.exports = createWebpackLibraryOverride = (
     // new BundleAnalyzerPlugin({
     //   analyzerMode: "static"
     // }),
-    
-
     // new webpack.optimize.CommonsChunkPlugin({
     //   name: "node-static",
     //   filename: "static.js",
