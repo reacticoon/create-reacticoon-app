@@ -90,7 +90,6 @@ const devServer =
     configFunction(proxy, allowedHost));
 
 const jest = override.jest || (config => config);
-
 // normalized overrides functions
 module.exports = {
   webpack,

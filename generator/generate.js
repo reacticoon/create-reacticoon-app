@@ -18,9 +18,13 @@ function loadGenerator(generatorData) {
   }
   const path = generatorData.resolve;
   try {
-    return require(path);
+    const generator = require(path);
+    // we put it in cache
+    generatorData.generator = generator;
+    return generator;
   } catch (e) {
-    console.error(`Could not find Generators module on path '${path}'`);
+    // This should not happen. We exit so the user can see the error.
+    console.error(`Could not find Generator on path '${path}'`);
     console.error(e);
     process.exit();
   }
@@ -45,7 +49,7 @@ function main(argv) {
   if (!found) {
     console.error(`Could not find template ${templateName}.`);
     console.log(getTemplateListStr(rootGenerators));
-    process.exit()
+    process.exit();
   }
 }
 
@@ -67,8 +71,10 @@ function runTemplate(rootGenerator, templateName, generatorArgs) {
   // TODO: template is required(), handle with string path
 
   if (!template) {
-    console.error(`Invalid templateName '${templateName}'. Template not found.`);
-    process.exit()
+    console.error(
+      `Invalid templateName '${templateName}'. Template not found.`
+    );
+    process.exit();
   }
 
   const data = {
