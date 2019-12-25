@@ -117,6 +117,25 @@ const modulePath = path.join(
 
 const paths = require(modulePath + "/config/paths");
 
+//
+//
+//
+
+const moduleAlias = require("module-alias");
+
+//
+// Register alias
+//
+
+moduleAlias.addAliases({
+  // add alias for our cli plugins, to easily find create-reacticoon-app
+  "create-reacticoon-app": createReacticoonApp
+});
+
+//
+//
+//
+
 const finalPaths = Object.assign(
   {
     projectDir,

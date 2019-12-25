@@ -44,6 +44,7 @@
     "jscodeshift": "^0.7.0",
     "minimist": "1.2.0",
     "mkdirp": "^0.5.1",
+    "module-alias": "^2.2.2",
     "node-sass": "4.13.0",
     "program": "1.0.0",
     "puppeteer": "^1.15.0",
