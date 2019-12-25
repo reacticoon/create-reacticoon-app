@@ -97,7 +97,10 @@ module.exports = createWebpackOverride = (
     `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-plugin-example`,
     `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-plugin-logger`,
     `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-plugin-sentry`,
-    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-validation`
+    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-validation`,
+    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-dev-plugin`,
+    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-mock-api-plugin`,
+    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-testing-plugin`
   ];
 
   const includePaths = [
