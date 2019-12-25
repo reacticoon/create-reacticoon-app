@@ -66,6 +66,41 @@ try {
   process.exit();
 }
 
+let reacticoonCliPluginsDir = null;
+try {
+  reacticoonCliPluginsDir = path.resolve(
+    `${createReacticoonApp}/reacticoon-cli-plugins`
+  );
+} catch (e) {
+  console.info(`Could not find reacticoon-cli-plugins.`); // TODO: tutorial to install reacticoon-plugins
+  console.error(e);
+  process.exit();
+}
+
+// TODO: automatic discover
+const reacticoonPluginsList = [
+  `${reacticoonPluginsDir}/reacticoon-flash-messages`,
+  `${reacticoonPluginsDir}/reacticoon-form`,
+  `${reacticoonPluginsDir}/reacticoon-hibp`,
+  `${reacticoonPluginsDir}/reacticoon-history`,
+  `${reacticoonPluginsDir}/reacticoon-material-ui`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-example`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-logger`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-sentry`,
+  `${reacticoonPluginsDir}/reacticoon-validation`,
+  `${reacticoonPluginsDir}/reacticoon-dev-plugin`,
+  `${reacticoonPluginsDir}/reacticoon-mock-api-plugin`,
+  `${reacticoonPluginsDir}/reacticoon-testing-plugin`,
+  `${reacticoonPluginsDir}/reacticoon-plugins-marketplace-plugin`
+];
+
+// TODO: automatic discover
+const reacticoonCliPluginsList = [
+  `${reacticoonCliPluginsDir}/reacticoon-cli-plugin-dev`,
+  `${reacticoonCliPluginsDir}/reacticoon-cli-plugin-mock-api`,
+  `${reacticoonCliPluginsDir}/reacticoon-cli-plugin-test`
+];
+
 const appNodeModules = `${projectDir}/node_modules/`;
 
 const scriptVersion = createReacticoonAppReactScripts || "react-scripts";
@@ -85,9 +120,11 @@ const paths = require(modulePath + "/config/paths");
 const finalPaths = Object.assign(
   {
     projectDir,
+    projectConfiguration: `${projectDir}/config/reacticoon.json`,
     projectSrc: projectDir + "/src",
     libDir: projectDir + "/lib",
     createReacticoonApp,
+
     appNodeModules,
     appLibIndexJs: projectDir + "/src/index.js",
 
@@ -99,6 +136,10 @@ const finalPaths = Object.assign(
     reacticoonNodeModules,
 
     reacticoonPluginsDir,
+    reacticoonPluginsList,
+
+    reacticoonCliPluginsDir,
+    reacticoonCliPluginsList,
 
     //
     //

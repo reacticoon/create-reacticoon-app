@@ -86,22 +86,7 @@ module.exports = createWebpackOverride = (
   //
   //
   //
-
-  // TODO: automatic discover
-  const reacticoonPluginsList = [
-    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-flash-messages`,
-    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-form`,
-    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-hibp`,
-    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-history`,
-    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-material-ui`,
-    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-plugin-example`,
-    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-plugin-logger`,
-    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-plugin-sentry`,
-    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-validation`,
-    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-dev-plugin`,
-    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-mock-api-plugin`,
-    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-testing-plugin`
-  ];
+  const reacticoonPluginsList = reacticoonPaths.reacticoonPluginsList;
 
   const includePaths = [
     reacticoonPaths.appSrc,

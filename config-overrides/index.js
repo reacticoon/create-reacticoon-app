@@ -1,6 +1,7 @@
 const isFunction = require("lodash/isFunction");
 const paths = require("../utils/paths");
-const scriptName = process.env.npm_lifecycle_event;
+
+const scriptName = process.env.scriptName;
 
 const IS_DEV = scriptName === "start";
 const IS_BUILD = scriptName === "build";

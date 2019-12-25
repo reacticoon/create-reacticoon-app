@@ -3,9 +3,12 @@ const slash = require(`slash`);
 const path = require(`path`);
 const isString = require("lodash/isString");
 const merge = require("lodash/merge");
+const find = require("lodash/find");
 const endsWith = require("lodash/endsWith");
 const existsSync = require(`fs-exists-cached`).sync;
 const getReacticoonConfig = require("../getReacticoonConfig");
+const paths = require("../../../utils/paths");
+const { error, log } = require("../../../cli-utils");
 
 function createPluginData(plugin, resolvedPath) {
   return {
@@ -94,39 +97,54 @@ function resolvePlugin(pluginName) {
   // Only find plugins when we're not given an absolute path
   if (!existsSync(pluginName)) {
     // Find the plugin in the local plugins folder
-    const resolvedPath = slash(path.resolve(`./plugins/${pluginName}`));
+    const testsPaths = [
+      `${paths.projectDir}/plugins/${pluginName}`,
+      `${paths.reacticoonCliPluginsDir}/${pluginName}`,
+      `${paths.appNodeModules}/${pluginName}`
+    ];
 
-    if (existsSync(resolvedPath)) {
-      if (!existsSync(`${resolvedPath}/package.json`)) {
-        // Make package.json a requirement for local plugins too
-        throw new Error(`Plugin ${pluginName} requires a package.json file`);
-      }
+    let resolvedPath = find(testsPaths, path => {
+      return existsSync(path);
+    });
 
-      const packageJSON = JSON.parse(
-        fs.readFileSync(`${resolvedPath}/package.json`, `utf-8`)
-      );
-
-      if (!existsSync(`${resolvedPath}/index.js`)) {
-        throw new Error(`Plugin ${pluginName} requires an index.js file`);
-      }
-
-      const plugin = require(resolvedPath);
-
-      if (!plugin.__IS_REACTICOON_PLUGIN__) {
-        throw new Error(
-          `Plugin ${pluginName} index.js does not export a reacticoon plugin. Use createReacticoonPlugin.`
-        );
-      }
-
-      return {
-        resolve: resolvedPath,
-        name: packageJSON.name || pluginName,
-        id: `Plugin ${packageJSON.name || pluginName}`,
-        version:
-          packageJSON.version || createFileContentHash(resolvedPath, `**`),
-        ...createPluginData(plugin, resolvedPath)
-      };
+    if (!resolvedPath) {
+      error(`Could not find plugin ${pluginName} directory`);
+      process.exit();
     }
+
+    resolvedPath = slash(path.resolve(resolvedPath));
+
+    if (!existsSync(`${resolvedPath}/package.json`)) {
+      // Make package.json a requirement for local plugins too
+      error(`Plugin ${pluginName} requires a package.json file`);
+      process.exit();
+    }
+
+    const packageJSON = JSON.parse(
+      fs.readFileSync(`${resolvedPath}/package.json`, `utf-8`)
+    );
+
+    if (!existsSync(`${resolvedPath}/index.js`)) {
+      error(`Plugin ${pluginName} requires an index.js file`);
+      process.exit();
+    }
+
+    const plugin = require(resolvedPath);
+
+    if (!plugin.__IS_REACTICOON_PLUGIN__) {
+      error(
+        `Plugin ${pluginName} index.js does not export a reacticoon plugin. Use createReacticoonPlugin.`
+      );
+      process.exit();
+    }
+
+    return {
+      resolve: resolvedPath,
+      name: packageJSON.name || pluginName,
+      id: `Plugin ${packageJSON.name || pluginName}`,
+      version: packageJSON.version || createFileContentHash(resolvedPath, `**`),
+      ...createPluginData(plugin, resolvedPath)
+    };
   }
 
   /**

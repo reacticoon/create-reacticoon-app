@@ -1,6 +1,6 @@
 const trim = require("lodash/trim");
 const exec = require("child_process").exec;
-const deasync = require("deasync");
+const { execSync } = require('child_process')
 
 function runCommand(command) {
   exec(command);
@@ -20,7 +20,7 @@ async function getString(command, callback) {
 const commandline = {
   get: getString,
   run: runCommand,
-  getSync: deasync(getString)
+  getSync: command => execSync(command)
 };
 
 module.exports = commandline;
