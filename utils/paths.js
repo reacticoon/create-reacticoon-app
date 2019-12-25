@@ -1,13 +1,14 @@
 var path = require("path");
 var fs = require("fs");
 
-//try to detect if user is using a custom scripts version
-var custom_scripts = false;
-const cs_index = process.argv.indexOf("--scripts-version");
-
-if (cs_index > -1 && cs_index + 1 <= process.argv.length) {
-  custom_scripts = process.argv[cs_index + 1];
-}
+// We put this here since this file is imported from almost everywhere.
+// TODO: maybe there is a better place to put it.
+console.json = obj => console.log(JSON.stringify(obj, null, 2));
+console.jsonDie = obj => {
+  console.json(obj);
+  console.trace();
+  process.exit();
+};
 
 //Allow custom overrides package location
 const projectDir = path.resolve(fs.realpathSync(process.cwd()));
@@ -19,11 +20,57 @@ if (co_index > -1 && co_index + 1 <= process.argv.length) {
   process.argv.splice(co_index, 2);
 }
 
+//
+//
+//
+
+const createReacticoonApp = path.resolve(__dirname, "../");
+
+const createReacticoonAppNodeModules = path.resolve(
+  createReacticoonApp + "/node_modules"
+);
+let createReacticoonAppReactScripts = null;
+try {
+  createReacticoonAppReactScripts = path.resolve(
+    `${createReacticoonAppNodeModules}/react-scripts`
+  );
+} catch (e) {
+  // TODO: tutorial to install create-reacticoon-app node_modules
+  console.info("react-scripts are not installed.");
+  console.error(e);
+  process.exit();
+}
+
+//
+//
+//
+let reacticoonDir = null;
+try {
+  // TODO: remove after tests, for now we put reacticoon on project src
+  reacticoonDir = path.resolve(`${createReacticoonApp}/reacticoon`);
+} catch (e) {
+  console.info(`Could not find reacticoon.`); // TODO: tutorial to install reacticoon
+  console.error(e);
+  process.exit();
+}
+const reacticoonNodeModules = path.join(reacticoonDir, "node_modules");
+
+let reacticoonPluginsDir = null;
+try {
+  reacticoonPluginsDir = path.resolve(
+    `${createReacticoonApp}/reacticoon-plugins`
+  );
+} catch (e) {
+  console.info(`Could not find reacticoon-plugins.`); // TODO: tutorial to install reacticoon-plugins
+  console.error(e);
+  process.exit();
+}
+
 const appNodeModules = `${projectDir}/node_modules/`;
 
-const scriptVersion = custom_scripts || "react-scripts";
+const scriptVersion = createReacticoonAppReactScripts || "react-scripts";
 const modulePath = path.join(
-  require.resolve(`${appNodeModules}/${scriptVersion}/package.json`),
+  require.resolve(`${scriptVersion}/package.json`),
   ".."
 );
 
@@ -35,9 +82,7 @@ const modulePath = path.join(
 
 const paths = require(modulePath + "/config/paths");
 
-const createReacticoonApp = path.resolve(__dirname, "../");
-
-module.exports = Object.assign(
+const finalPaths = Object.assign(
   {
     projectDir,
     projectSrc: projectDir + "/src",
@@ -45,11 +90,24 @@ module.exports = Object.assign(
     createReacticoonApp,
     appNodeModules,
     appLibIndexJs: projectDir + "/src/index.js",
+
+    //
+    //
+    //
+    reacticoonDir,
+    reacticoonSrc: `${reacticoonDir}/src`,
+    reacticoonNodeModules,
+
+    reacticoonPluginsDir,
+
+    //
+    //
+    //
+
     // TODO: rename to reactScripts
     scriptVersion: modulePath,
     // rewiredScript,
     configOverrides: config_overrides,
-    customScriptsIndex: custom_scripts ? cs_index : -1,
 
     requireApp: path => {
       return require(appNodeModules + "/" + path);
@@ -81,3 +139,8 @@ module.exports = Object.assign(
   },
   paths
 );
+
+// console.log(finalPaths);
+// die
+
+module.exports = finalPaths;

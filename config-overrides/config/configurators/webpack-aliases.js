@@ -1,5 +1,5 @@
 function webpackAliasesConfigurator(config, env, options) {
-  const reactScriptPaths = env.reactScriptPaths;
+  const reacticoonPaths = env.reacticoonPaths;
 
   //
   // Add webpack aliases
@@ -11,7 +11,7 @@ function webpackAliasesConfigurator(config, env, options) {
     // This config allows to:
     // `import myModule from 'modules/myModule'`
     //
-    modules: reactScriptPaths.appSrc + "/modules",
+    modules: reacticoonPaths.appSrc + "/modules",
 
     //
     // add alias to 'src/plugins'
@@ -19,13 +19,13 @@ function webpackAliasesConfigurator(config, env, options) {
     // This config allows to:
     // `import myPlugin from 'plugins/myPlugin'`
     //
-    plugins: reactScriptPaths.appSrc + "/plugins",
+    plugins: reacticoonPaths.appSrc + "/plugins",
 
-    components: reactScriptPaths.appSrc + "/components",
+    components: reacticoonPaths.appSrc + "/components",
 
-    views: reactScriptPaths.appSrc + "/views",
+    views: reacticoonPaths.appSrc + "/views",
 
-    app: reactScriptPaths.appSrc + "/",
+    app: reacticoonPaths.appSrc + "/",
 
     // define the app-environment alias that points to the user configuration for the current env
     // by default it points to app/config/environment.js
@@ -33,7 +33,11 @@ function webpackAliasesConfigurator(config, env, options) {
 
     // TODO: remove, temporary to use reacticoon from app/src/reacticoon since we does not compile it to
     // node_modules yet
-    reacticoon: reactScriptPaths.appSrc + "/reacticoon/src",
+    reacticoon: reacticoonPaths.reacticoonDir + "/src",
+
+    // TODO: remove, temporary to use reacticoon from app/src/reacticoon since we does not compile it to
+    // node_modules yet
+    "reacticoon-plugins": reacticoonPaths.reacticoonPluginsDir,
 
     // add user option 'webpackAliases'. Allows the user to add webpackAliases on its
     // config/overrides.js

@@ -83,10 +83,41 @@ module.exports = createWebpackOverride = (
 
   const __ENV_FILEPATH__ = getEnvFilepath(__ENV__);
 
+  //
+  //
+  //
+
+  // TODO: automatic discover
+  const reacticoonPluginsList = [
+    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-flash-messages`,
+    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-form`,
+    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-hibp`,
+    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-history`,
+    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-material-ui`,
+    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-plugin-example`,
+    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-plugin-logger`,
+    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-plugin-sentry`,
+    `${reacticoonPaths.createReacticoonApp}/reacticoon-plugins/reacticoon-validation`
+  ];
+
+  const includePaths = [
+    reacticoonPaths.appSrc,
+    reacticoonPaths.reacticoonSrc
+  ].concat(
+    reacticoonPluginsList.map(reacticoonPlugin => {
+      return reacticoonPlugin + "/src";
+    })
+  );
+
+  //
+  //
+  //
+
   // add some data to our env
   const env = {
     isDev,
-    reactScriptPaths,
+    // reactScriptPaths,
+    includePaths,
     reacticoonPaths,
     appPackageJson,
     __ENV__,
@@ -106,12 +137,12 @@ module.exports = createWebpackOverride = (
 
   const configurators = [
     require("./configurators/auto-import"),
-    require("./configurators/babel-presets"),
     require("./configurators/babel-plugins"),
     require("./configurators/webpack-aliases"),
     require("./configurators/webpack-plugins"),
     require("./configurators/env-vars"),
-    require("./configurators/rewires")
+    require("./configurators/rewires"),
+    require("./configurators/moduleScopePlugin")
   ];
 
   configurators.forEach(configurator => {
@@ -130,7 +161,20 @@ module.exports = createWebpackOverride = (
   // ],
   //
   // the "node_modules" makes webpack to not find the app node_modules such as react
-  config.resolve.modules = [reactScriptPaths.appNodeModules, "node_modules"];
+
+  //
+  //
+  //
+  const reacticoonPluginsNodeModules = reacticoonPluginsList.map(
+    reacticoonPlugin => reacticoonPlugin + "/node_modules"
+  );
+
+  config.resolve.modules = [
+    reacticoonPaths.reacticoonNodeModules,
+    reactScriptPaths.appNodeModules,
+    "node_modules",
+    ...reacticoonPluginsNodeModules
+  ];
 
   //
   //
@@ -149,8 +193,7 @@ module.exports = createWebpackOverride = (
   // bug: worker-loader import webpack/.. but does not find it
   // config = rewireWorker(config, env)
 
-  // console.log(JSON.stringify(config, null, 2))
-  // die
+  // console.jsonDie(config);
 
   //
   // debug config
@@ -178,5 +221,5 @@ module.exports = createWebpackOverride = (
   }
 
   // do stuff with the webpack config...
-  return config;
+  return () => config;
 };

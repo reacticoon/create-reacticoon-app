@@ -106,7 +106,7 @@ function CommandRoute(app, context) {
     if (!runner) {
       res.status(404).send({
         error: true,
-        description: `command not found ${req.body.command}`
+        description: `runner not found ${req.body.command}`
       });
       return;
     }
@@ -124,7 +124,7 @@ function CommandRoute(app, context) {
           2
         )}`
       );
-      runner(req, res);
+      runner(req, res)
     } catch (e) {
       console.error(e);
       res.status(400).send({

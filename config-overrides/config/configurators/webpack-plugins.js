@@ -1,3 +1,5 @@
+const { injectWebpackPlugin } = require("../../utils/rewired");
+
 function webpackPluginsConfigurator(config, env, options) {
   //
   // add our webpack plugins
@@ -38,8 +40,10 @@ function webpackPluginsConfigurator(config, env, options) {
     })
   ];
 
-  // TODO:
-  // config.plugins = config.plugins.concat(webpackPlugins);
+  webpackPlugins.forEach(plugin => {
+    // TODO: debug
+    // config = injectWebpackPlugin(plugin)(config);
+  });
 }
 
 module.exports = webpackPluginsConfigurator;

@@ -1,4 +1,5 @@
 // inspired by https://sourcegraph.com/github.com/timarney/react-app-rewired/-/blob/packages/react-app-rewired/scripts/start.js
+const isNil = require("lodash/isNil");
 
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
@@ -7,12 +8,19 @@ ReacticoonChecks.run(() => {
   const paths = require("../utils/paths");
   const overrides = require("../config-overrides");
 
-  const webpackConfigPath = paths.scriptVersion + "/config/webpack.config.dev";
+  const webpackConfigPath = `${paths.scriptVersion}/config/webpack.config.js`;
+
   const devServerConfigPath =
     paths.scriptVersion + "/config/webpackDevServer.config.js";
 
   // load original configs
   const webpackConfig = require(webpackConfigPath);
+
+  if (isNil(webpackConfig)) {
+    console.error(`Could not found webpackConfig on ${webpackConfigPath}`);
+    process.exit();
+  }
+
   const devServerConfig = require(devServerConfigPath);
 
   // debug
@@ -21,7 +29,7 @@ ReacticoonChecks.run(() => {
 
   // override config in memory
   require.cache[require.resolve(webpackConfigPath)].exports = overrides.webpack(
-    webpackConfig,
+    webpackConfig("development"),
     process.env.NODE_ENV
   );
 

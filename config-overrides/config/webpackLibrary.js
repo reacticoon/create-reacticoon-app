@@ -99,20 +99,18 @@ module.exports = createWebpackLibraryOverride = (
   //
 
   const babelPlugins = [
+    // Compile export default to ES2015
+    require.resolve("@babel/plugin-proposal-export-default-from"),
+
     // add decoractors
-    // Ex: @debug
-    // class ...
-    require.resolve("babel-plugin-transform-decorators-legacy"),
-    // add trailing function commas
-    // Ex: this.myFunc(
-    //  a,
-    //  b,
-    //  c, <--
-    // )
-    require.resolve("babel-plugin-syntax-trailing-function-commas"),
-    // transform the eventual for-of
-    // for of is not supported on old browsers
-    require.resolve("babel-plugin-transform-es2015-for-of"),
+    // require.resolve("babel-plugin-transform-decorators-legacy"),
+    // Compile class and object decorators to ES5
+    [require.resolve("@babel/plugin-proposal-decorators"), { legacy: true }],
+    // This plugin transforms static class properties as well as properties declared with the property initializer syntax
+    [
+      require.resolve("@babel/plugin-proposal-class-properties"),
+      { loose: true }
+    ],
 
     // https://github.com/lodash/babel-plugin-lodash
     [
@@ -121,14 +119,37 @@ module.exports = createWebpackLibraryOverride = (
         // This plugin is moving in a lib agnostic direction, to become a generic cherry-pick plugin
         // so babel-plugin-lodash is not limited to lodash. It can be used with recompose as well.
         // see https://github.com/acdlite/recompose
-        // TODO: add reacticoon config to allow add more
         id: ["lodash", "recompose"]
       }
     ]
+    // // add trailing function commas
+    // // Ex: this.myFunc(
+    // //  a,
+    // //  b,
+    // //  c, <--
+    // // )
+    // require.resolve("babel-plugin-syntax-trailing-function-commas"),
+    // // transform the eventual for-of
+    // // for of is not supported on old browsers
+    // require.resolve("babel-plugin-transform-es2015-for-of"),
+
+    // // https://github.com/lodash/babel-plugin-lodash
+    // [
+    //   require.resolve("babel-plugin-lodash"),
+    //   {
+    //     // This plugin is moving in a lib agnostic direction, to become a generic cherry-pick plugin
+    //     // so babel-plugin-lodash is not limited to lodash. It can be used with recompose as well.
+    //     // see https://github.com/acdlite/recompose
+    //     // TODO: add reacticoon config to allow add more
+    //     id: ["lodash", "recompose"]
+    //   }
+    // ]
     // TODO: add
     // - react-app-rewire-poyfills
     // - react-app-rewire-eslint
   ];
+
+  console.jsonDie(babelPlugins);
 
   // inject the plugins
   babelPlugins.reverse().forEach(plugin => {

@@ -1,3 +1,4 @@
+const { getLoader, injectLoaderOneOf } = require("../../utils/rewired");
 //
 // `yarn add style-loader css-loader sass-loader node-sass`
 //
@@ -12,12 +13,9 @@ const fileLoader = function(conf) {
 function rewireSass(config, env, { paths }) {
   // .scss to file-loader exclude array
   // file-loader is in module->rules[]->oneOf[]
-  const rulesOneOf = config.module.rules[1].oneOf;
-  const fileLoaderConfig = rulesOneOf.find(fileLoader);
+  getLoader(config, fileLoader).exclude.push(/\.scss$/);
 
-  fileLoaderConfig.exclude.push(/\.scss$/);
-
-  rulesOneOf.push({
+  const loader = {
     test: /\.scss$/,
     use: [
       paths.resolveReacticoon("style-loader"), // creates style nodes from JS strings
@@ -47,7 +45,9 @@ function rewireSass(config, env, { paths }) {
         }
       }
     ]
-  });
+  };
+
+  injectLoaderOneOf(config, loader);
 }
 
 module.exports = rewireSass;

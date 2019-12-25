@@ -1,5 +1,6 @@
 const forEach = require("lodash/forEach");
 const git = require("../../utils/git");
+const paths = require("../../../utils/paths");
 
 function envVarsConfigurator(config, env, options) {
   const __DEV__ = process.env.NODE_ENV !== "production";
@@ -46,6 +47,8 @@ function envVarsConfigurator(config, env, options) {
     __ENV__: env.__ENV__,
 
     __ENV_FILEPATH__: env.__ENV_FILEPATH__,
+
+    PROJECT_SRC: paths.projectSrc,
 
     ...options.env
   };
