@@ -11,7 +11,10 @@ const officialPlugins = [
 exports.isPlugin = id => pluginRE.test(id);
 
 // TODO: temporary since we have our plugins clone on create-reacticoon-app
-exports.isOfficialLocalPlugin = id => officialPlugins.indexOf(id) !== -1;
+exports.isOfficialLocalPlugin = id =>
+  exports.isPlugin(id) &&
+  (officialPlugins.includes(id) ||
+    officialPlugins.includes(`reacticoon-cli-plugin-${id}`));
 
 exports.isOfficialPlugin = id =>
   (exports.isPlugin(id) && officialRE.test(id)) ||
@@ -20,7 +23,10 @@ exports.isOfficialPlugin = id =>
 exports.toShortPluginId = id => id.replace(pluginRE, "");
 
 exports.resolvePluginId = id => {
-  if (officialPlugins.includes(id) || officialPlugins.includes(`reacticoon-cli-plugin-${id}`)) {
+  if (
+    officialPlugins.includes(id) ||
+    officialPlugins.includes(`reacticoon-cli-plugin-${id}`)
+  ) {
     return `reacticoon-cli-plugin-${id}`;
   }
 

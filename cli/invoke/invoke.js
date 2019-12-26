@@ -36,22 +36,18 @@ function getPkg(context) {
 }
 
 function getReacticoonConfiguration(context) {
-  const reacticoonConfigurationPath = path.resolve(
-    context,
-    "config/reacticoon.json"
-  );
-  if (!fs.existsSync(reacticoonConfigurationPath)) {
+  if (!fs.existsSync(`config/reacticoon.json`)) {
     throw new Error(`package.json not found in ${chalk.yellow(context)}`);
   }
-  const reacticoonConfiguration = fs.readJsonSync(reacticoonConfigurationPath);
+  const reacticoonConfiguration = fs.readJsonSync(`config/reacticoon.json`);
 
   return reacticoonConfiguration;
 }
 
 async function invoke(pluginName, options = {}, context = process.cwd()) {
-  // if (!(await confirmIfGitDirty(context))) {
-  //   return;
-  // }
+  if (!(await confirmIfGitDirty(context))) {
+    return;
+  }
 
   delete options._;
   const pkg = getPkg(context);

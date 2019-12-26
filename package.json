@@ -1,7 +1,21 @@
 {
   "name": "create-reacticoon-app",
+  "description": "Reacticoon cli",
   "version": "0.0.3",
   "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reacticoon/create-reacticoon-app.git",
+    "directory": "packages/@reacticoon/create-reacticoon-app"
+  },
+  "bugs": {
+    "url": "https://github.com/reacticoon/create-reacticoon-app/issues"
+  },
+  "keywords": [
+    "reacticoon",
+    "cli",
+    "create-reacticoon-app"
+  ],
   "bin": {
     "reacticoon": "./bin/reacticoon-scripts.js"
   },
@@ -9,11 +23,16 @@
     "node": ">=8.9"
   },
   "scripts": {
-    "start": "reacticoon start",
-    "build": "reacticoon build",
-    "test": "reacticoon test --env=jsdom"
+    "test": "jest --watch --verbose true"
   },
-  "peerDependencies": {},
+  "jest": {
+    "verbose": false,
+    "testPathIgnorePatterns": [
+      "<rootDir>/scripts/test.js",
+      "<rootDir>/reacticoon",
+      "<rootDir>/reacticoon-plugins"
+    ]
+  },
   "dependencies": {
     "@babel/plugin-proposal-export-default-from": "7.7.4",
     "babel-jest": "^24.9.0",
@@ -24,6 +43,7 @@
     "babel-preset-react-app": "9.1.0",
     "babel-preset-stage-1": "6.24.1",
     "body-parser": "1.19.0",
+    "boxen": "^4.2.0",
     "chalk": "3.0.0",
     "circular-dependency-plugin": "5.2.0",
     "cors": "2.8.5",
@@ -46,6 +66,7 @@
     "mkdirp": "^0.5.1",
     "module-alias": "^2.2.2",
     "node-sass": "4.13.0",
+    "ora": "^4.0.3",
     "program": "1.0.0",
     "puppeteer": "^1.15.0",
     "react-hot-loader": "4.12.18",
@@ -56,6 +77,8 @@
     "slash": "3.0.0",
     "source-map-explorer": "1.6.0",
     "style-loader": "0.21.0",
-    "worker-loader": "^2.0.0"
+    "validate-npm-package-name": "^3.0.0",
+    "worker-loader": "^2.0.0",
+    "yaml-front-matter": "^4.1.0"
   }
 }

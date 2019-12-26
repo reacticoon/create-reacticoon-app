@@ -14,14 +14,14 @@ const {
   semver,
   getPluginLink,
   toShortPluginId,
-  loadModule
+  loadModule,
+  error
 } = require("../../cli-utils");
 const paths = require("../../utils/paths.js");
 
 const isString = val => typeof val === "string";
 const isFunction = val => typeof val === "function";
 const isObject = val => val && typeof val === "object";
-const mergeArrayWithDedupe = (a, b) => Array.from(new Set([...a, ...b]));
 
 class InstallerAPI {
   /**
@@ -108,7 +108,7 @@ class InstallerAPI {
 
   get cliServiceVersion() {
     // In installer unit tests, we don't write the actual file back to the disk.
-    // So there is no cli-service module to load.
+    // So there is no create-reacticoon-app module to load.
     // In that case, just return the cli version.
     if (process.env.REACTICOON__TEST && process.env.REACTICOON__SKIP_WRITE) {
       return this.cliVersion;

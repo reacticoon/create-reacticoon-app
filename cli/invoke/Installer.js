@@ -7,6 +7,7 @@ const sortObject = require("../../utils/sortObject");
 const writeFileTree = require("../../utils/writeFileTree");
 const normalizeFilePaths = require("../../utils/normalizeFilePaths");
 const runCodemod = require("../../utils/runCodemod");
+const { loadConfiguration } = require("../../cli/configuration");
 
 const {
   semver,
@@ -16,6 +17,9 @@ const {
   matchesPluginId,
 
   error,
+  log,
+  chalk,
+
   loadModule
 } = require("../../cli-utils");
 const ConfigTransform = require("./ConfigTransform");
@@ -62,9 +66,9 @@ const defaultConfigTransforms = {
 };
 
 const reservedConfigTransforms = {
-  vue: new ConfigTransform({
+  reacticoon: new ConfigTransform({
     file: {
-      js: ["vue.config.js"]
+      js: ["reacticoon.config.js"]
     }
   })
 };
@@ -101,7 +105,8 @@ module.exports = class Generator {
     this.originalPkg = pkg;
     this.pkg = Object.assign({}, pkg);
 
-    this.reacticoonConfiguration = reacticoonConfiguration;
+    this.reacticoonConfiguration =
+      reacticoonConfiguration || loadConfiguration();
 
     if (this.plugin.isOfficialLocalPlugin) {
       this.pm = new LocalPackageManager({ context });
@@ -162,7 +167,9 @@ module.exports = class Generator {
 
     // apply generators from plugins
     for (const plugin of this.plugins) {
-      const { id, pluginName, apply, options } = plugin;
+      const { id, apply, options } = plugin;
+
+      this.addPluginToConfig(id, this.reacticoonConfiguration);
 
       const api = new InstallerAPI(id, this, options, rootOptions);
       try {
@@ -185,6 +192,26 @@ module.exports = class Generator {
     }
   }
 
+  addPluginToConfig(packageName, reacticoonConfiguration) {
+    const find = require("lodash").find;
+
+    const alreadyOnConfig = find(
+      reacticoonConfiguration.plugins,
+      plugin => plugin.resolve === packageName
+    );
+    if (!alreadyOnConfig) {
+      reacticoonConfiguration.plugins = (
+        reacticoonConfiguration.plugins || []
+      ).concat([
+        {
+          resolve: packageName,
+          // default options will be set by the plugin install script, using api.extendPluginConfiguration
+          options: {}
+        }
+      ]);
+    }
+  }
+
   async install() {
     await this.initPlugins();
 
@@ -194,7 +221,7 @@ module.exports = class Generator {
     // wait for file resolve
     await this.resolveFiles();
     this.files["package.json"] = JSON.stringify(this.pkg, null, 2) + "\n";
-    this.files["config/reacticoon.json"] =
+    this.files[`config/reacticoon.json`] =
       JSON.stringify(this.reacticoonConfiguration, null, 2) + "\n";
     // write/update file tree to disk
     await writeFileTree(this.context, this.files, initialFiles);
@@ -216,7 +243,7 @@ module.exports = class Generator {
       imports = imports instanceof Set ? Array.from(imports) : imports;
       if (imports && imports.length > 0) {
         files[file] = runCodemod(
-          require("./util/codemods/injectImports"),
+          require("../../utils/codemods/injectImports"),
           { path: file, source: files[file] },
           { imports }
         );
@@ -227,7 +254,7 @@ module.exports = class Generator {
         injections instanceof Set ? Array.from(injections) : injections;
       if (injections && injections.length > 0) {
         files[file] = runCodemod(
-          require("./util/codemods/injectOptions"),
+          require("../../utils/codemods/injectOptions"),
           { path: file, source: files[file] },
           { injections }
         );

@@ -1,27 +1,8 @@
-const fs = require("fs-extra");
 const path = require("path");
 
-const minimist = require("minimist");
 const LRU = require("lru-cache");
 
-const {
-  chalk,
-  execa,
-  semver,
-
-  hasYarn,
-  hasProjectYarn,
-
-  isOfficialPlugin,
-  resolvePluginId,
-
-  log,
-  warn
-} = require("../cli-utils");
-
-const { loadOptions } = require("../cli/options");
 const getPackageJson = require("./getPackageJson");
-const { executeCommand } = require("./executeCommand");
 
 const isTestOrDebug =
   process.env.REACTICOON_TEST || process.env.REACTICOON_DEBUG;
@@ -70,12 +51,9 @@ class LocalPackageManager {
     }
   }
 
-  async install() {
-    console.jsonDie(this.context);
-  }
+  async install() {}
 
-  async add(packageName, isDev = true) {
-  }
+  async add(packageName, isDev = true) {}
 
   async upgrade(packageName) {}
 

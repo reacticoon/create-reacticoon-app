@@ -10,8 +10,12 @@ console.jsonDie = obj => {
   process.exit();
 };
 
+const isTesting = process.env.NODE_ENV === "test";
+
 //Allow custom overrides package location
-const projectDir = path.resolve(fs.realpathSync(process.cwd()));
+const projectDir = isTesting
+  ? "" // TODO:
+  : path.resolve(fs.realpathSync(process.cwd()));
 var config_overrides = projectDir + "/config/overrides.js";
 const co_index = process.argv.indexOf("--config-overrides");
 
@@ -104,10 +108,9 @@ const reacticoonCliPluginsList = [
 const appNodeModules = `${projectDir}/node_modules/`;
 
 const scriptVersion = createReacticoonAppReactScripts || "react-scripts";
-const modulePath = path.join(
-  require.resolve(`${scriptVersion}/package.json`),
-  ".."
-);
+const modulePath = isTesting
+  ? ""
+  : path.join(require.resolve(`${scriptVersion}/package.json`), "..");
 
 // const rewiredScript =  path.join(
 // require.resolve(`${appNodeModules}/react-app-rewired/package.json`),
@@ -115,7 +118,8 @@ const modulePath = path.join(
 // '..'
 // );
 
-const paths = require(modulePath + "/config/paths");
+// TODO: isTesting
+const paths = isTesting ? {} : require(modulePath + "/config/paths");
 
 //
 //
