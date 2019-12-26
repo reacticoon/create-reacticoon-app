@@ -23,7 +23,8 @@
     "node": ">=8.9"
   },
   "scripts": {
-    "test": "jest --watch --verbose true"
+    "test": "jest",
+    "test:watch": "jest --watch --verbose true"
   },
   "jest": {
     "verbose": false,

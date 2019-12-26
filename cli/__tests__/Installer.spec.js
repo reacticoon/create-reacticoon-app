@@ -5,12 +5,7 @@ process.env.REACTICOON_CONFIG_PATH = "";
 const fs = require("fs-extra");
 const path = require("path");
 const Installer = require("../invoke/Installer");
-const { logs } = require("../../../cli-utils");
-const stringifyJS = require("../../../utils/stringifyJS");
-const {
-  getPluginConfiguration,
-  loadConfiguration
-} = require("../../../cli/configuration");
+const { loadConfiguration } = require("../../cli/configuration");
 
 fs.writeFileSync(path.resolve("/package.json"), {});
 
