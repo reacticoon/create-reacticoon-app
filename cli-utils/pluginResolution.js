@@ -5,7 +5,8 @@ const officialRE = /^@reacticoon\//;
 const officialPlugins = [
   "reacticoon-cli-plugin-dev",
   "reacticoon-cli-plugin-test",
-  "reacticoon-cli-plugin-mock-api"
+  "reacticoon-cli-plugin-mock-api",
+  "reacticoon-cli-plugin-ci"
 ];
 
 exports.isPlugin = id => pluginRE.test(id);

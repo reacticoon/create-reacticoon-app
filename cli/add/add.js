@@ -1,4 +1,4 @@
-const invoke = require("./invoke");
+const invoke = require("../invoke/invoke");
 
 const chalk = require("chalk");
 const semver = require("semver");
@@ -13,10 +13,12 @@ const {
   error,
   resolvePluginId,
   isOfficialPlugin,
-  isOfficialLocalPlugin,
-  reacticoonConfigurationPath
+  isOfficialLocalPlugin
 } = require("../../cli-utils");
+const { savePluginConfiguration } = require("../../cli/configuration");
 const confirmIfGitDirty = require("../../utils/confirmIfGitDirty");
+
+const reacticoonConfigurationPath = "config/reacticoon.json";
 
 const add = async function add(
   pluginName,
@@ -54,13 +56,6 @@ const add = async function add(
   );
   log();
 
-  log(
-    `${chalk.green("✔")} Plugin added to your configuration file ${chalk.cyan(
-      reacticoonConfigurationPath
-    )}`
-  );
-  log();
-
   let installScriptPath = `${packageName}/install`;
   if (isOfficialLocalPlugin(packageName)) {
     installScriptPath = `${paths.reacticoonCliPluginsDir}/${installScriptPath}`;
@@ -77,7 +72,16 @@ const add = async function add(
     invoke(pluginName, options, context);
   } else {
     log(`Plugin ${packageName} does not have an install script to invoke`);
+
+    savePluginConfiguration(packageName, {});
   }
+
+  log(
+    `${chalk.green("✔")} Plugin added to your configuration file ${chalk.cyan(
+      reacticoonConfigurationPath
+    )}`
+  );
+  log();
 };
 
 module.exports = (...args) => {
