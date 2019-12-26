@@ -14,7 +14,7 @@ exports.defaults = {
   packageManager: undefined,
   plugins: [
     {
-      resolve: "reacticoon-dev-cli-plugin",
+      resolve: "reacticoon-cli-plugin-dev",
       options: {}
     }
   ]

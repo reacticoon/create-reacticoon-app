@@ -58,7 +58,7 @@ test("save configurations", () => {
   saveConfiguration({
     plugins: [
       {
-        resolve: "reacticoon-dev-cli-plugin",
+        resolve: "reacticoon-cli-plugin-dev",
         options: {}
       }
     ]
@@ -67,7 +67,7 @@ test("save configurations", () => {
     packageManager: "yarn",
     plugins: [
       {
-        resolve: "reacticoon-dev-cli-plugin",
+        resolve: "reacticoon-cli-plugin-dev",
         options: {}
       }
     ]
@@ -89,7 +89,7 @@ test("save preset", () => {
     packageManager: "yarn",
     plugins: [
       {
-        resolve: "reacticoon-dev-cli-plugin",
+        resolve: "reacticoon-cli-plugin-dev",
         options: {}
       },
       {
@@ -108,7 +108,7 @@ test("save preset", () => {
     packageManager: "yarn",
     plugins: [
       {
-        resolve: "reacticoon-dev-cli-plugin",
+        resolve: "reacticoon-cli-plugin-dev",
         options: {}
       },
       {

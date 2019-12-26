@@ -1,8 +1,10 @@
 const CommandCheckup = require("../commands/CommandCheckup");
+const CommandDebugPlugins = require("../commands/CommandDebugPlugins");
 const CommandDebugPlugin = require("../commands/CommandDebugPlugin");
 const CommandAnalyzeBuild = require("../commands/CommandAnalyzeBuild");
 const CommandBundlePhobia = require("../commands/CommandBundlePhobia");
 const CommandReadFile = require("../commands/CommandReadFile");
+const CommandReadMarkdownFile = require("../commands/CommandReadMarkdownFile");
 const Filesystem = require("../../utils/Filesystem");
 
 // List the reacticoon default commands.
@@ -14,12 +16,15 @@ const Filesystem = require("../../utils/Filesystem");
 //    res.send({ result: true })
 // }
 // ```
+// TODO: lazy load commands?
 const commands = {
   CHECKUP: CommandCheckup,
-  PLUGINS: CommandDebugPlugin,
+  PLUGINS: CommandDebugPlugins,
+  PLUGIN: CommandDebugPlugin,
   ANALYZE_BUILD: CommandAnalyzeBuild,
   BUNDLE_PHOBIA: CommandBundlePhobia,
-  READ_FILE: CommandReadFile
+  READ_FILE: CommandReadFile,
+  READ_MARKDOWN_FILE: CommandReadMarkdownFile
 };
 
 const getReacticoonPluginsWithServerCommands = require("../../cli-utils/reacticoon-config/getReacticoonPluginsWithServerCommands");
@@ -124,7 +129,7 @@ function CommandRoute(app, context) {
           2
         )}`
       );
-      runner(req, res)
+      runner(req, res);
     } catch (e) {
       console.error(e);
       res.status(400).send({

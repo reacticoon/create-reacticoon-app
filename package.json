@@ -73,6 +73,7 @@
     "react-scripts": "^3.3.0",
     "sass-loader": "8.0.0",
     "semver": "7.1.1",
+    "showdown": "^1.9.1",
     "simple-git": "1.129.0",
     "slash": "3.0.0",
     "source-map-explorer": "1.6.0",

@@ -141,7 +141,7 @@ function resolvePlugin(pluginName) {
     return {
       resolve: resolvedPath,
       name: packageJSON.name || pluginName,
-      id: `Plugin ${packageJSON.name || pluginName}`,
+      id: `${packageJSON.name || pluginName}`,
       version: packageJSON.version || createFileContentHash(resolvedPath, `**`),
       ...createPluginData(plugin, resolvedPath)
     };
