@@ -72,7 +72,7 @@ const scripts = [
   { name: "test:integration", path: "../scripts" },
   // { name: "start", path: "../scripts" },
   { name: "generate", path: "../generator" },
-  { name: "checkup", path: "../checkup" },
+  // { name: "checkup", path: "../checkup" },
   { name: "debug-plugins", path: "../scripts" },
   { name: "list-commands", path: "../scripts" }
   // { name: "analyze-build", path: "../analyze/build" }
@@ -168,6 +168,18 @@ program
     // - yarn reacticoon start
     process.env.scriptName = "start";
     require("../scripts/start");
+  });
+
+program
+  .command("checkup")
+  .description("run checkups")
+  .allowUnknownOption()
+  .action(() => {
+    // trick for config-overrides/index.js, this allow to run reacticoon in different ways:
+    // - yarn start
+    // - yarn reacticoon checkup
+    process.env.scriptName = "checkup";
+    require("../checkup/checkup");
   });
 
 // TODO:

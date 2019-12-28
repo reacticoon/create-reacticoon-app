@@ -81,7 +81,7 @@ function displayResults(results) {
             symbolStr = symbol.success;
             break;
           case "WARN":
-            symbolStr = symbol.warn;
+            symbolStr = symbol.warning;
             break;
           case "ERROR":
             symbolStr = symbol.error;
