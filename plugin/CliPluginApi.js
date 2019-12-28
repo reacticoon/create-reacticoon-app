@@ -1,6 +1,6 @@
 const paths = require("../utils/paths");
 const fs = require("fs");
-const Filesystem = require("../utils/Filesystem")
+const Filesystem = require("../utils/Filesystem");
 const {
   execSimpleSync,
   execSimpleSyncOnDirectory,
@@ -13,6 +13,9 @@ const get = require("lodash/get");
 const {
   getPluginConfiguration
 } = require("create-reacticoon-app/cli/configuration");
+const {
+  sendEventToCurrentClient
+} = require("create-reacticoon-app/server/modules/sse");
 
 /**
  * class given to our plugins to provides utility methods.
@@ -74,7 +77,7 @@ class CliPluginApi {
   }
 
   directoryExists(path) {
-    return Filesystem.directoryExists(path)
+    return Filesystem.directoryExists(path);
   }
 
   spawn() {
@@ -93,6 +96,10 @@ class CliPluginApi {
 
   error() {
     return error.apply(null, arguments);
+  }
+
+  sendEventToCurrentSseClient(eventName, payload) {
+    return sendEventToCurrentClient(eventName, payload);
   }
 }
 

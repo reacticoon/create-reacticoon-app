@@ -5,6 +5,7 @@ const CommandAnalyzeBuild = require("../commands/CommandAnalyzeBuild");
 const CommandBundlePhobia = require("../commands/CommandBundlePhobia");
 const CommandReadFile = require("../commands/CommandReadFile");
 const CommandReadMarkdownFile = require("../commands/CommandReadMarkdownFile");
+const CommandReacticoonConfiguration = require("../commands/CommandReacticoonConfiguration");
 const Filesystem = require("../../utils/Filesystem");
 const CliPluginApi = require("../../plugin/CliPluginApi");
 
@@ -28,7 +29,8 @@ function loadCommands() {
     ANALYZE_BUILD: CommandAnalyzeBuild,
     BUNDLE_PHOBIA: CommandBundlePhobia,
     READ_FILE: CommandReadFile,
-    READ_MARKDOWN_FILE: CommandReadMarkdownFile
+    READ_MARKDOWN_FILE: CommandReadMarkdownFile,
+    "REACTICOON::CONFIGURATION": CommandReacticoonConfiguration
   };
   // add plugin commands to our commands map
   getPluginsServerCommands().map(serverCommand => {
@@ -90,14 +92,18 @@ function loadServerCommand(commandData) {
  */
 function CommandRoute(app, context) {
   app.post("/commands", (req, res) => {
-    console.log(req.body);
+    // ignore this command that has too much data
+    const ignoreLogCommands = ["REACTICOON::CONFIGURATION"];
+    if (!ignoreLogCommands.includes(req.body.command)) {
+      console.log(req.body);
+    }
 
     // retrieve the command name on the body
     const commandName = req.body.command;
 
     // we load commands on each api call for now to facilitate development.
     // TODO: make optional if we are in web dev mode or cli dev mode.
-    loadCommands()
+    loadCommands();
 
     // retrieve the command configuration
     const command = commands[commandName];
@@ -137,7 +143,9 @@ function CommandRoute(app, context) {
     try {
       console.log(
         `\n\n[command] ${req.body.command}\n${JSON.stringify(
-          req.body,
+          ignoreLogCommands.includes(req.body.command)
+            ? { dev: 'ignored' }
+            : req.body,
           null,
           2
         )}`

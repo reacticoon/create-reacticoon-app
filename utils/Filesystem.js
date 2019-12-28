@@ -45,6 +45,23 @@ var saveFile = function saveFile(filepath, content) {
   });
 };
 
+//
+//
+//
+
+// TODO: unique id per project
+const cacheDir = `/tmp/create-reacticoon-app`;
+mkdirp(cacheDir);
+
+const getCacheFile = filepath => {
+  return fs.readFileSync(`${cacheDir}/${filepath}`, "utf8");
+};
+
+const saveCacheFile = (filepath, content) => {
+  // TODO: unique id per project
+  return fs.writeFileSync(`${cacheDir}/${filepath}`, content);
+};
+
 var readFileSync = function readFileSync(filepath) {
   return fs.readFileSync(filepath, "utf8");
 };
@@ -55,6 +72,8 @@ var directoryExists = function directoryExists(path) {
 
 module.exports = {
   saveFile: saveFile,
+  saveCacheFile: saveCacheFile,
+  getCacheFile: getCacheFile,
   readFileSync: readFileSync,
   directoryExists: directoryExists,
   getTree: getTree
