@@ -6,6 +6,7 @@ const CommandBundlePhobia = require("../commands/CommandBundlePhobia");
 const CommandReadFile = require("../commands/CommandReadFile");
 const CommandReadMarkdownFile = require("../commands/CommandReadMarkdownFile");
 const Filesystem = require("../../utils/Filesystem");
+const CliPluginApi = require("../../plugin/CliPluginApi");
 
 // List the reacticoon default commands.
 // We add on it the cli-plugins commands.
@@ -17,15 +18,23 @@ const Filesystem = require("../../utils/Filesystem");
 // }
 // ```
 // TODO: lazy load commands?
-const commands = {
-  CHECKUP: CommandCheckup,
-  PLUGINS: CommandDebugPlugins,
-  PLUGIN: CommandDebugPlugin,
-  ANALYZE_BUILD: CommandAnalyzeBuild,
-  BUNDLE_PHOBIA: CommandBundlePhobia,
-  READ_FILE: CommandReadFile,
-  READ_MARKDOWN_FILE: CommandReadMarkdownFile
-};
+let commands = {};
+
+function loadCommands() {
+  commands = {
+    CHECKUP: CommandCheckup,
+    PLUGINS: CommandDebugPlugins,
+    PLUGIN: CommandDebugPlugin,
+    ANALYZE_BUILD: CommandAnalyzeBuild,
+    BUNDLE_PHOBIA: CommandBundlePhobia,
+    READ_FILE: CommandReadFile,
+    READ_MARKDOWN_FILE: CommandReadMarkdownFile
+  };
+  // add plugin commands to our commands map
+  getPluginsServerCommands().map(serverCommand => {
+    commands[serverCommand.name] = serverCommand;
+  });
+}
 
 const getReacticoonPluginsWithServerCommands = require("../../cli-utils/reacticoon-config/getReacticoonPluginsWithServerCommands");
 
@@ -35,7 +44,12 @@ const getReacticoonPluginsWithServerCommands = require("../../cli-utils/reactico
 function getPluginsServerCommands() {
   return getReacticoonPluginsWithServerCommands().reduce(
     (serverCommandsList, plugin) => {
-      return serverCommandsList.concat(plugin.serverCommands);
+      return serverCommandsList.concat(
+        plugin.serverCommands.map(serverCommand => {
+          serverCommand.pluginName = plugin.name;
+          return serverCommand;
+        })
+      );
     },
     []
   );
@@ -69,11 +83,6 @@ function loadServerCommand(commandData) {
   }
 }
 
-// add plugin commands to our commands map
-getPluginsServerCommands().map(serverCommand => {
-  commands[serverCommand.name] = serverCommand;
-});
-
 /**
  * Define the route '/commands' for our server.
  *
@@ -85,6 +94,10 @@ function CommandRoute(app, context) {
 
     // retrieve the command name on the body
     const commandName = req.body.command;
+
+    // we load commands on each api call for now to facilitate development.
+    // TODO: make optional if we are in web dev mode or cli dev mode.
+    loadCommands()
 
     // retrieve the command configuration
     const command = commands[commandName];
@@ -129,7 +142,11 @@ function CommandRoute(app, context) {
           2
         )}`
       );
-      runner(req, res);
+
+      pluginApi = new CliPluginApi({
+        pluginName: command.pluginName
+      });
+      runner(req, res, pluginApi);
     } catch (e) {
       console.error(e);
       res.status(400).send({

@@ -7,6 +7,7 @@ module.exports = function() {
     console.trace();
     console.log(arguments);
     var result = oldSpawn.apply(this, arguments);
+    childProcess.spawn = oldSpawn; // reset
     return result;
   }
   childProcess.spawn = mySpawn;

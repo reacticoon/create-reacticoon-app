@@ -1,26 +1,28 @@
-const trim = require("lodash/trim");
-const exec = require("child_process").exec;
-const { execSync } = require('child_process')
+const execSync = require("child_process").execSync;
+const spawn = require("child_process").spawn;
+const fs = require("fs");
 
-function runCommand(command) {
-  exec(command);
-}
+const appDirectory = fs.realpathSync(process.cwd());
 
-async function getString(command, callback) {
-  exec(
-    command,
-    (function() {
-      return function(err, data, stderr) {
-        callback(err, trim(data), stderr);
-      };
-    })(callback)
-  );
-}
+const cleanStdout = stdout => {
+  // remove last \n
+  return String(stdout).replace(/\n$/, "");
+};
+
+const execSimpleSync = cmd => {
+  const stdout = execSync(cmd, { cwd: appDirectory });
+  return cleanStdout(stdout);
+};
+
+const execSimpleSyncOnDirectory = (cmd, cwd) => {
+  const stdout = execSync(cmd, { cwd: appDirectory + "/" + cwd });
+  return cleanStdout(stdout);
+};
 
 const commandline = {
-  get: getString,
-  run: runCommand,
-  getSync: command => execSync(command)
+  execSimpleSync,
+  execSimpleSyncOnDirectory,
+  spawn
 };
 
 module.exports = commandline;

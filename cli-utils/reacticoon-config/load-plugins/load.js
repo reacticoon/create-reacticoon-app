@@ -7,8 +7,9 @@ const find = require("lodash/find");
 const endsWith = require("lodash/endsWith");
 const existsSync = require(`fs-exists-cached`).sync;
 const getReacticoonConfig = require("../getReacticoonConfig");
+const initiatePlugin = require("create-reacticoon-app/plugin/initiatePlugin");
 const paths = require("../../../utils/paths");
-const { error, log } = require("../../../cli-utils");
+const { error, info, log } = require("../../../cli-utils");
 
 function createPluginData(plugin, resolvedPath) {
   return {
@@ -68,28 +69,63 @@ function createPluginData(plugin, resolvedPath) {
       };
     }),
 
-    serverCommands: (plugin.serverCommands || []).map(serverCommand => {
-      // server command example:
-      // {
-      //   name: 'TEST',
-      //   path: "./server-commands/test"
-      // }
-      const { name, path } = serverCommand;
-      let resolveDirectory = path[0] === "/" ? path : `${resolvedPath}`;
-      let resolve = `${resolveDirectory}/${path}`;
-      if (!endsWith(resolve, ".js")) {
-        resolve += ".js";
-      }
-      // TODO: check resolve is valid path
+    serverCommands: (plugin.serverCommands || [])
+      .filter(Boolean)
+      .map(serverCommand => {
+        // server command example:
+        // {
+        //   name: 'TEST',
+        //   path: "./server-commands/test"
+        // }
+        const { name, path } = serverCommand;
+        let resolveDirectory = path[0] === "/" ? path : `${resolvedPath}`;
+        let resolve = `${resolveDirectory}/${path}`;
+        if (!endsWith(resolve, ".js")) {
+          resolve += ".js";
+        }
+        // TODO: check resolve is valid path
 
-      return {
-        ...serverCommand,
-        resolve,
-        name,
-        path
-      };
-    })
+        return {
+          ...serverCommand,
+          resolve,
+          name,
+          path
+        };
+      })
   };
+}
+
+function inititatePluginData(resolvedPath) {
+  let plugin = require(resolvedPath);
+  if (
+    !plugin.__IS_REACTICOON_PLUGIN__ &&
+    !plugin.__IS_REACTICOON_PLUGIN_CREATOR__
+  ) {
+    error(
+      `Plugin ${pluginName} index.js does not export a reacticoon plugin. Use createReacticoonPlugin.`
+    );
+    process.exit();
+  }
+
+  if (plugin.__IS_REACTICOON_PLUGIN_CREATOR__) {
+    plugin = initiatePlugin(plugin);
+  }
+
+  const packageJSON = JSON.parse(
+    fs.readFileSync(`${resolvedPath}/package.json`, `utf-8`)
+  );
+
+  const pluginData = {
+    resolve: resolvedPath,
+    name: packageJSON.name || pluginName,
+    id: `${packageJSON.name || pluginName}`,
+    version: packageJSON.version || createFileContentHash(resolvedPath, `**`),
+    ...createPluginData(plugin, resolvedPath)
+  };
+
+  info(`Initiate ${pluginData.name}`, 'cli-plugin');
+
+  return pluginData;
 }
 
 // inspired by gatsby https://github.com/gatsbyjs/gatsby/blob/master/packages/gatsby/src/bootstrap/load-plugins/load.js
@@ -113,38 +149,18 @@ function resolvePlugin(pluginName) {
     }
 
     resolvedPath = slash(path.resolve(resolvedPath));
-
     if (!existsSync(`${resolvedPath}/package.json`)) {
       // Make package.json a requirement for local plugins too
       error(`Plugin ${pluginName} requires a package.json file`);
       process.exit();
     }
 
-    const packageJSON = JSON.parse(
-      fs.readFileSync(`${resolvedPath}/package.json`, `utf-8`)
-    );
-
     if (!existsSync(`${resolvedPath}/index.js`)) {
       error(`Plugin ${pluginName} requires an index.js file`);
       process.exit();
     }
 
-    const plugin = require(resolvedPath);
-
-    if (!plugin.__IS_REACTICOON_PLUGIN__) {
-      error(
-        `Plugin ${pluginName} index.js does not export a reacticoon plugin. Use createReacticoonPlugin.`
-      );
-      process.exit();
-    }
-
-    return {
-      resolve: resolvedPath,
-      name: packageJSON.name || pluginName,
-      id: `${packageJSON.name || pluginName}`,
-      version: packageJSON.version || createFileContentHash(resolvedPath, `**`),
-      ...createPluginData(plugin, resolvedPath)
-    };
+    return inititatePluginData(resolvedPath);
   }
 
   /**
@@ -153,20 +169,7 @@ function resolvePlugin(pluginName) {
    */
   try {
     const resolvedPath = slash(path.dirname(require.resolve(pluginName)));
-
-    const packageJSON = JSON.parse(
-      fs.readFileSync(`${resolvedPath}/package.json`, `utf-8`)
-    );
-
-    const plugin = require(resolvedPath);
-
-    return {
-      resolve: resolvedPath,
-      id: `Plugin ${packageJSON.name}`,
-      name: packageJSON.name,
-      version: packageJSON.version,
-      ...createPluginData(plugin, resolvedPath)
-    };
+    return inititatePluginData(resolvedPath);
   } catch (err) {
     console.error(err);
     throw new Error(

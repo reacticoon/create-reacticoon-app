@@ -23,6 +23,22 @@ ReacticoonChecks.run(() => {
 
   const devServerConfig = require(devServerConfigPath);
 
+
+  //
+  // Open browser override
+  // By default react-scripts open the website url on the browser. This can be annoying, so we
+  // override the behaviour by making it optional
+  //
+  const openBrowser = require("react-dev-utils/openBrowser");
+  const openBrowserMiddleware = url => {
+    // TODO: add option to open url on browser or not. Default: open
+    // openBrowser(url)
+  };
+
+  require.cache[
+    require.resolve("react-dev-utils/openBrowser")
+  ].exports = openBrowserMiddleware;
+
   // debug
   // console.log(paths)
   // process.exit()

@@ -1,7 +1,7 @@
 //
 //
 //
-const GitUtils = require("../config-overrides/utils/git/index");
+const { error, isGitInit } = require("../cli-utils");
 const paths = require("../utils/paths");
 const workingDirPath = paths.projectDir;
 
@@ -10,13 +10,10 @@ const workingDirPath = paths.projectDir;
  */
 const run = callback => {
   // verify git is init
-  GitUtils.isGitInit(workingDirPath, isRepo => {
-    if (!isRepo) {
-      console.error(`Reacticoon error: Git must be init. 'git init .'`);
-    }
-
-    callback();
-  });
+  if (!isGitInit(workingDirPath)) {
+    error(`Reacticoon error: Git must be init. 'git init .'`);
+  }
+  callback();
 };
 
 module.exports = {

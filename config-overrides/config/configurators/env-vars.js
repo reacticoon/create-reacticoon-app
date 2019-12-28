@@ -1,6 +1,6 @@
 const forEach = require("lodash/forEach");
-const git = require("../../utils/git");
-const paths = require("../../../utils/paths");
+const git = require("create-reacticoon-app/cli-utils/git");
+const paths = require("create-reacticoon-app/utils/paths");
 
 function envVarsConfigurator(config, env, options) {
   const __DEV__ = process.env.NODE_ENV !== "production";
@@ -26,6 +26,8 @@ function envVarsConfigurator(config, env, options) {
 
   const envVars = {
     ...processEnvReacticoonVars,
+
+    PROJECT_NAME: env.reacticoonConfig.projectName || env.appPackageJson.name,
 
     //
     // Some vars about the environment
@@ -59,16 +61,32 @@ function envVarsConfigurator(config, env, options) {
   // The project can be not `git init` yet, so we need to try catch eventual missing info.
   //
   try {
-    const lastAppComCommit = git.lastAppCommit();
-    envVars.__APP_GIT_COMMIT__ = lastAppComCommit;
+    envVars.__APP_GIT_COMMIT__ =  git.lastAppCommit();
   } catch (e) {
     envVars.__APP_GIT_COMMIT__ = null;
   }
   try {
-    const currentProjectBranch = git.currentProjectBranch();
-    envVars.__APP_GIT_BRANCH__ = currentProjectBranch;
+    envVars.__APP_GIT_BRANCH__ =  git.currentProjectBranch();
   } catch (e) {
     envVars.__APP_GIT_BRANCH__ = null;
+  }
+
+  try {
+    envVars.__APP_GIT_FULLNAME__ = git.currentProjectFullName();
+  } catch {
+    envVars.__APP_GIT_FULLNAME__ = null;
+  }
+
+  try {
+    envVars.__APP_GIT_NAME__ = git.currentProjectName();
+  } catch {
+    envVars.__APP_GIT_NAME__ = null;
+  }
+
+  try {
+    envVars.__APP_GIT_ORGANIZATION__ = git.currentOrganization();
+  } catch (e) {
+    envVars.__APP_GIT_ORGANIZATION__ = null;
   }
 
   // transform env for webpack.

@@ -6,7 +6,8 @@
   "logger",
   "module",
   "pluginResolution",
-  "spinner"
+  "spinner",
+  "git"
 ].forEach(m => {
   Object.assign(exports, require(`./${m}`));
 });

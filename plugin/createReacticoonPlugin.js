@@ -1,4 +1,6 @@
 const isEmpty = require("lodash/isEmpty");
+const isFunction = require("lodash/isFunction")
+const initiatePlugin = require("./initiatePlugin")
 
 // plugin example:
 // ```
@@ -17,7 +19,15 @@ const isEmpty = require("lodash/isEmpty");
 // ```
 // TODO: add invariant
 //
-function createReacticoonPlugin(plugin) {
+function createReacticoonPlugin(pluginParam) {
+  let plugin
+  if (isFunction(pluginParam)) {
+    pluginParam.__IS_REACTICOON_PLUGIN_CREATOR__ = true;
+    plugin = initiatePlugin(pluginParam)
+  } else {
+    plugin = pluginParam
+  }
+
   return {
     ...plugin,
     hasCheckup: !isEmpty(plugin.checkup),
@@ -29,5 +39,6 @@ function createReacticoonPlugin(plugin) {
     __IS_REACTICOON_PLUGIN__: true
   };
 }
+createReacticoonPlugin.__IS_REACTICOON_PLUGIN_CREATOR__ = true
 
 module.exports = createReacticoonPlugin;

@@ -1,9 +1,9 @@
-const cmd = require("../../cli-utils/cmd");
+const { execSimpleSync } = require("../../cli-utils/cmd");
 
 function getNpmLastVersion(packageName) {
   let lastVersion = null
   try {
-    lastVersion = cmd.getSync(`npm show ${packageName} version`);
+    lastVersion = execSimpleSync(`npm show ${packageName} version`);
   } catch (e) {
     // console.error('getNpmLastVersion error', e);
   }

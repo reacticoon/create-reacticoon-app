@@ -96,7 +96,8 @@ const reacticoonPluginsList = [
   `${reacticoonPluginsDir}/reacticoon-mock-api-plugin`,
   `${reacticoonPluginsDir}/reacticoon-testing-plugin`,
   `${reacticoonPluginsDir}/reacticoon-plugins-marketplace-plugin`,
-  `${reacticoonPluginsDir}/reacticoon-plugin-ci`
+  `${reacticoonPluginsDir}/reacticoon-plugin-ci`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-git`
 ];
 
 // TODO: automatic discover
@@ -104,7 +105,8 @@ const reacticoonCliPluginsList = [
   `${reacticoonCliPluginsDir}/reacticoon-cli-plugin-dev`,
   `${reacticoonCliPluginsDir}/reacticoon-cli-plugin-mock-api`,
   `${reacticoonCliPluginsDir}/reacticoon-cli-plugin-test`,
-  `${reacticoonCliPluginsDir}/reacticoon-cli-plugin-ci`
+  `${reacticoonCliPluginsDir}/reacticoon-cli-plugin-ci`,
+  `${reacticoonCliPluginsDir}/reacticoon-cli-plugin-git`
 ];
 
 const appNodeModules = `${projectDir}/node_modules/`;

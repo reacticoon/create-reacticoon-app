@@ -54,6 +54,13 @@ exports.error = (msg, tag = null) => {
   }
 }
 
+exports.errorTraceExit = (message, tag) => {
+  exports.error(message, tag)
+  console.trace();
+  process.exit();
+}
+
+
 exports.clearConsole = title => {
   if (process.stdout.isTTY) {
     const blank = '\n'.repeat(process.stdout.rows)

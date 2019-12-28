@@ -44,6 +44,8 @@ module.exports = createWebpackOverride = (
 
   const appPackageJson = require(reactScriptPaths.appPath + "/package.json");
 
+  const reacticoonConfig = require(reacticoonPaths.projectConfiguration)
+
   const { pluginsOverrides = {}, pluginsOverridesDebugInfo = {} } = pluginData;
   const options = merge(
     {},
@@ -108,6 +110,7 @@ module.exports = createWebpackOverride = (
     includePaths,
     reacticoonPaths,
     appPackageJson,
+    reacticoonConfig,
     __ENV__,
     __ENV_FILEPATH__
   };
