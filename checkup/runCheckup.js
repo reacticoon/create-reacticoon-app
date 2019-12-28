@@ -2,11 +2,16 @@
 // Realise a Reacticoon checkup.
 //
 const getReacticoonPluginsWithCheckup = require("../cli-utils/reacticoon-config/getReacticoonPluginsWithCheckup");
-const symbol = require("../cli-utils/symbol")
+const symbol = require("../cli-utils/symbol");
+const createCheck = require("./utils/createCheck")
+const CheckApi = require("./CheckApi")
 
 function getPluginsChecks() {
   return getReacticoonPluginsWithCheckup().reduce((checkupList, plugin) => {
-    return checkupList.concat(plugin.checkup);
+    return checkupList.concat(plugin.checkup.map(checkup => {
+      checkup.pluginName = plugin.name
+      return checkup
+    }));
   }, []);
 }
 
@@ -17,9 +22,9 @@ function loadCheck(checkData) {
   }
   const path = checkData.resolve;
   try {
-    return require(path);
+    return createCheck(require(path));
   } catch (e) {
-    console.error(e)
+    console.error(e);
     throw new Error(`Could not find checkup module on path '${path}'`);
     process.exit();
   }
@@ -27,34 +32,38 @@ function loadCheck(checkData) {
 
 function runCheckup() {
   const checks = getPluginsChecks();
-  const results =  checks.map(checkData => {
+
+  const results = checks.map(checkData => {
     const checkRunner = loadCheck(checkData);
 
     const check = {
       data: {
         name: checkRunner.name,
-        description: checkRunner.description,
+        description: checkRunner.description
       }
-    }
+    };
     try {
-      checkRunner.run();
-      check.results = checkRunner.getResults();
+      const checkApi = new CheckApi({
+        pluginName: checkData.pluginName
+      });
+      checkRunner.run(checkApi);
+      check.results = checkApi.getResults();
     } catch (e) {
       // TODO: add doc what to do in this case -> contact dev / create issue
       // display plugin package.json issue uri
-      console.error(e)
+      console.error(e);
       check.error = {
         message: `An exception has been thrown.`,
-        exception: e,
-      }
+        exception: e
+      };
     }
-    return check
+    return check;
   });
 
   return {
     date: new Date(),
-    checks: results,
-  }
+    checks: results
+  };
 }
 
 function displayResults(results) {
@@ -62,31 +71,31 @@ function displayResults(results) {
     console.log(`${check.data.name}: ${check.data.description}`);
 
     if (check.error) {
-      console.error(result.error.message)
-      console.error(e)
+      console.error(result.error.message);
+      console.error(e);
     } else {
       check.results.forEach(result => {
-        let symbolStr = ''
+        let symbolStr = "";
         switch (result.type) {
-          case 'GOOD':
-            symbolStr = symbol.success
-            break
-          case 'WARN':
-            symbolStr = symbol.warn
-            break
-          case 'ERROR':
-            symbolStr= symbol.error
-            break
+          case "GOOD":
+            symbolStr = symbol.success;
+            break;
+          case "WARN":
+            symbolStr = symbol.warn;
+            break;
+          case "ERROR":
+            symbolStr = symbol.error;
+            break;
         }
-        console.log(`${symbolStr} ${result.message}`)
-      })
+        console.log(`${symbolStr} ${result.message}`);
+      });
     }
 
     console.log("\n");
-  })
+  });
 }
 
 module.exports = {
   runCheckup,
-  displayResults,
+  displayResults
 };
