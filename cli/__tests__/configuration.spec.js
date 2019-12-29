@@ -9,11 +9,17 @@ const {
   loadConfiguration,
   saveConfiguration,
   getPluginConfiguration,
-  savePluginConfiguration
+  savePluginConfiguration,
+  resetConfiguration,
+  defaults
 } = require("../configuration");
 
+beforeEach(() => {
+  resetConfiguration(defaults);
+});
+
 test("load configurations", () => {
-  expect(loadConfiguration()).toEqual({});
+  expect(loadConfiguration()).toEqual(defaults);
 
   //
   // directly write to file.
@@ -30,19 +36,9 @@ test("load configurations", () => {
     )
   );
   // configurations is cached here.
-  expect(loadConfiguration()).toEqual({
-    // plugins: []
+  expect(loadConfiguration(true)).toEqual( {
   });
 });
-
-// test("should not save unknown fields", () => {
-//   saveConfiguration({
-//     foo: "bar"
-//   });
-//   expect(loadConfiguration()).toEqual({
-//     presets: {}
-//   });
-// });
 
 test("save configurations", () => {
   // partial
@@ -50,8 +46,8 @@ test("save configurations", () => {
     packageManager: "yarn"
   });
   expect(loadConfiguration()).toEqual({
+    ...defaults,
     packageManager: "yarn"
-    // plugins: []
   });
 
   // replace
@@ -64,6 +60,7 @@ test("save configurations", () => {
     ]
   });
   expect(loadConfiguration()).toEqual({
+    ...defaults,
     packageManager: "yarn",
     plugins: [
       {
@@ -85,8 +82,10 @@ test("getPluginConfiguration", () => {
 
 test("save preset", () => {
   savePluginConfiguration("bar", { a: 2 });
-  expect(loadConfiguration()).toEqual({
-    packageManager: "yarn",
+
+  const configuration = loadConfiguration();
+  expect(configuration).toEqual({
+    ...defaults,
     plugins: [
       {
         resolve: "reacticoon-cli-plugin-dev",
@@ -105,7 +104,7 @@ test("save preset", () => {
   savePluginConfiguration("foo", { c: 3 });
   savePluginConfiguration("bar", { d: 4 });
   expect(loadConfiguration()).toEqual({
-    packageManager: "yarn",
+    ...defaults,
     plugins: [
       {
         resolve: "reacticoon-cli-plugin-dev",

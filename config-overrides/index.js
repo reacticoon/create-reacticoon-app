@@ -84,11 +84,35 @@ if (override.devserver) {
   );
 }
 
-const devServer =
-  override.devServer ||
-  override.devserver ||
-  (configFunction => (proxy, allowedHost) =>
-    configFunction(proxy, allowedHost));
+const devServer = configFunction => (proxy, allowedHost) => {
+  //https://sourcegraph.com/github.com/facebook/create-react-app@master/-/blob/packages/react-scripts/config/webpackDevServer.config.js#L113
+  const defaultConfig = configFunction(proxy, allowedHost);
+
+  const config = {
+    ...defaultConfig,
+    // headers: {
+    //   "Access-Control-Allow-Origin": "*",
+    //   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+    //   "Access-Control-Allow-Headers":
+    //     "X-Requested-With, content-type, Authorization"
+    // },
+
+    before: function(app, server) {
+      // const cors = require("cors");
+
+      // enable CORS
+      // app.use(cors());
+
+      defaultConfig.before(app, server);
+    }
+  };
+
+  const devServerOverride = override.devServer || override.devserver;
+  if (devServerOverride) {
+    return devServerOverride(config);
+  }
+  return config;
+};
 
 const jest = override.jest || (config => config);
 // normalized overrides functions

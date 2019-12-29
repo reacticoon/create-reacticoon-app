@@ -20,15 +20,15 @@ exports.defaults = {
   ]
 };
 
-let cachedOptions;
+let cachedConfiguration;
 
 exports.loadConfiguration = (withoutCache = false) => {
-  if (cachedOptions && !withoutCache) {
-    return cachedOptions;
+  if (cachedConfiguration && !withoutCache) {
+    return cachedConfiguration;
   }
   if (fs.existsSync(rcPath)) {
     try {
-      cachedOptions = JSON.parse(fs.readFileSync(rcPath, "utf-8"));
+      cachedConfiguration = JSON.parse(fs.readFileSync(rcPath, "utf-8"));
     } catch (e) {
       error(
         `Error loading saved preferences: ` +
@@ -38,28 +38,47 @@ exports.loadConfiguration = (withoutCache = false) => {
       );
       exit(1);
     }
-    // validate(cachedOptions, schema, () => {
+    // validate(cachedConfiguration, schema, () => {
     //   error(
     //     `config/reacticoon.js may be outdated. ` +
     //     `Please delete it and re-run vue-cli in manual mode.`
     //   )
     // })
-    return cachedOptions;
+    return cachedConfiguration;
   } else {
+    if (process.env.NODE_ENV !== 'test') {
+      error(
+        `Error loading saved preferences: ` +
+          `config/reacticoon.js does not exists`
+      );
+    }
     return {};
   }
 };
 
+exports.resetConfiguration = configuration => {
+  cachedConfiguration = configuration;
+  try {
+    fs.writeFileSync(rcPath, JSON.stringify(configuration, null, 2));
+  } catch (e) {
+    error(
+      `Error saving preferences: ` +
+        `make sure you have write access to ${rcPath}.\n` +
+        `(${e.message})`
+    );
+  }
+}
+
 exports.saveConfiguration = toSave => {
-  const options = Object.assign(cloneDeep(exports.loadConfiguration()), toSave);
-  for (const key in options) {
+  const configuration = Object.assign(cloneDeep(exports.loadConfiguration()), toSave);
+  for (const key in configuration) {
     if (!(key in exports.defaults)) {
-      delete options[key];
+      delete configuration[key];
     }
   }
-  cachedOptions = options;
+  cachedConfiguration = configuration;
   try {
-    fs.writeFileSync(rcPath, JSON.stringify(options, null, 2));
+    fs.writeFileSync(rcPath, JSON.stringify(configuration, null, 2));
   } catch (e) {
     error(
       `Error saving preferences: ` +
@@ -83,7 +102,7 @@ exports.getPluginConfiguration = (pluginName, withoutCache) => {
 };
 
 exports.savePluginConfiguration = (pluginName, options) => {
-  const plugins = cloneDeep(exports.loadConfiguration(true).plugins || []);
+  const plugins = cloneDeep(exports.loadConfiguration().plugins || []);
 
   const alreadyOnConfig = find(
     plugins,
