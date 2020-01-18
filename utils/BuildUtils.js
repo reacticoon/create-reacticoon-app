@@ -1,20 +1,23 @@
-const paths = require("./paths")
+const paths = require("./paths");
+const fs = require("fs");
 
 function getManifestContent() {
-  return require(`${paths.projectDir}/build/asset-manifest.json`)
+  return require(`${paths.projectDir}/build/asset-manifest.json`);
 }
 
 function getBuildRootJsFileName() {
-  const manifestContent = getManifestContent()
-  return manifestContent["main.js"]
+  const manifestContent = getManifestContent();
+  return manifestContent.files["main.js"];
 }
 
 function getBuildId() {
-  const rootJs = getBuildRootJsFileName()
-  // TODO: better way
-  return rootJs.replace("static/js/main.", "").replace(".js", "")
+  const projectBuildInfo = JSON.parse(
+    String(fs.readFileSync(paths.projectBuildInfoFile), `utf-8`)
+  );
+  return projectBuildInfo.hash;
 }
 
 module.exports = {
-  getBuildId,
-}
+  getBuildRootJsFileName,
+  getBuildId
+};

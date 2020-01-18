@@ -1,7 +1,6 @@
 // https://github.com/danvk/source-map-explorer
-const paths = require("../../utils/paths")
-const BuildUtils = require("../../utils/BuildUtils")
-
+const paths = require("../../utils/paths");
+const BuildUtils = require("../../utils/BuildUtils");
 
 // Returns
 // {
@@ -17,22 +16,24 @@ const BuildUtils = require("../../utils/BuildUtils")
 // }
 
 function analyze() {
-  const buildId = BuildUtils.getBuildId()
+  const rootJsFilename = BuildUtils.getBuildRootJsFileName();
   try {
-    const res = require('source-map-explorer')(paths.appBuild + `/static/js/main.${buildId}.js`, { html: true })
+    const res = require("source-map-explorer")(
+      `${paths.appBuild}${rootJsFilename}`,
+      { html: true }
+    );
     return {
       success: true,
       result: res,
-      buildId,
-    }
-  } catch (e)  {
+      jsFilename: rootJsFilename
+    };
+  } catch (e) {
     return {
       success: false,
       error: e,
-      buildId,
-    }
+      jsFilename: rootJsFilename
+    };
   }
 }
 
-
-module.exports = analyze
+module.exports = analyze;
