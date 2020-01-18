@@ -16,8 +16,17 @@ function babelPluginsConfigurator(config, env, options) {
   //
 
   const babelPlugins = [
+    // Babel plugin to prune unused/unreachable imports
+    // https://github.com/rtsao/babel-plugin-transform-prune-unused-imports
+    [
+      require.resolve("babel-plugin-transform-prune-unused-imports"),
+      {
+        truthyExpressions: env.isDev ? ["__DEV__"] : ["__PROD__"]
+      }
+    ],
+
     // Compile export default to ES2015
-    require.resolve("@babel/plugin-proposal-export-default-from"),
+    // require.resolve("@babel/plugin-proposal-export-default-from"),
 
     // add decoractors
     // require.resolve("babel-plugin-transform-decorators-legacy"),
@@ -49,6 +58,7 @@ function babelPluginsConfigurator(config, env, options) {
         id: ["lodash", "recompose"]
       }
     ]
+
     // TODO: add
     // - react-app-rewire-poyfills
     // - react-app-rewire-eslint

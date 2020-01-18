@@ -39,6 +39,12 @@ function webpackAliasesConfigurator(config, env, options) {
     // node_modules yet
     "reacticoon-plugins": reacticoonPaths.reacticoonPluginsDir,
 
+    // Previously we were using classNames but replaced it with clsx following material-ui
+    // (https://github.com/mui-org/material-ui/pull/14152)
+    // We use this alias to force it to use clsx, thus reducing our build size
+    // To test this, just remove the ./node_modules/classnames directory and start the dev server
+    classnames: "clsx",
+
     // add user option 'webpackAliases'. Allows the user to add webpackAliases on its
     // config/overrides.js
     ...options.webpackAliases

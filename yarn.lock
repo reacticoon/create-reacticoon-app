@@ -2567,6 +2567,11 @@ babel-plugin-transform-object-rest-spread@^6.22.0, babel-plugin-transform-object
     babel-plugin-syntax-object-rest-spread "^6.8.0"
     babel-runtime "^6.26.0"
 
+babel-plugin-transform-prune-unused-imports@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-prune-unused-imports/-/babel-plugin-transform-prune-unused-imports-1.0.0.tgz#4d26770e3b597f15eacfa1651efb8902f355be1a"
+  integrity sha512-SpbWEOlTJg5Yrbumjrdl9xaz2l/Zb22HaV6IYR2PauD/RbS5L3RX1EWkOVULXXyYD+iUS1OOyQRG7xZ99sVVug==
+
 babel-plugin-transform-react-remove-prop-types@0.4.24:
   version "0.4.24"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-react-remove-prop-types/-/babel-plugin-transform-react-remove-prop-types-0.4.24.tgz#f2edaf9b4c6a5fbe5c1d678bfb531078c1555f3a"
