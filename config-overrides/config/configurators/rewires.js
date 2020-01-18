@@ -1,29 +1,21 @@
-const rewiredUtils = require("../../utils/rewired");
+const RewireApi = require("./RewireApi");
+const { info } = require("create-reacticoon-app/cli-utils");
 
 function rewiresConfigurator(config, env, options) {
-  // we pass this as third argument to our rewires, allowing to use Reacticoon rewire utility
-  // methods
-  const rewireTools = {
-    // gives all our rewired utils like injectBabelPreset, injectBabelPlugin,
-    // getLoader
-    ...rewiredUtils,
-    paths: require("../../../utils/paths")
-  };
-
-  if (options.enableSass) {
-    const rewireSass = require("../../rewire/react-app-rewire-sass");
-    rewireSass(config, env, rewireTools);
-  }
-
-  const rewireEslint = require("../../rewire/react-app-rewire-eslint");
-  rewireEslint(config, env, rewireTools);
+  rewires = [
+    require("../../rewire/react-app-rewire-eslint"),
+    options.enableSass && require("../../rewire/react-app-rewire-sass"),
+    ...(options.rewires || [])
+  ].filter(Boolean);
 
   // TODO: allow user / plugins to list rewires to use on options
   // TODO: doc
-  (options.rewires || []).forEach(rewire => {
+  rewires.forEach(rewire => {
+    info(`Rewire ${rewire.name} plugin: ${rewire.pluginName}`, "rewire");
     // TODO: verify rewire is function
     try {
-      rewire(config, env, rewireTools);
+      const rewireApi = new RewireApi();
+      rewire(config, env, rewireApi);
     } catch (e) {
       console.log(`An error occured while running a rewire`);
       console.error(e);

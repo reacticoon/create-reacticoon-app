@@ -1,4 +1,3 @@
-const path = require("path");
 const find = require("lodash/find");
 
 const getLoader = function(rulesParam, matcher) {

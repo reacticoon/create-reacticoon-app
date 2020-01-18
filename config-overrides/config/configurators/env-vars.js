@@ -61,12 +61,12 @@ function envVarsConfigurator(config, env, options) {
   // The project can be not `git init` yet, so we need to try catch eventual missing info.
   //
   try {
-    envVars.__APP_GIT_COMMIT__ =  git.lastAppCommit();
+    envVars.__APP_GIT_COMMIT__ = git.lastAppCommit();
   } catch (e) {
     envVars.__APP_GIT_COMMIT__ = null;
   }
   try {
-    envVars.__APP_GIT_BRANCH__ =  git.currentProjectBranch();
+    envVars.__APP_GIT_BRANCH__ = git.currentProjectBranch();
   } catch (e) {
     envVars.__APP_GIT_BRANCH__ = null;
   }
@@ -98,7 +98,7 @@ function envVarsConfigurator(config, env, options) {
   });
 
   // TODO: better way
-  const proccessEnvIndex = env.isDev ? 3 : 2;
+  const proccessEnvIndex = env.isDev ? 3 : 4;
   config.plugins[proccessEnvIndex].definitions["process.env"] = {
     ...config.plugins[proccessEnvIndex].definitions["process.env"],
     ...finalEnvVars

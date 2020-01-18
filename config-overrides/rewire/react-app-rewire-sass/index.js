@@ -1,5 +1,3 @@
-const { getLoader, injectLoaderOneOf } = require("../../utils/rewired");
-//
 // `yarn add style-loader css-loader sass-loader node-sass`
 //
 // Inspired by https://sourcegraph.com/github.com/timarney/react-app-rewired/-/blob/packages/react-app-rewire-sass/index.js
@@ -10,10 +8,12 @@ const fileLoader = function(conf) {
   return conf && conf.loader && conf.loader.indexOf("/file-loader/") !== -1;
 };
 
-function rewireSass(config, env, { paths }) {
+function rewireSass(config, env, api) {
   // .scss to file-loader exclude array
   // file-loader is in module->rules[]->oneOf[]
-  getLoader(config, fileLoader).exclude.push(/\.scss$/);
+  api.getLoader(config, fileLoader).exclude.push(/\.scss$/);
+
+  const paths = api.getPaths();
 
   const loader = {
     test: /\.scss$/,
@@ -47,7 +47,7 @@ function rewireSass(config, env, { paths }) {
     ]
   };
 
-  injectLoaderOneOf(config, loader);
+  api.injectLoaderOneOf(config, loader);
 }
 
 module.exports = rewireSass;

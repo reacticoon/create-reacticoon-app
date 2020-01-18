@@ -69,18 +69,18 @@ function getPluginsCommands() {
 }
 
 // TODO: remove, transform to program
-const scripts = [
-  { name: "build", path: "../scripts" },
-  { name: "build-library", path: "../scripts" },
-  { name: "test", path: "../scripts" },
-  { name: "test:integration", path: "../scripts" },
-  // { name: "start", path: "../scripts" },
-  { name: "generate", path: "../generator" },
-  // { name: "checkup", path: "../checkup" },
-  { name: "debug-plugins", path: "../scripts" },
-  { name: "list-commands", path: "../scripts" }
-  // { name: "analyze-build", path: "../analyze/build" }
-];
+// const scripts = [
+//   { name: "build", path: "../scripts" },
+//   { name: "build-library", path: "../scripts" },
+//   { name: "test", path: "../scripts" },
+//   { name: "test:integration", path: "../scripts" },
+//   // { name: "start", path: "../scripts" },
+//   { name: "generate", path: "../generator" },
+//   // { name: "checkup", path: "../checkup" },
+//   { name: "debug-plugins", path: "../scripts" },
+//   { name: "list-commands", path: "../scripts" }
+//   // { name: "analyze-build", path: "../analyze/build" }
+// ];
 
 program
   .command("add <plugin> [pluginOptions]")
@@ -190,6 +190,18 @@ program
     // - yarn reacticoon start
     process.env.scriptName = "start";
     require("../scripts/start");
+  });
+
+program
+  .command("build")
+  .description("build")
+  .allowUnknownOption()
+  .action(() => {
+    // trick for config-overrides/index.js, this allow to run reacticoon in different ways:
+    // - yarn build
+    // - yarn reacticoon build
+    process.env.scriptName = "build";
+    require("../scripts/build");
   });
 
 program

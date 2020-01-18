@@ -1,11 +1,9 @@
-const { getLoader } = require("../../utils/rewired");
-
 const path = require("path");
 
 // this is the path of eslint-loader `index.js`
 const ESLINT_PATH = `eslint-loader${path.sep}dist${path.sep}cjs.js`;
 
-function rewireEslint(config, env) {
+function rewireEslint(config, env, api) {
   const matcher = rule =>
     rule.loader &&
     typeof rule.loader === "string" &&
@@ -16,7 +14,14 @@ function rewireEslint(config, env) {
   const oldOptions = config.eslint;
   // else `react-scripts` >= 1.0.0
   // **eslint options** is in `config.module.rules`
-  const newOptions = getLoader(config, matcher).options;
+
+  const eslintLoader = api.getLoader(config, matcher);
+
+  if (!eslintLoader) {
+    throw new Error("eslint loader not found");
+  }
+
+  const newOptions = eslintLoader.options;
 
   // Thx @Guria, with no break change.
   const options = oldOptions || newOptions;

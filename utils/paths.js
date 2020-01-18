@@ -98,7 +98,8 @@ const reacticoonPluginsList = [
   `${reacticoonPluginsDir}/reacticoon-plugins-marketplace-plugin`,
   `${reacticoonPluginsDir}/reacticoon-plugin-ci`,
   `${reacticoonPluginsDir}/reacticoon-plugin-git`,
-  `${reacticoonPluginsDir}/reacticoon-plugin-lighthouse`
+  `${reacticoonPluginsDir}/reacticoon-plugin-lighthouse`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-bundle-stats`
 ];
 
 // TODO: automatic discover
@@ -148,6 +149,8 @@ const finalPaths = Object.assign(
     projectDir,
     projectConfiguration: `${projectDir}/config/reacticoon.json`,
     projectSrc: projectDir + "/src",
+    projectBuild: projectDir + "/build",
+    projectBuildInfoFile: projectDir + "/build/reacticoon-build-info.json",
     libDir: projectDir + "/lib",
     createReacticoonApp,
 

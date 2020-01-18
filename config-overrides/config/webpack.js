@@ -35,8 +35,8 @@ const defaultOptions = {
 module.exports = createWebpackOverride = (
   isDev,
   reacticoonOptions,
-  override,
-  pluginData = {}
+  reacticoonWebpackOverride,
+  retrievePluginsOverridesData = {}
 ) => (config, nodeEnv) => {
   const reactScriptPaths = require(require.resolve(
     reacticoonPaths.scriptVersion + "/config/paths"
@@ -46,12 +46,17 @@ module.exports = createWebpackOverride = (
 
   const reacticoonConfig = require(reacticoonPaths.projectConfiguration);
 
-  const { pluginsOverrides = {}, pluginsOverridesDebugInfo = {} } = pluginData;
+  const {
+    pluginsOverrides = {},
+    pluginsOverridesDebugInfo = {}
+  } = retrievePluginsOverridesData;
+
   const options = merge(
     {},
     defaultOptions,
     pluginsOverrides.options,
-    reacticoonOptions
+    reacticoonOptions,
+    { rewires: pluginsOverrides.rewires }
   );
 
   // allow to define user env using the __ENV__ variable

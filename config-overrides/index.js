@@ -37,9 +37,9 @@ const reacticoonOptions = isFunction(override)
 // Plugins overrides
 //
 
-const retrievePluginData = require("./utils/retrievePluginData");
+const retrievePluginsOverridesData = require("./utils/retrievePluginsOverridesData");
 
-const pluginData = retrievePluginData();
+const pluginOverridesData = retrievePluginsOverridesData(IS_DEV);
 
 //
 // Create webpack data
@@ -50,7 +50,7 @@ let webpackLibrary = null;
 if (IS_DEV || IS_BUILD) {
   const createWebpackOverride = require("./config/webpack");
 
-  const reacticoonWebpack =
+  const reacticoonWebpackOverride =
     typeof override === "function"
       ? override
       : override.webpack || ((config, env) => config);
@@ -58,24 +58,25 @@ if (IS_DEV || IS_BUILD) {
   webpack = createWebpackOverride(
     IS_DEV,
     reacticoonOptions,
-    reacticoonWebpack,
-    pluginData
-  );
-} else if (IS_LIBRARY) {
-  const createWebpackLibraryOverride = require("./config/webpackLibrary");
-
-  const reacticoonWebpackLibrary =
-    typeof override === "function"
-      ? override
-      : override.webpackLibrary || ((config, env) => config);
-
-  webpackLibrary = createWebpackLibraryOverride(
-    IS_DEV,
-    reacticoonOptions,
-    reacticoonWebpackLibrary,
-    pluginsOverrides
+    reacticoonWebpackOverride,
+    pluginOverridesData
   );
 }
+// else if (IS_LIBRARY) {
+//   const createWebpackLibraryOverride = require("./config/webpackLibrary");
+
+//   const reacticoonWebpackLibrary =
+//     typeof override === "function"
+//       ? override
+//       : override.webpackLibrary || ((config, env) => config);
+
+//   webpackLibrary = createWebpackLibraryOverride(
+//     IS_DEV,
+//     reacticoonOptions,
+//     reacticoonWebpackLibrary,
+//     pluginsOverrides
+//   );
+// }
 
 if (override.devserver) {
   console.log(

@@ -66,6 +66,10 @@ class CliPluginApi {
     return JSON.parse(String(fs.readFileSync(filepath, "utf8")));
   }
 
+  readFile(filepath) {
+    return String(fs.readFileSync(filepath, "utf8"));
+  }
+
   readYamlFile(filepath) {
     return this.parseYaml(this.readProjectFile(filepath));
   }

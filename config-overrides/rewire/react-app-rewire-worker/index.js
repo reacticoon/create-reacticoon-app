@@ -2,7 +2,7 @@ const fileLoader = function(conf) {
   return conf && conf.loader && conf.loader.indexOf("/file-loader/") !== -1;
 };
 
-function rewireWorker(config, env, { paths }) {
+function rewireWorker(config, env, api) {
   // .scss to file-loader exclude array
   // file-loader is in module->rules[]->oneOf[]
   const rulesOneOf = config.module.rules[1].oneOf;
@@ -15,7 +15,7 @@ function rewireWorker(config, env, { paths }) {
   rulesOneOf.splice(1, 0, {
     test: /\.worker\.js$/,
     use: {
-      loader: paths.resolveReacticoon("worker-loader")
+      loader: api.getPaths().resolveReacticoon("worker-loader")
     }
   });
 

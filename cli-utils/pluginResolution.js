@@ -7,7 +7,8 @@ const officialPlugins = [
   "reacticoon-cli-plugin-test",
   "reacticoon-cli-plugin-mock-api",
   "reacticoon-cli-plugin-ci",
-  "reacticoon-cli-plugin-lighthouse"
+  "reacticoon-cli-plugin-lighthouse",
+  "reacticoon-cli-plugin-bundle-stats"
 ];
 
 exports.getOfficialPluginsList = () => officialPlugins;
