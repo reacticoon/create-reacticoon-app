@@ -9,6 +9,7 @@ const requiredVersion = require("../package.json").engines.node;
 const chalk = require("chalk");
 const didYouMean = require("didyoumean");
 const semver = require("semver");
+const isFunction = require("lodash/isFunction");
 
 // Setting edit distance to 60% of the input string's length
 didYouMean.threshold = 0.6;
@@ -60,7 +61,10 @@ process.on("unhandledRejection", err => {
 
 function getPluginsCommands() {
   return getReacticoonPluginsWithCommands().reduce((commandsList, plugin) => {
-    return commandsList.concat(plugin.commands);
+    return commandsList.concat(plugin.commands).map(command => {
+      command.pluginName = plugin.name;
+      return command;
+    });
   }, []);
 }
 
@@ -146,6 +150,24 @@ program
     }
     require("../cli/create/create")(name, options);
   });
+
+getPluginsCommands().forEach(pluginCommand => {
+  // console.jsonDie(pluginCommand);
+  program
+    .command(pluginCommand.name)
+    .description(pluginCommand.name)
+    .allowUnknownOption()
+    .action(plugin => {
+      const CommandApi = require("../command/CommandApi");
+      const commandApi = new CommandApi({
+        pluginName: pluginCommand.pluginName
+      });
+      const command = require(pluginCommand.resolve);
+      if (isFunction(command)) {
+        command(commandApi);
+      }
+    });
+});
 
 // TODO:
 // program

@@ -97,17 +97,16 @@ const reacticoonPluginsList = [
   `${reacticoonPluginsDir}/reacticoon-testing-plugin`,
   `${reacticoonPluginsDir}/reacticoon-plugins-marketplace-plugin`,
   `${reacticoonPluginsDir}/reacticoon-plugin-ci`,
-  `${reacticoonPluginsDir}/reacticoon-plugin-git`
+  `${reacticoonPluginsDir}/reacticoon-plugin-git`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-lighthouse`
 ];
 
 // TODO: automatic discover
-const reacticoonCliPluginsList = [
-  `${reacticoonCliPluginsDir}/reacticoon-cli-plugin-dev`,
-  `${reacticoonCliPluginsDir}/reacticoon-cli-plugin-mock-api`,
-  `${reacticoonCliPluginsDir}/reacticoon-cli-plugin-test`,
-  `${reacticoonCliPluginsDir}/reacticoon-cli-plugin-ci`,
-  `${reacticoonCliPluginsDir}/reacticoon-cli-plugin-git`
-];
+const getOfficialPluginsList = require("../cli-utils/pluginResolution")
+  .getOfficialPluginsList;
+const reacticoonCliPluginsList = getOfficialPluginsList().map(
+  pluginName => `${reacticoonCliPluginsDir}/${pluginName}`
+);
 
 const appNodeModules = `${projectDir}/node_modules/`;
 

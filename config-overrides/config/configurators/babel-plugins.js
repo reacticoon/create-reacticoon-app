@@ -46,21 +46,20 @@ function babelPluginsConfigurator(config, env, options) {
     //
     // Deleting deeply nested properties
     // delete obj?.foo?.bar?.baz;
+    [require.resolve("@babel/plugin-proposal-optional-chaining"), {}],
+
+    // Compile export default to ES2015
+    // require.resolve("@babel/plugin-proposal-export-default-from"),
+
+    // add decoractors
+    // require.resolve("babel-plugin-transform-decorators-legacy"),
+    // Compile class and object decorators to ES5
+    // [require.resolve("@babel/plugin-proposal-decorators"), { legacy: true }],
+
+    // This plugin transforms static class properties as well as properties declared with the property initializer syntax
     [
-      require.resolve("@babel/plugin-proposal-optional-chaining"),
-      {}
-    ],
-      // Compile export default to ES2015
-      // require.resolve("@babel/plugin-proposal-export-default-from"),
-
-      // add decoractors
-      // require.resolve("babel-plugin-transform-decorators-legacy"),
-      // Compile class and object decorators to ES5
-      // [require.resolve("@babel/plugin-proposal-decorators"), { legacy: true }],
-
-      // This plugin transforms static class properties as well as properties declared with the property initializer syntax
-      (require.resolve("@babel/plugin-proposal-class-properties"),
-      { loose: true })
+      require.resolve("@babel/plugin-proposal-class-properties"),
+      { loose: true }
     ],
 
     // require.resolve("babel-plugin-syntax-trailing-function-commas"),

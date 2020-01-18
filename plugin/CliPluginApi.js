@@ -1,6 +1,8 @@
 const paths = require("../utils/paths");
 const fs = require("fs");
 const Filesystem = require("../utils/Filesystem");
+const uuidv4 = require("uuid/v4");
+const mkdirp = require("mkdirp");
 const {
   execSimpleSync,
   execSimpleSyncOnDirectory,
@@ -43,8 +45,25 @@ class CliPluginApi {
     return `${paths.projectDir}/${filepath}`;
   }
 
+  getPaths() {
+    return paths;
+  }
+
+  getPluginPath() {
+    // TODO: better handling
+    return `${paths.reacticoonCliPluginsDir}/${this.pluginName}`;
+  }
+
+  getPluginTmpPath() {
+    return `/tmp/reacticoon/${this.pluginName}`;
+  }
+
   readProjectFile(filepath) {
     return String(fs.readFileSync(this.getProjectFilepath(filepath), "utf8"));
+  }
+
+  readJsonFile(filepath) {
+    return JSON.parse(String(fs.readFileSync(filepath, "utf8")));
   }
 
   readYamlFile(filepath) {
@@ -100,6 +119,24 @@ class CliPluginApi {
 
   sendEventToCurrentSseClient(eventName, payload) {
     return sendEventToCurrentClient(eventName, payload);
+  }
+
+  generateUUID() {
+    return uuidv4();
+  }
+
+  getServerUrl() {
+    // TODO:
+    return `http://localhost:4242`;
+  }
+
+  async mkdirp() {
+    return await mkdirp.apply(null, arguments);
+  }
+
+  openBrowser() {
+    const openBrowser = require("react-dev-utils/openBrowser");
+    return openBrowser.apply(null, arguments);
   }
 }
 
