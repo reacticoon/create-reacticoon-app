@@ -21,18 +21,46 @@ function babelPluginsConfigurator(config, env, options) {
       }
     ],
 
-    // Compile export default to ES2015
-    // require.resolve("@babel/plugin-proposal-export-default-from"),
-
-    // add decoractors
-    // require.resolve("babel-plugin-transform-decorators-legacy"),
-    // Compile class and object decorators to ES5
-    // [require.resolve("@babel/plugin-proposal-decorators"), { legacy: true }],
-
-    // This plugin transforms static class properties as well as properties declared with the property initializer syntax
+    // https://babeljs.io/docs/en/next/babel-plugin-proposal-optional-chaining
+    //
+    // const obj = {
+    //   foo: {
+    //     bar: {
+    //       baz: 42,
+    //     },
+    //   },
+    // };
+    //
+    // const baz = obj?.foo?.bar?.baz; // 42
+    //
+    // const safe = obj?.qux?.baz; // undefined
+    //
+    // Optional chaining and normal chaining can be intermixed
+    // obj?.foo.bar?.baz; // Only access `foo` if `obj` exists, and `baz` if
+    //                   // `bar` exists
+    //
+    // Example usage with bracket notation:
+    // obj?.['foo']?.bar?.baz // 42
+    //
+    //
+    //
+    // Deleting deeply nested properties
+    // delete obj?.foo?.bar?.baz;
     [
-      require.resolve("@babel/plugin-proposal-class-properties"),
-      { loose: true }
+      require.resolve("@babel/plugin-proposal-optional-chaining"),
+      {}
+    ],
+      // Compile export default to ES2015
+      // require.resolve("@babel/plugin-proposal-export-default-from"),
+
+      // add decoractors
+      // require.resolve("babel-plugin-transform-decorators-legacy"),
+      // Compile class and object decorators to ES5
+      // [require.resolve("@babel/plugin-proposal-decorators"), { legacy: true }],
+
+      // This plugin transforms static class properties as well as properties declared with the property initializer syntax
+      (require.resolve("@babel/plugin-proposal-class-properties"),
+      { loose: true })
     ],
 
     // require.resolve("babel-plugin-syntax-trailing-function-commas"),
