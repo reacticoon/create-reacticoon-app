@@ -15,7 +15,9 @@ function rewireHotLoader(config, env, autoImportConfig) {
 
   config.module.rules[0].use[0].options.emitWarning = true;
   return injectBabelPlugin(
-    [paths.resolveReacticoon("react-hot-loader/babel")],
+    [
+      //paths.resolveReacticoon("react-hot-loader/babel")
+    ],
     config
   );
 }

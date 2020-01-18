@@ -6,10 +6,6 @@ function babelPluginsConfigurator(config, env, options) {
 
   // - react hot loader
 
-  // TODO: remove react-hot-loader/ dir ?
-  // const rewireReactHotLoader = require("./react-hot-loader/rewire-react-hot-loader");
-  // config = rewireReactHotLoader(config, env);
-
   //
   // Config babel plugins
   // doc: https://github.com/timarney/react-app-rewired#utilities
@@ -31,7 +27,7 @@ function babelPluginsConfigurator(config, env, options) {
     // add decoractors
     // require.resolve("babel-plugin-transform-decorators-legacy"),
     // Compile class and object decorators to ES5
-    [require.resolve("@babel/plugin-proposal-decorators"), { legacy: true }],
+    // [require.resolve("@babel/plugin-proposal-decorators"), { legacy: true }],
 
     // This plugin transforms static class properties as well as properties declared with the property initializer syntax
     [
@@ -44,8 +40,6 @@ function babelPluginsConfigurator(config, env, options) {
     // transform the eventual for-of
     // for of is not supported on old browsers
     require.resolve("babel-plugin-transform-es2015-for-of"),
-
-    env.isDev && require.resolve("react-hot-loader/babel"),
 
     // https://github.com/lodash/babel-plugin-lodash
     [

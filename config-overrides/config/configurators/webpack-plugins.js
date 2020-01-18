@@ -9,6 +9,7 @@ function webpackPluginsConfigurator(config, env, options) {
   const CircularDependencyPlugin = env.reacticoonPaths.requireReacticoon(
     "circular-dependency-plugin"
   );
+
   const webpackPlugins = [
     //
     // Webpack - CircularDependancy plugin
@@ -38,11 +39,10 @@ function webpackPluginsConfigurator(config, env, options) {
         compilation.warnings.push(new Error(errorMsg));
       }
     })
-  ];
+  ].filter(Boolean);
 
   webpackPlugins.forEach(plugin => {
-    // TODO: debug
-    // config = injectWebpackPlugin(plugin)(config);
+    config = injectWebpackPlugin(plugin, config);
   });
 }
 

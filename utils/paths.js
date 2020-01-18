@@ -172,6 +172,12 @@ const finalPaths = Object.assign(
     //
     //
 
+    reactRefreshPath: createReacticoonApp + "/node_modules/react-refresh",
+
+    //
+    //
+    //
+
     // TODO: rename to reactScripts
     scriptVersion: modulePath,
     // rewiredScript,

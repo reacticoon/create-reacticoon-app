@@ -81,7 +81,7 @@ const injectBabelPreset = function(presetName, config) {
   return config;
 };
 
-const injectWebpackPlugin = plugin => config => {
+const injectWebpackPlugin = (plugin, config) => {
   config.plugins.push(plugin);
   return config;
 };

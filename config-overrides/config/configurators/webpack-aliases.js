@@ -45,6 +45,8 @@ function webpackAliasesConfigurator(config, env, options) {
     // To test this, just remove the ./node_modules/classnames directory and start the dev server
     classnames: "clsx",
 
+    "react-refresh": reacticoonPaths.reactRefreshPath,
+
     // add user option 'webpackAliases'. Allows the user to add webpackAliases on its
     // config/overrides.js
     ...options.webpackAliases

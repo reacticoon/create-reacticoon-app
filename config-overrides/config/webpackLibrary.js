@@ -67,16 +67,15 @@ module.exports = createWebpackLibraryOverride = (
     //   from: "reacticoon/environment",
     //   propertyName: "__DEV__"
     // }
-
     // TODO: move to reacticoon config/overrides
     // react-hot-loader
     // since the react-hot-loader is on our create-reacticoon-app node modules, we make it available
     // globally
-    {
-      import: "{ hot }",
-      from: reacticoonPaths.resolveReacticoon("react-hot-loader"),
-      functionName: "hot"
-    }
+    // {
+    //   import: "{ hot }",
+    //   from: reacticoonPaths.resolveReacticoon("react-hot-loader"),
+    //   functionName: "hot"
+    // }
   ].concat(options.autoImport || []);
 
   const rewireAutoImport = require("./auto-import/rewire-auto-import");

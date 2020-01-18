@@ -44,7 +44,7 @@ module.exports = createWebpackOverride = (
 
   const appPackageJson = require(reactScriptPaths.appPath + "/package.json");
 
-  const reacticoonConfig = require(reacticoonPaths.projectConfiguration)
+  const reacticoonConfig = require(reacticoonPaths.projectConfiguration);
 
   const { pluginsOverrides = {}, pluginsOverridesDebugInfo = {} } = pluginData;
   const options = merge(
@@ -93,6 +93,7 @@ module.exports = createWebpackOverride = (
   const includePaths = [
     reacticoonPaths.appSrc,
     reacticoonPaths.reacticoonSrc
+    // reacticoonPaths.reactRefresPath
   ].concat(
     reacticoonPluginsList.map(reacticoonPlugin => {
       return reacticoonPlugin + "/src";
@@ -133,7 +134,8 @@ module.exports = createWebpackOverride = (
     require("./configurators/webpack-plugins"),
     require("./configurators/env-vars"),
     require("./configurators/rewires"),
-    require("./configurators/moduleScopePlugin")
+    require("./configurators/moduleScopePlugin"),
+    require("./configurators/react-refresh/rewire-react-refresh")
   ];
 
   configurators.forEach(configurator => {
