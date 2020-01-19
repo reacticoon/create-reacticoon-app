@@ -211,6 +211,10 @@ const finalPaths = Object.assign(
         lib = require.resolve(createReacticoonApp + "/node_modules/" + path);
       }
       return lib;
+    },
+
+    resolveCreateReacticoonApp: path => {
+      return require.resolve(createReacticoonApp + "/node_modules/" + path);
     }
   },
   paths

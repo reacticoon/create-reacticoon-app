@@ -6,18 +6,28 @@ const mkdirp = require("mkdirp");
 const {
   execSimpleSync,
   execSimpleSyncOnDirectory,
-  spawn,
+  runCommand,
+  runReacticoonCommand,
   info,
   log,
   error
 } = require("create-reacticoon-app/cli-utils");
+
 const get = require("lodash/get");
+
 const {
   getPluginConfiguration
 } = require("create-reacticoon-app/cli/configuration");
+
 const {
   sendEventToCurrentClient
 } = require("create-reacticoon-app/server/modules/sse");
+
+const {
+  getBuildId,
+  hasBuild,
+  getBuildInfo
+} = require("create-reacticoon-app/utils/BuildUtils");
 
 /**
  * class given to our plugins to provides utility methods.
@@ -37,6 +47,10 @@ class CliPluginApi {
     return get(this.getConfig(), optionPath, defaultValue);
   }
 
+  //
+  //
+  //
+
   hasProjectFile(filepath) {
     return fs.existsSync(this.getProjectFilepath(filepath));
   }
@@ -55,15 +69,21 @@ class CliPluginApi {
   }
 
   getPluginTmpPath() {
+    // TODO: mv to Filesystem
     return `/tmp/reacticoon/${this.pluginName}`;
   }
 
+  //
+  //
+  //
+
   readProjectFile(filepath) {
+    // TODO: mv to Filesystem
     return String(fs.readFileSync(this.getProjectFilepath(filepath), "utf8"));
   }
 
   readJsonFile(filepath) {
-    return JSON.parse(String(fs.readFileSync(filepath, "utf8")));
+    return Filesystem.readJsonFile(filepath);
   }
 
   readFile(filepath) {
@@ -91,6 +111,26 @@ class CliPluginApi {
     return fs.writeFileSync(this.getProjectFilepath(filepath), content);
   }
 
+  directoryExists(path) {
+    return Filesystem.directoryExists(path);
+  }
+
+  getCacheFile(filepath) {
+    return Filesystem.getCacheFile(`${this.pluginName}/${filepath}`);
+  }
+
+  saveCacheFile(filepath, content) {
+    return Filesystem.saveCacheFile(`${this.pluginName}/${filepath}`, content);
+  }
+
+  async mkdirp() {
+    return await mkdirp.apply(null, arguments);
+  }
+
+  //
+  //
+  //
+
   execSimpleSync() {
     return execSimpleSync.apply(null, arguments);
   }
@@ -99,15 +139,17 @@ class CliPluginApi {
     return execSimpleSyncOnDirectory.apply(null, arguments);
   }
 
-  directoryExists(path) {
-    return Filesystem.directoryExists(path);
+  runCommand(command, options = {}) {
+    return runCommand(command, options);
   }
 
-  spawn() {
-    const applyDebugSpwan = require("create-reacticoon-app/utils/applyDebugSpwan");
-    applyDebugSpwan();
-    return spawn.apply(null, arguments);
+  runReacticoonCommand(reacticoonCommand, options) {
+    return runReacticoonCommand(reacticoonCommand, options);
   }
+
+  //
+  // log
+  //
 
   info() {
     return info.apply(null, arguments);
@@ -121,21 +163,45 @@ class CliPluginApi {
     return error.apply(null, arguments);
   }
 
+  //
+  // eventrs
+  //
+
   sendEventToCurrentSseClient(eventName, payload) {
     return sendEventToCurrentClient(eventName, payload);
   }
 
-  generateUUID() {
-    return uuidv4();
-  }
+  //
+  // dev server
+  //
 
   getServerUrl() {
     // TODO:
     return `http://localhost:4242`;
   }
 
-  async mkdirp() {
-    return await mkdirp.apply(null, arguments);
+  //
+  // build
+  //
+
+  getBuildId() {
+    return getBuildId.apply(null, arguments);
+  }
+
+  hasBuild() {
+    return hasBuild.apply(null, arguments);
+  }
+
+  getBuildInfo() {
+    return getBuildInfo.apply(null, arguments);
+  }
+
+  //
+  // other utils
+  //
+
+  generateUUID() {
+    return uuidv4();
   }
 
   openBrowser() {

@@ -157,7 +157,7 @@ getPluginsCommands().forEach(pluginCommand => {
     .command(pluginCommand.name)
     .description(pluginCommand.name)
     .allowUnknownOption()
-    .action(plugin => {
+    .action(() => {
       const CommandApi = require("../command/CommandApi");
       const commandApi = new CommandApi({
         pluginName: pluginCommand.pluginName

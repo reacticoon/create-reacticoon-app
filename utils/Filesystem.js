@@ -1,9 +1,7 @@
-"use strict";
-
-var fs = require("fs");
-var mkdirp = require("mkdirp");
-var dirname = require("path").dirname;
-var path = require("path");
+const fs = require("fs");
+const mkdirp = require("mkdirp");
+const dirname = require("path").dirname;
+const path = require("path");
 
 // List all files in a directory in Node.js recursively in a synchronous fashion
 // https://gist.github.com/kethinov/6658166
@@ -15,7 +13,7 @@ const getTree = (dir, filelist = []) => {
     const dirent = fs.statSync(dirFile);
     if (dirent.isDirectory()) {
       console.log("directory", path.join(dir, file));
-      var odir = {
+      const odir = {
         filepath: dirFile,
         name: file,
         files: [],
@@ -34,8 +32,8 @@ const getTree = (dir, filelist = []) => {
   return filelist;
 };
 
-var saveFile = function saveFile(filepath, content) {
-  var dir = dirname(filepath);
+function saveFile(filepath, content) {
+  const dir = dirname(filepath);
 
   mkdirp(dir, function(err) {
     if (err) console.error(err);
@@ -43,38 +41,48 @@ var saveFile = function saveFile(filepath, content) {
       fs.writeFileSync(filepath, content);
     }
   });
-};
+}
 
 //
 //
 //
 
 // TODO: unique id per project
-const cacheDir = `/tmp/create-reacticoon-app`;
+const cacheDir = `/tmp/reacticoon`;
 mkdirp(cacheDir);
 
-const getCacheFile = filepath => {
+function getCacheFile(filepath) {
   return fs.readFileSync(`${cacheDir}/${filepath}`, "utf8");
-};
+}
 
-const saveCacheFile = (filepath, content) => {
+function saveCacheFile(filepath, content) {
   // TODO: unique id per project
   return fs.writeFileSync(`${cacheDir}/${filepath}`, content);
-};
+}
 
-var readFileSync = function readFileSync(filepath) {
+function readFileSync(filepath) {
   return fs.readFileSync(filepath, "utf8");
-};
+}
 
-var directoryExists = function directoryExists(path) {
+function directoryExists(path) {
+  return fs.existsSync(path); // TODO: and is directory
+}
+
+function fileExists(path) {
   return fs.existsSync(path);
-};
+}
+
+function readJsonFile(filepath) {
+  return JSON.parse(String(fs.readFileSync(filepath, "utf8")));
+}
 
 module.exports = {
-  saveFile: saveFile,
-  saveCacheFile: saveCacheFile,
-  getCacheFile: getCacheFile,
-  readFileSync: readFileSync,
-  directoryExists: directoryExists,
-  getTree: getTree
+  saveFile,
+  saveCacheFile,
+  getCacheFile,
+  readFileSync,
+  directoryExists,
+  fileExists,
+  getTree,
+  readJsonFile
 };
