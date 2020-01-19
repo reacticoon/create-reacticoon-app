@@ -6,6 +6,10 @@ function envVarsConfigurator(config, env, options) {
   const __DEV__ = process.env.NODE_ENV !== "production";
   const __PROD__ = process.env.NODE_ENV === "production";
 
+  if (env.isTesting) {
+    return config;
+  }
+
   //
   // add env vars.
   // Accessible on the app via `process.env`

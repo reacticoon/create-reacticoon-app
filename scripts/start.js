@@ -23,7 +23,6 @@ ReacticoonChecks.run(() => {
 
   const devServerConfig = require(devServerConfigPath);
 
-
   //
   // Open browser override
   // By default react-scripts open the website url on the browser. This can be annoying, so we

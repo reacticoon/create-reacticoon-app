@@ -8,7 +8,6 @@ ReacticoonChecks.run(() => {
   const paths = require("../utils/paths");
   const overrides = require("../config-overrides");
 
-  const rewireJestConfig = require("../utils/rewireJestConfig");
   const createJestConfigPath =
     paths.scriptVersion + "/scripts/utils/createJestConfig";
 
@@ -20,8 +19,12 @@ ReacticoonChecks.run(() => {
   // load original createJestConfig
   const createJestConfig = require(createJestConfigPath);
 
+  const webpackConfigPath = `${paths.scriptVersion}/config/webpack.config.js`;
+
+  const webpackConfig = require(webpackConfigPath)("testing");
+
   // run original createJestConfig
-  const config = createJestConfig(
+  const jestConfig = createJestConfig(
     relativePath =>
       path.resolve(
         paths.appPath,
@@ -37,8 +40,10 @@ ReacticoonChecks.run(() => {
   packageJson.jest = jestOverrides;
 
   // override createJestConfig in memory
-  require.cache[require.resolve(createJestConfigPath)].exports = () =>
-    overrides.jest(rewireJestConfig(config));
+  require.cache[require.resolve(createJestConfigPath)].exports = overrides.jest(
+    jestConfig,
+    webpackConfig
+  );
 
   // Passing the --scripts-version on to the original test script can result
   // in the test script rejecting it as an invalid option. So strip it out of

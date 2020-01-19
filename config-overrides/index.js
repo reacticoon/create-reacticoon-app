@@ -6,9 +6,9 @@ const scriptName = process.env.scriptName;
 const IS_DEV = scriptName === "start";
 const IS_BUILD = scriptName === "build";
 const IS_LIBRARY = scriptName === "build-library";
-const IS_TEST = scriptName === "test" || scriptName === "test:integration";
+const IS_TESTING = scriptName === "test" || scriptName === "test:integration";
 
-if (!IS_DEV && !IS_LIBRARY && !IS_BUILD && !IS_TEST) {
+if (!IS_DEV && !IS_LIBRARY && !IS_BUILD && !IS_TESTING) {
   throw new Error("Invalid " + scriptName);
 }
 
@@ -44,17 +44,16 @@ const pluginOverridesData = retrievePluginsOverridesData(IS_DEV);
 //
 // Create webpack data
 //
+const createWebpackOverride = require("./config/webpack");
+
+const reacticoonWebpackOverride =
+  typeof override === "function"
+    ? override
+    : override.webpack || ((config, env) => config);
 
 let webpack = null;
-let webpackLibrary = null;
+// let webpackLibrary = null;
 if (IS_DEV || IS_BUILD) {
-  const createWebpackOverride = require("./config/webpack");
-
-  const reacticoonWebpackOverride =
-    typeof override === "function"
-      ? override
-      : override.webpack || ((config, env) => config);
-
   webpack = createWebpackOverride(
     IS_DEV,
     reacticoonOptions,
@@ -115,11 +114,22 @@ const devServer = configFunction => (proxy, allowedHost) => {
   return config;
 };
 
-const jest = override.jest || (config => config);
+let jest = null;
+
+if (IS_TESTING) {
+  const createJestOverride = require("./config/jest");
+  jest = createJestOverride(
+    IS_TESTING,
+    reacticoonOptions,
+    reacticoonWebpackOverride,
+    pluginOverridesData
+  );
+}
+
 // normalized overrides functions
 module.exports = {
   webpack,
-  webpackLibrary,
+  // webpackLibrary,
   devServer,
   jest
 };

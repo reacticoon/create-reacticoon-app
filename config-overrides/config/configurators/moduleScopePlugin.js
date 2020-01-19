@@ -15,6 +15,10 @@ const { findResolvePlugin } = require("../../utils/rewired");
  * We add the reacticoon and reacticoon-plugins paths.
  */
 function moduleScopePluginConfigurator(config, env) {
+  if (env.isTesting) {
+    return config;
+  }
+
   // default configuration example:
   // {
   //   "appSrc": "/home/loic/dev/bm/bm-website-v2/src",

@@ -169,16 +169,19 @@ getPluginsCommands().forEach(pluginCommand => {
     });
 });
 
-// TODO:
-// program
-//   .command("test [options]")
-//   .description(
-//     "install a plugin and invoke its generator in an already created project"
-//   )
-//   .allowUnknownOption()
-//   .action(() => {
-//     require("../scripts/test")(minimist(process.argv.slice(2)));
-//   });
+program
+  .command("test [options]")
+  .description(
+    "install a plugin and invoke its generator in an already created project"
+  )
+  .allowUnknownOption()
+  .action(() => {
+    // trick for config-overrides/index.js, this allow to run reacticoon in different ways:
+    // - yarn start
+    // - yarn reacticoon start
+    process.env.scriptName = "test";
+    require("../scripts/test");
+  });
 
 program
   .command("start")
