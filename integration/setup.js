@@ -14,4 +14,4 @@ module.exports = async function(globalConfig) {
   // Your global setup
   // https://jestjs.io/docs/en/configuration.html#globalsetup-string
   global.expect = expect;
-});
+};

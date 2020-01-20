@@ -6,7 +6,10 @@ const scriptName = process.env.scriptName;
 const IS_DEV = scriptName === "start";
 const IS_BUILD = scriptName === "build";
 const IS_LIBRARY = scriptName === "build-library";
-const IS_TESTING = scriptName === "test" || scriptName === "test:integration";
+const IS_TESTING =
+  scriptName === "test" ||
+  scriptName === "test:integration" ||
+  scriptName === "test:coverage";
 
 if (!IS_DEV && !IS_LIBRARY && !IS_BUILD && !IS_TESTING) {
   throw new Error("Invalid " + scriptName);

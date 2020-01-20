@@ -9,7 +9,8 @@ const getMethods = ({ page }) => {
 
   let screenshotIndex = 0;
   methods.goTo = async function(route) {
-    await page.goto(`http://localhost:3000${route}`);
+    // TODO: right port
+    await page.goto(`http://localhost:4242${route}`);
   };
 
   methods.screenshot = async fileName =>

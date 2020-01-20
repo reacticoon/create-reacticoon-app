@@ -152,10 +152,16 @@ const finalPaths = Object.assign(
     projectBuild: projectDir + "/build",
     projectBuildInfoFile: projectDir + "/build/reacticoon-build-info.json",
     libDir: projectDir + "/lib",
+
     createReacticoonApp,
+    createReacticoonAppNodeModules: `${createReacticoonApp}/node_modules`,
 
     appNodeModules,
     appLibIndexJs: projectDir + "/src/index.js",
+
+    junitIntegrationTestsReport: `${projectDir}/output/jest/integration/junit-integration-tests.xml`,
+    junitUnitTestsReport: `${projectDir}/output/jest/unit/junit-unit-tests.xml`,
+    junitCoverageTestsReport: `${projectDir}/output/jest/coverage/index.html`,
 
     //
     //
@@ -215,6 +221,10 @@ const finalPaths = Object.assign(
 
     resolveCreateReacticoonApp: path => {
       return require.resolve(createReacticoonApp + "/node_modules/" + path);
+    },
+
+    requireCreateReacticoonApp: path => {
+      return require(createReacticoonApp + "/node_modules/" + path);
     }
   },
   paths

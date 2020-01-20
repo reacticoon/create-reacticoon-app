@@ -29,6 +29,11 @@ const {
   getBuildInfo
 } = require("create-reacticoon-app/utils/BuildUtils");
 
+const {
+  getNetworkAddress,
+  getNetworkNextAvailablePort
+} = require("create-reacticoon-app/utils/Network");
+
 /**
  * class given to our plugins to provides utility methods.
  *
@@ -147,6 +152,40 @@ class CliPluginApi {
     return runReacticoonCommand(reacticoonCommand, options);
   }
 
+  runReacticoonCommandWithSse(reacticoonCommand, sseEventName) {
+    const taskId = this.generateUUID();
+
+    this.runReacticoonCommand(reacticoonCommand, {
+      onError: message => {
+        this.sendEventToCurrentSseClient(sseEventName, {
+          type: "error",
+          taskId,
+          message
+        });
+      },
+      onLog: message => {
+        this.sendEventToCurrentSseClient(sseEventName, {
+          type: "log",
+          taskId,
+          message
+        });
+      },
+      onClose: ({ code }) => {
+        this.sendEventToCurrentSseClient(sseEventName, {
+          type: "done",
+          taskId,
+          code,
+          message: `Ended with code ${code}`
+        });
+      }
+    });
+
+    return {
+      sseEventName,
+      taskId
+    };
+  }
+
   //
   // log
   //
@@ -194,6 +233,18 @@ class CliPluginApi {
 
   getBuildInfo() {
     return getBuildInfo.apply(null, arguments);
+  }
+
+  //
+  // Network
+  //
+
+  getNetworkAddress() {
+    return getNetworkAddress();
+  }
+
+  getNetworkNextAvailablePort() {
+    return getNetworkNextAvailablePort();
   }
 
   //

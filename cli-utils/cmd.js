@@ -23,6 +23,7 @@ const execSimpleSyncOnDirectory = (cmd, cwd) => {
 const runCommand = (command, options) => {
   const applyDebugSpwan = require("create-reacticoon-app/utils/applyDebugSpwan");
   applyDebugSpwan();
+
   const argv = command.split(" ");
   const cmd = spawn(argv[0], argv.slice(1), {
     cwd: options.cwd
@@ -41,8 +42,8 @@ const runCommand = (command, options) => {
   }
 
   if (options.onClose) {
-    cmd.on("close", code => {
-      options.onClose({ code });
+    cmd.once("close", (code, signal) => {
+      options.onClose({ code, signal, error: code !== 0 });
     });
   }
 

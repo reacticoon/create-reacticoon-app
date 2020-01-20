@@ -56,6 +56,11 @@ function envVarsConfigurator(config, env, options) {
 
     PROJECT_SRC: paths.projectSrc,
 
+    // TODO: move on dev plugin override
+    junitIntegrationTestsReportPath: paths.junitIntegrationTestsReport,
+    junitUnitTestsReportPath: paths.junitUnitTestsReport,
+    junitCoverageTestsReportPath: paths.junitCoverageTestsReport,
+
     ...options.env
   };
 

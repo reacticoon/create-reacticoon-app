@@ -5,6 +5,7 @@ const CommandAnalyzeBuild = require("../commands/CommandAnalyzeBuild");
 const CommandBundlePhobia = require("../commands/CommandBundlePhobia");
 const CommandReadFile = require("../commands/CommandReadFile");
 const CommandReadMarkdownFile = require("../commands/CommandReadMarkdownFile");
+const CommandReadLocalWebsite = require("../commands/CommandReadLocalWebsite");
 const CommandReacticoonConfiguration = require("../commands/CommandReacticoonConfiguration");
 const Filesystem = require("../../utils/Filesystem");
 const CliPluginApi = require("../../plugin/CliPluginApi");
@@ -30,6 +31,7 @@ function loadCommands() {
     BUNDLE_PHOBIA: CommandBundlePhobia,
     READ_FILE: CommandReadFile,
     READ_MARKDOWN_FILE: CommandReadMarkdownFile,
+    READ_LOCAL_WEBSITE: CommandReadLocalWebsite,
     "REACTICOON::CONFIGURATION": CommandReacticoonConfiguration
   };
   // add plugin commands to our commands map
@@ -144,7 +146,7 @@ function CommandRoute(app, context) {
       console.log(
         `\n\n[command] ${req.body.command}\n${JSON.stringify(
           ignoreLogCommands.includes(req.body.command)
-            ? { dev: 'ignored' }
+            ? { dev: "ignored" }
             : req.body,
           null,
           2

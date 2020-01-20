@@ -68,7 +68,10 @@ const rewireJestConfigBabel = (jestConfig, babelConfig, webpackConfig) => {
 
   // https://stackoverflow.com/questions/33190795/configuring-jest-to-mimic-webpack-resolve-root-and-resolve-alias
   // https://jestjs.io/docs/en/webpack.html
+  // TODO: make optionnal to include reacticoon and plugins tests
   jestConfig.modulePaths = webpackConfig.resolve.modules;
+  // .map(mod => mod.replace("/node_modules", "/src"))
+  // .filter(mod => mod !== "node_modules");
   jestConfig.moduleDirectories = webpackConfig.resolve.modules;
 
   forEach(webpackConfig.resolve.alias, (aliasPath, aliasName) => {
@@ -79,8 +82,8 @@ const rewireJestConfigBabel = (jestConfig, babelConfig, webpackConfig) => {
 
   // console.jsonDie({
   //   moduleNameMapper: jestConfig.moduleNameMapper,
-  //   modulePaths: jestConfig.modulePaths,
-  //   moduleDirectories: jestConfig.moduleDirectories
+  //   modulePaths: jestConfig.modulePaths
+  //   // moduleDirectories: jestConfig.moduleDirectories
   // });
 
   return jestConfig;
@@ -123,6 +126,85 @@ module.exports = createJestOverride = (
     configData.babelConfig,
     configData.webpackConfig
   );
-  // console.jsonDie(jestConfig);
+
+  jestConfig = {
+    ...jestConfig,
+
+    globals: {
+      ...jestConfig.globals,
+      __DEV__: true
+    },
+
+    // A list of paths to directories that Jest should use to search for files in.
+    // roots: jestConfig.modulePaths,
+
+    // //
+    // projects: jestConfig.modulePaths,
+
+    // projects: [
+    //   // ...jestConfig.projects,
+
+    //   // TODO: make optionnal to include reacticoon and plugins tests
+    //   paths.reacticoonSrc
+    // ].concat(paths.reacticoonPluginsList.map(plugin => `${plugin}/src`)),
+
+    //
+    //
+    //
+
+    coverageDirectory: `${paths.projectDir}/output/jest/coverage`,
+    coverageReporters: ["text", "html"],
+
+    setupFilesAfterEnv: [
+      ...jestConfig.setupFilesAfterEnv,
+
+      //
+      // https://github.com/zaqqaz/jest-allure
+      // jest -v >24
+      //
+
+      paths.resolveCreateReacticoonApp("jest-allure/dist/setup")
+    ],
+
+    //
+    // add custom reporters
+    //
+
+    reporters: [
+      // "default", ==> we use jest-standard-reporter
+
+      //
+      // https://github.com/chrisgalvan/jest-standard-reporter
+      // Jest uses stderr to print the results of the tests (as opposed to stdout; see issue https://github.com/facebook/jest/issues/5064).
+      // Many CI tools mark any output coming from stderr as a failure, making builds to fail even when the tests pass(false positive).
+      // This reporter uses stdout to print messages and only uses stderr when an error is thrown.
+      //
+      paths.resolveCreateReacticoonApp("jest-standard-reporter"),
+
+      //
+      // A Jest reporter that creates compatible junit xml files
+      // https://github.com/jest-community/jest-junit
+      //
+      [
+        paths.resolveCreateReacticoonApp("jest-junit"),
+        {
+          // /!\ if changed, change paths.junitUnitTestsReport
+          outputDirectory: `${paths.projectDir}/output/jest/unit`,
+          outputName: "junit-unit-tests.xml"
+        }
+      ],
+
+      //
+      // https://github.com/jodonnell/jest-slow-test-reporter
+      // Prints out the slowest 10 tests in your app. Can also print warnings when a test exceeds X ms.
+      //
+      [
+        paths.resolveCreateReacticoonApp("jest-slow-test-reporter"),
+        { numTests: 8, warnOnSlowerThan: 300, color: true }
+      ]
+    ]
+  };
+
+  // console.jsonDie(jestConfig.projects);
   return () => rewireJestConfigWithPackageJson(jestConfig);
 };

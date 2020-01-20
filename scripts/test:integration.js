@@ -56,12 +56,74 @@ ReacticoonChecks.run(() => {
 
     projects: [paths.projectDir],
 
-    watch
+    globals: {
+      __DEV__: true
+    },
+
+    watch,
+
+    verbose: true,
+    // silent: true
+
+    setupFilesAfterEnv: [
+      // ...jestConfig.setupFilesAfterEnv,
+
+      //
+      // https://github.com/zaqqaz/jest-allure
+      // jest -v >24
+      //
+
+      paths.resolveCreateReacticoonApp("jest-allure/dist/setup")
+    ],
+
+    //
+    // add custom reporters
+    //
+
+    reporters: [
+      // "default", ==> we use jest-standard-reporter
+
+      //
+      // https://github.com/zaqqaz/jest-allure
+      //
+
+      paths.resolveCreateReacticoonApp("jest-allure"),
+
+      //
+      // https://github.com/chrisgalvan/jest-standard-reporter
+      // Jest uses stderr to print the results of the tests (as opposed to stdout; see issue https://github.com/facebook/jest/issues/5064).
+      // Many CI tools mark any output coming from stderr as a failure, making builds to fail even when the tests pass(false positive).
+      // This reporter uses stdout to print messages and only uses stderr when an error is thrown.
+      //
+      paths.resolveCreateReacticoonApp("jest-standard-reporter"),
+
+      //
+      // A Jest reporter that creates compatible junit xml files
+      // https://github.com/jest-community/jest-junit
+      //
+      [
+        paths.resolveCreateReacticoonApp("jest-junit"),
+        {
+          // /!\ if changed, change paths.junitIntegrationTestsReport
+          outputDirectory: `${paths.projectDir}/output/jest/integration/`,
+          outputName: "junit-integration-tests.xml"
+        }
+      ],
+
+      //
+      // https://github.com/jodonnell/jest-slow-test-reporter
+      // Prints out the slowest 10 tests in your app. Can also print warnings when a test exceeds X ms.
+      //
+      [
+        paths.resolveCreateReacticoonApp("jest-slow-test-reporter"),
+        { numTests: 8, warnOnSlowerThan: 300, color: true }
+      ]
+    ]
   };
 
   config = jestConfig;
   // config = { ...config, jestConfig };
-  console.log(JSON.stringify(config, null, 2));
+  // console.log(JSON.stringify(config, null, 2));
   // die;
 
   // restore overrides for rewireJestConfig
@@ -79,7 +141,7 @@ ReacticoonChecks.run(() => {
   // }
 
   // run original script
-  const jest = paths.requireApp("jest");
+  const jest = paths.requireCreateReacticoonApp("jest");
   try {
     // debugger breakpoint hits here and show correct `options` object
     jest.runCLI(config, config.projects, result => {});

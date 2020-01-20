@@ -171,9 +171,7 @@ getPluginsCommands().forEach(pluginCommand => {
 
 program
   .command("test [options]")
-  .description(
-    "install a plugin and invoke its generator in an already created project"
-  )
+  .description("run tests")
   .allowUnknownOption()
   .action(() => {
     // trick for config-overrides/index.js, this allow to run reacticoon in different ways:
@@ -181,6 +179,40 @@ program
     // - yarn reacticoon start
     process.env.scriptName = "test";
     require("../scripts/test");
+  });
+
+program
+  .command("test:coverage [options]")
+  .description("run tests coverage")
+  .allowUnknownOption()
+  .action(() => {
+    // trick for config-overrides/index.js, this allow to run reacticoon in different ways:
+    // - yarn start
+    // - yarn reacticoon start
+    process.env.scriptName = "test:coverage";
+
+    // trick to transform the command to test --coverage
+    for (let i = 0; i < process.argv.length; i++) {
+      const arg = process.argv[i];
+      if (arg === "test:coverage") {
+        process.argv[i] = "test";
+      }
+    }
+    process.argv.push("--coverage");
+
+    require("../scripts/test");
+  });
+
+program
+  .command("test:integration [options]")
+  .description("run integration tests")
+  .allowUnknownOption()
+  .action(() => {
+    // trick for config-overrides/index.js, this allow to run reacticoon in different ways:
+    // - yarn start
+    // - yarn reacticoon start
+    process.env.scriptName = "test:integration";
+    require("../scripts/test:integration");
   });
 
 program
