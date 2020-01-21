@@ -43,6 +43,18 @@ if (semver.satisfies(process.version, "9.x")) {
   );
 }
 
+//
+// [BEGIN] apply modifications for launchEditor.js
+//
+// TODO: remove once react-scripts are updated
+//
+const paths = require("../utils/paths");
+require(paths.resolveCreateReacticoonApp("react-dev-utils/launchEditor"));
+require.cache[
+  paths.resolveCreateReacticoonApp("react-dev-utils/launchEditor")
+].exports = require("../reacticoon-cli-plugins/reacticoon-cli-plugin-dev/utils/launchEditor");
+// [END] apply modifications for launchEditor.js
+
 const minimist = require("minimist");
 const program = require("commander");
 
