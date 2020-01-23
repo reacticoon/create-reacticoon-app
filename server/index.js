@@ -1,7 +1,7 @@
 //
 // Reacticoon server. Running on port 9191.
 //
-// This server allows the reacticoon-dev-plugin to interact with a node.js environment.
+// This server allows the reacticoon-plugin-dev to interact with a node.js environment.
 // It displays a simple server API that can receive commands.
 //
 //

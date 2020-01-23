@@ -120,6 +120,10 @@ class CliPluginApi {
     return Filesystem.directoryExists(path);
   }
 
+  fileExists(path) {
+    return Filesystem.fileExists(path);
+  }
+
   getCacheFile(filepath) {
     return Filesystem.getCacheFile(`${this.pluginName}/${filepath}`);
   }

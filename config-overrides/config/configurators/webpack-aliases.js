@@ -1,5 +1,15 @@
+const path = require("path");
+
 function webpackAliasesConfigurator(config, env, options) {
   const reacticoonPaths = env.reacticoonPaths;
+
+  const reacticoonPluginsAliases = {};
+
+  reacticoonPaths.reacticoonPluginsList.forEach(reacticoonPluginPath => {
+    reacticoonPluginsAliases[
+      path.basename(reacticoonPluginPath)
+    ] = `${reacticoonPluginPath}/src`;
+  });
 
   //
   // Add webpack aliases
@@ -38,6 +48,9 @@ function webpackAliasesConfigurator(config, env, options) {
     // TODO: remove, temporary to use reacticoon from app/src/reacticoon since we does not compile it to
     // node_modules yet
     "reacticoon-plugins": reacticoonPaths.reacticoonPluginsDir,
+
+    // TODO: remove, temporary to use import to reacticoon plugins
+    ...reacticoonPluginsAliases,
 
     // Previously we were using classNames but replaced it with clsx following material-ui
     // (https://github.com/mui-org/material-ui/pull/14152)

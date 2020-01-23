@@ -83,19 +83,19 @@ try {
 
 // TODO: automatic discover
 const reacticoonPluginsList = [
-  `${reacticoonPluginsDir}/reacticoon-flash-messages`,
-  `${reacticoonPluginsDir}/reacticoon-form`,
-  `${reacticoonPluginsDir}/reacticoon-hibp`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-flash-messages`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-form`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-hibp`,
   `${reacticoonPluginsDir}/reacticoon-history`,
-  `${reacticoonPluginsDir}/reacticoon-material-ui`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-material-ui`,
   `${reacticoonPluginsDir}/reacticoon-plugin-example`,
   `${reacticoonPluginsDir}/reacticoon-plugin-logger`,
   `${reacticoonPluginsDir}/reacticoon-plugin-sentry`,
-  `${reacticoonPluginsDir}/reacticoon-validation`,
-  `${reacticoonPluginsDir}/reacticoon-dev-plugin`,
-  `${reacticoonPluginsDir}/reacticoon-mock-api-plugin`,
-  `${reacticoonPluginsDir}/reacticoon-testing-plugin`,
-  `${reacticoonPluginsDir}/reacticoon-plugins-marketplace-plugin`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-validation`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-dev`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-mock-api`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-testing`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-marketplace`,
   `${reacticoonPluginsDir}/reacticoon-plugin-ci`,
   `${reacticoonPluginsDir}/reacticoon-plugin-git`,
   `${reacticoonPluginsDir}/reacticoon-plugin-lighthouse`,
@@ -225,6 +225,13 @@ const finalPaths = Object.assign(
 
     requireCreateReacticoonApp: path => {
       return require(createReacticoonApp + "/node_modules/" + path);
+    },
+
+    getViewPluginDirectory: pluginName => {
+      // TODO:
+      return path.resolve(
+        createReacticoonApp + "/reacticoon-plugins/" + pluginName
+      );
     }
   },
   paths
