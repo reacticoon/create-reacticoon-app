@@ -16,7 +16,6 @@ const {
 } = require("create-reacticoon-app/cli-utils");
 
 const get = require("lodash/get");
-const isEmpty = require("lodash/isEmpty");
 
 const {
   getPluginConfiguration,

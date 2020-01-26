@@ -23,9 +23,29 @@ const flattenPlugins = plugins => {
 };
 
 const formatPlugin = plugin => {
+  //
+  // Readme
+  //
   const readmePath = `${plugin.resolve}/README.md`;
   plugin.hasReadme = fs.existsSync(readmePath);
   plugin.readmePath = readmePath;
+
+  //
+  // overridesData
+  //
+
+  let overridesData = {
+    hasOverrides: plugin.hasOverrides
+  };
+
+  if (plugin.hasOverrides) {
+    overridesData = {
+      ...overridesData,
+      // TODO: handle overrides being a directory with an index.js on it ?
+      filepath: `${plugin.resolve}/${plugin.overrides}.js`
+    };
+  }
+  plugin.overridesData = overridesData;
 };
 
 module.exports = (config = {}) => {

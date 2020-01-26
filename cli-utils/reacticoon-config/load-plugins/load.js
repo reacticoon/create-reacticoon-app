@@ -1,3 +1,4 @@
+const invariant = require("invariant");
 const fs = require(`fs`);
 const slash = require(`slash`);
 const path = require(`path`);
@@ -30,30 +31,37 @@ function createPluginData(plugin, resolvedPath) {
         // TODO: throw
       }
     }),
-    generators: (plugin.generators || []).map(generator => {
-      if (isString(generator)) {
-        let resolve =
-          generator[0] === "/" ? generator : `${resolvedPath}/${generator}`;
-        if (!endsWith(resolve, ".js")) {
-          resolve += ".js";
-        }
-        // TODO: check resolve is valid path
+    generators: (plugin.generators || []).filter(Boolean).map(generator => {
+      invariant(
+        generator.__IS_GENERATOR,
+        `generator must be created using api.createGenerator`
+      );
 
-        return {
-          resolve,
-          generator: null // to load
-        };
-      } else {
-        // TODO: throw
+      let resolve =
+        generator[0] === "/" ? generator : `${resolvedPath}/${generator}`;
+      if (!endsWith(resolve, ".js")) {
+        resolve += ".js";
       }
+      // TODO: check resolve is valid path
+
+      return {
+        ...generator,
+        resolve,
+        generator: null // to load
+      };
     }),
-    commands: (plugin.commands || []).map(command => {
+    commands: (plugin.commands || []).filter(Boolean).map(command => {
+      invariant(
+        command.__IS_COMMAND,
+        `command must be created using api.createCommand`
+      );
+
       // command example:
       // {
       //   name: 'test-cmd',
       //   path: "./commands/test"
       // }
-      const { name, path } = command;
+      const { name, path, description } = command;
       let resolveDirectory = path[0] === "/" ? path : `${resolvedPath}/${path}`;
       let resolve = `${resolveDirectory}/${name}`;
       if (!endsWith(resolve, ".js")) {
@@ -65,6 +73,7 @@ function createPluginData(plugin, resolvedPath) {
         resolveDirectory,
         resolve,
         name,
+        description,
         path
       };
     }),
@@ -72,6 +81,11 @@ function createPluginData(plugin, resolvedPath) {
     serverCommands: (plugin.serverCommands || [])
       .filter(Boolean)
       .map(serverCommand => {
+        invariant(
+          serverCommand.__IS_SERVER_COMMAND,
+          `server command must be created using api.createServerCommand`
+        );
+
         // server command example:
         // {
         //   name: 'TEST',
@@ -123,7 +137,7 @@ function inititatePluginData(resolvedPath) {
     ...createPluginData(plugin, resolvedPath)
   };
 
-  info(`Initiate ${pluginData.name}`, 'cli-plugin');
+  info(`Initiate ${pluginData.name}`, "cli-plugin");
 
   return pluginData;
 }
@@ -225,14 +239,6 @@ function load() {
       };
     }
   };
-
-  // Add internal plugins
-  const internalPlugins = ["../../../internal/reacticoon-plugin-default"];
-
-  internalPlugins.forEach(relPath => {
-    const absPath = path.join(__dirname, relPath);
-    plugins.push(processPlugin(absPath));
-  });
 
   // Add plugins from the site config.
   if (config.plugins) {

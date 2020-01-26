@@ -1,4 +1,9 @@
-function createServerCommand(commandName, commandDescription, path, options) {
+function createServerCommand(
+  commandName,
+  commandDescription,
+  path,
+  options = {}
+) {
   return {
     name: commandName,
     description: commandDescription,
