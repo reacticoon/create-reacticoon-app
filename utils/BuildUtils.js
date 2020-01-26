@@ -5,6 +5,7 @@ const {
   readJsonFile,
   fileExists
 } = require("create-reacticoon-app/utils/Filesystem");
+const moment = require("moment");
 
 function getManifestContent() {
   return require(`${paths.projectDir}/build/asset-manifest.json`);
@@ -29,7 +30,27 @@ function getBuildInfo() {
     buildInfo = readJsonFile(paths.projectBuildInfoFile);
 
     if (buildInfo) {
-      buildInfo.builtAtFormatted = new Date(buildInfo.builtAt).toISOString();
+      const builtAtDate = moment(buildInfo.builtAt);
+      const now = moment();
+
+      buildInfo.builtAtFormatted = builtAtDate.toISOString();
+
+      const diffDays = now.diff(builtAtDate, "days");
+      const diffHours = now.diff(builtAtDate, "hours");
+      const diffMinutes = now.diff(builtAtDate, "minutes");
+
+      let diffStr = "";
+      if (diffDays > 0) {
+        diffStr += `${diffDays} days `;
+      }
+
+      if (diffHours > 0) {
+        diffStr += `${diffHours} hours `;
+      }
+
+      diffStr += `${diffMinutes} minutes `;
+
+      buildInfo.builtAtDiffFormatted = `${diffStr}ago`;
     }
   }
   return buildInfo;

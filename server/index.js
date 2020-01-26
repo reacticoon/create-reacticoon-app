@@ -25,9 +25,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const { resetCache } = require("../cli-utils/cache");
 
 // Port where Reacticoon server will run.
 const port = 9191 || process.env.reacticoonServerPort;
+
+resetCache();
 
 // TODO: fix
 process.env.DIR = "/home/loic/dev/reacticoon/create-reacticoon-app";

@@ -1,6 +1,6 @@
-const paths = require("../utils/paths");
 const fs = require("fs");
 const Filesystem = require("../utils/Filesystem");
+const paths = require("../utils/paths");
 const uuidv4 = require("uuid/v4");
 const mkdirp = require("mkdirp");
 const {
@@ -10,13 +10,17 @@ const {
   runReacticoonCommand,
   info,
   log,
-  error
+  error,
+  setCacheValue,
+  getCacheValue
 } = require("create-reacticoon-app/cli-utils");
 
 const get = require("lodash/get");
+const isEmpty = require("lodash/isEmpty");
 
 const {
-  getPluginConfiguration
+  getPluginConfiguration,
+  loadConfiguration
 } = require("create-reacticoon-app/cli/configuration");
 
 const {
@@ -34,6 +38,8 @@ const {
   getNetworkNextAvailablePort
 } = require("create-reacticoon-app/utils/Network");
 
+const getReacticoonPlugin = require("create-reacticoon-app/cli-utils/reacticoon-config/getReacticoonPlugin");
+
 /**
  * class given to our plugins to provides utility methods.
  *
@@ -46,6 +52,18 @@ class CliPluginApi {
 
   getConfig() {
     return getPluginConfiguration(this.pluginName);
+  }
+
+  getPluginConfiguration(name) {
+    return getPluginConfiguration(name);
+  }
+
+  getReacticoonPlugin(name) {
+    return getReacticoonPlugin(name);
+  }
+
+  loadConfiguration() {
+    return loadConfiguration();
   }
 
   getOption(optionPath, defaultValue) {
@@ -252,6 +270,45 @@ class CliPluginApi {
   }
 
   //
+  //
+  //
+
+  setCacheValue(path, data) {
+    setCacheValue(path, data);
+  }
+
+  getCacheValue(path) {
+    return getCacheValue(path);
+  }
+
+  //
+  //
+  //
+
+  async runOnBuildedServer() {
+    return new Promise((resolve, reject) => {
+      const serverIsRunning = this.getCacheValue("BUILD_SERVER.isRunning");
+
+      if (!serverIsRunning) {
+        // return {
+        //   error: true,
+        //   errorMessage: `Build server is not running`,
+        //   errorCode: "BUILD_SERVER_NOT_RUNNING"
+        // };
+        this.runReacticoonCommand("build:server", {
+          onClose: () => {
+            const buildServerData = this.getCacheValue("BUILD_SERVER");
+            resolve(buildServerData);
+          }
+        });
+      } else {
+        const buildServerData = this.getCacheValue("BUILD_SERVER");
+        resolve(buildServerData);
+      }
+    });
+  }
+
+  //
   // other utils
   //
 
@@ -262,6 +319,13 @@ class CliPluginApi {
   openBrowser() {
     const openBrowser = require("react-dev-utils/openBrowser");
     return openBrowser.apply(null, arguments);
+  }
+
+  async sleep(ms) {
+    // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics/wait
+    const sab = new SharedArrayBuffer(1024);
+    const int32 = new Int32Array(sab);
+    await Atomics.wait(int32, 0, 0, ms);
   }
 }
 

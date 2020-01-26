@@ -95,7 +95,6 @@ const reacticoonPluginsList = [
   `${reacticoonPluginsDir}/reacticoon-plugin-dev`,
   `${reacticoonPluginsDir}/reacticoon-plugin-mock-api`,
   `${reacticoonPluginsDir}/reacticoon-plugin-testing`,
-  `${reacticoonPluginsDir}/reacticoon-plugin-marketplace`,
   `${reacticoonPluginsDir}/reacticoon-plugin-ci`,
   `${reacticoonPluginsDir}/reacticoon-plugin-git`,
   `${reacticoonPluginsDir}/reacticoon-plugin-lighthouse`,
@@ -231,6 +230,13 @@ const finalPaths = Object.assign(
       // TODO:
       return path.resolve(
         createReacticoonApp + "/reacticoon-plugins/" + pluginName
+      );
+    },
+
+    getCliPluginDirectory: pluginName => {
+      // TODO:
+      return path.resolve(
+        createReacticoonApp + "/reacticoon-cli-plugins/" + pluginName
       );
     }
   },

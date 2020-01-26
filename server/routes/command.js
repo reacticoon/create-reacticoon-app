@@ -115,7 +115,8 @@ function CommandRoute(app, context) {
       console.log(JSON.stringify(commands, null, 2));
       res.status(400).send({
         error: true,
-        description: `command not found ${commandName}`
+        errorMessage: `command not found ${commandName}`,
+        errorCode: "SERVER_COMMAND_NOT_FOUND"
       });
       return;
     }
@@ -132,7 +133,8 @@ function CommandRoute(app, context) {
     if (!runner) {
       res.status(404).send({
         error: true,
-        description: `runner not found ${req.body.command}`
+        errorMessage: `runner not found ${req.body.command}`,
+        errorCode: "SERVER_RUNNER_NOT_FOUND"
       });
       return;
     }
@@ -161,8 +163,9 @@ function CommandRoute(app, context) {
       console.error(e);
       res.status(400).send({
         error: true,
-        description: `Server command has crashed`,
-        e
+        errorMessage: `Server command has crashed`,
+        errorCode: "SERVER_COMMAND_CRASHED",
+        exception: e
       });
     }
   });
