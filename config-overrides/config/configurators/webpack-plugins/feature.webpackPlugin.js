@@ -15,6 +15,10 @@ function getConfiguredFeatureFlags(env) {
 
   const featuresFiles = [
     // TODO:
+    // TODO: better require
+    // Reacticoon features are first to allow plugins overriding it, such as: FEATURE_REACTICOON_DEV_MODE.
+    require("create-reacticoon-app/reacticoon/config/features"),
+
     // from app
     // from cli plugins
     // from ui plugins
@@ -30,7 +34,8 @@ function getConfiguredFeatureFlags(env) {
       if (!isBoolean(value)) {
         console.warn(`Feature flag ${key} value is not a boolean`);
       }
-      // we want a booleaan
+      // TODO: log when there is an override (e.g: FEATURE_REACTICOON_DEV_MODE can be override by plugins).
+      // we want a boolean
       features[key] = value === true;
     });
   });
@@ -46,8 +51,6 @@ module.exports = env => {
     // TODO: allow to configure on env, to allow heavy debug on "production" build.
     // TODO: allow plugins/project to add their own features on config.
     // force to true in __DEV__.
-    FEATURE_REACTICOON_HEAVY_DEBUG: !env.isEnvProduction,
-    FEATURE_USER_TIMING_API: !env.isEnvProduction,
     ...(getConfiguredFeatureFlags(env) || [])
   });
 };
