@@ -1,4 +1,5 @@
 const forEach = require("lodash/forEach");
+const get = require("lodash/get");
 const git = require("create-reacticoon-app/cli-utils/git");
 const paths = require("create-reacticoon-app/utils/paths");
 
@@ -101,6 +102,7 @@ function envVarsConfigurator(config, env, options) {
   // transform env for webpack.
   // We need to stringify the env values
   // https://stackoverflow.com/questions/28145397/injecting-variables-into-webpack
+  // TODO: see EnvironmentPlugin
   const finalEnvVars = {};
   Object.keys(envVars).forEach(function(key) {
     finalEnvVars[key] = JSON.stringify(envVars[key]);
@@ -108,10 +110,12 @@ function envVarsConfigurator(config, env, options) {
 
   // TODO: better way
   const proccessEnvIndex = env.isDev ? 3 : 4;
-  config.plugins[proccessEnvIndex].definitions["process.env"] = {
-    ...config.plugins[proccessEnvIndex].definitions["process.env"],
-    ...finalEnvVars
-  };
+  if (config.plugins[proccessEnvIndex].definitions) {
+    config.plugins[proccessEnvIndex].definitions["process.env"] = {
+      ...config.plugins[proccessEnvIndex].definitions["process.env"],
+      ...finalEnvVars
+    };
+  }
 }
 
 module.exports = envVarsConfigurator;

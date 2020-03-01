@@ -31,26 +31,7 @@ function getBuildInfo() {
 
     if (buildInfo) {
       const builtAtDate = moment(buildInfo.builtAt);
-      const now = moment();
-
-      buildInfo.builtAtFormatted = builtAtDate.toISOString();
-
-      const diffDays = now.diff(builtAtDate, "days");
-      const diffHours = now.diff(builtAtDate, "hours");
-      const diffMinutes = now.diff(builtAtDate, "minutes");
-
-      let diffStr = "";
-      if (diffDays > 0) {
-        diffStr += `${diffDays} days `;
-      }
-
-      if (diffHours > 0) {
-        diffStr += `${diffHours} hours `;
-      }
-
-      diffStr += `${diffMinutes} minutes `;
-
-      buildInfo.builtAtDiffFormatted = `${diffStr}ago`;
+      buildInfo.builtAtDiffFormatted = builtAtDate.fromNow();
     }
   }
   return buildInfo;

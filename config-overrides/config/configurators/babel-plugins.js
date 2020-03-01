@@ -78,6 +78,39 @@ function babelPluginsConfigurator(config, env, options) {
         // TODO: add reacticoon config to allow add more
         id: ["lodash", "recompose"]
       }
+    ],
+
+    //
+    //
+    // https://www.npmjs.com/package/babel-plugin-transform-imports
+    //     Transforms member style imports:
+
+    // import { Row, Grid as MyGrid } from 'react-bootstrap';
+    // import { merge } from 'lodash';
+    // ...into default style imports:
+
+    // import Row from 'react-bootstrap/lib/Row';
+    // import MyGrid from 'react-bootstrap/lib/Grid';
+    // import merge from 'lodash/merge';
+    //
+    [
+      require.resolve("babel-plugin-transform-imports"),
+      {
+        lodash: { transform: "lodash/${member}", preventFullImport: true },
+        // TODO: add override api to add custom transform imports from plugins.
+        "@material-ui/core": {
+          transform: "@material-ui/core/${member}",
+          preventFullImport: true
+        },
+        "@material-ui/icons": {
+          transform: "@material-ui/icons/${member}",
+          preventFullImport: true
+        },
+        "@material-ui/styles": {
+          transform: "@material-ui/styles/${member}",
+          preventFullImport: true
+        }
+      }
     ]
 
     // TODO: add

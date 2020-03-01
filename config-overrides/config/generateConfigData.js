@@ -38,11 +38,12 @@ function generateConfigData(
   // by default we use 'local' for local development, and
   let __ENV__ = process.env.__ENV__;
   if (!__ENV__) {
-    if (__PROD__) {
-      __ENV__ = "production";
-    } else {
-      __ENV__ = "local";
-    }
+    // TODO: fix
+    // if (__PROD__) {
+    //   __ENV__ = "production";
+    // } else {
+    //   __ENV__ = "local";
+    // }
   }
 
   const reactScriptPaths = require(require.resolve(

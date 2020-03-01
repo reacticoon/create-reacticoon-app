@@ -86,7 +86,7 @@ const reacticoonPluginsList = [
   `${reacticoonPluginsDir}/reacticoon-plugin-flash-messages`,
   `${reacticoonPluginsDir}/reacticoon-plugin-form`,
   `${reacticoonPluginsDir}/reacticoon-plugin-hibp`,
-  `${reacticoonPluginsDir}/reacticoon-history`,
+  `${reacticoonPluginsDir}/reacticoon-plugin-history`,
   `${reacticoonPluginsDir}/reacticoon-plugin-material-ui`,
   `${reacticoonPluginsDir}/reacticoon-plugin-example`,
   `${reacticoonPluginsDir}/reacticoon-plugin-logger`,
