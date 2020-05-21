@@ -2,7 +2,7 @@
 //
 //
 
-function rewireAutoImport(config, env, autoImportConfig) {
+function rewireAutoImport(api, config, options, env, autoImportConfig) {
   // .scss to file-loader exclude array
   // file-loader is in module->rules[]->oneOf[]
   const preRule = config.module.rules[1];

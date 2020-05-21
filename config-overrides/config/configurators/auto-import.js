@@ -17,7 +17,7 @@
  *
  * /!\ The user should only use this for very-redondent imports, such as 'tr'.
  */
-function autoImportConfigurator(config, env, options) {
+function autoImportConfigurator(api, config, options, env) {
   //
   // -- auto import
   //
@@ -41,7 +41,7 @@ function autoImportConfigurator(config, env, options) {
     .filter(Boolean);
 
   const rewireAutoImport = require("../auto-import/rewire-auto-import");
-  config = rewireAutoImport(config, env, autoImportConfig);
+  config = rewireAutoImport(api, config, options, env, autoImportConfig);
 }
 
 module.exports = autoImportConfigurator;

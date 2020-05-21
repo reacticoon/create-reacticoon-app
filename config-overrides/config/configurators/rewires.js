@@ -1,7 +1,7 @@
 const RewireApi = require("./RewireApi");
 const { info } = require("create-reacticoon-app/cli-utils");
 
-function rewiresConfigurator(config, env, options) {
+function rewiresConfigurator(api, config, options, env) {
   rewires = [
     require("../../rewire/react-app-rewire-eslint"),
     options.enableSass && require("../../rewire/react-app-rewire-sass"),
@@ -15,7 +15,7 @@ function rewiresConfigurator(config, env, options) {
     // TODO: verify rewire is function
     try {
       const rewireApi = new RewireApi();
-      rewire(config, env, rewireApi);
+      rewire(api, config, options, env, rewireApi);
     } catch (e) {
       console.log(`An error occured while running a rewire`);
       console.error(e);

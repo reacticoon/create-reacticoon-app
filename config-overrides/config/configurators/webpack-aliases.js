@@ -1,6 +1,6 @@
 const path = require("path");
 
-function webpackAliasesConfigurator(config, env, options) {
+function webpackAliasesConfigurator(api, config, options, env) {
   const reacticoonPaths = env.reacticoonPaths;
 
   const reacticoonPluginsAliases = {};

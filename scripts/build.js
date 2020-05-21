@@ -19,6 +19,8 @@ ReacticoonChecks.run(() => {
     process.env.NODE_ENV
   );
 
+  // console.jsonDie(require.cache[require.resolve(webpackConfigPath)].exports())
+
   // run original script
   try {
     require(paths.scriptVersion + "/scripts/build");

@@ -10,7 +10,7 @@ const {
 // https://github.com/pmmmwh/react-refresh-webpack-plugin
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 
-function rewireReactRefresh(config, env, autoImportConfig) {
+function rewireReactRefresh(api, config, options, env) {
   if (!env.isDev) {
     return config;
   }

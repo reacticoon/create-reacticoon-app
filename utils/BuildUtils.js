@@ -32,6 +32,7 @@ function getBuildInfo() {
     if (buildInfo) {
       const builtAtDate = moment(buildInfo.builtAt);
       buildInfo.builtAtDiffFormatted = builtAtDate.fromNow();
+      buildInfo.builtAtFormatted = builtAtDate.format("HH:mm:ss");
     }
   }
   return buildInfo;

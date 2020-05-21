@@ -8,7 +8,7 @@
 const { injectBabelPlugin } = require("../../utils/rewired");
 const paths = require("../../../utils/paths");
 
-function rewireHotLoader(config, env, autoImportConfig) {
+function rewireHotLoader(api, config, options, env) {
   if (env === "production") {
     return config;
   }

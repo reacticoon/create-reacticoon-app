@@ -8,7 +8,7 @@ const fileLoader = function(conf) {
   return conf && conf.loader && conf.loader.indexOf("/file-loader/") !== -1;
 };
 
-function rewireSass(config, env, api) {
+function rewireSass(api, config, options, env) {
   // .scss to file-loader exclude array
   // file-loader is in module->rules[]->oneOf[]
   api.getLoader(config, fileLoader).exclude.push(/\.scss$/);

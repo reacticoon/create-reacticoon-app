@@ -3,7 +3,7 @@ const path = require("path");
 // this is the path of eslint-loader `index.js`
 const ESLINT_PATH = `eslint-loader${path.sep}dist${path.sep}cjs.js`;
 
-function rewireEslint(config, env, api) {
+function rewireEslint(api, config, options, env) {
   const matcher = rule =>
     rule.loader &&
     typeof rule.loader === "string" &&
@@ -24,11 +24,11 @@ function rewireEslint(config, env, api) {
   const newOptions = eslintLoader.options;
 
   // Thx @Guria, with no break change.
-  const options = oldOptions || newOptions;
+  const eslintOptions = oldOptions || newOptions;
 
-  options.include = env.includePaths;
-  options.useEslintrc = true;
-  options.ignore = true;
+  eslintOptions.include = env.includePaths;
+  eslintOptions.useEslintrc = true;
+  eslintOptions.ignore = true;
 }
 
 module.exports = rewireEslint;

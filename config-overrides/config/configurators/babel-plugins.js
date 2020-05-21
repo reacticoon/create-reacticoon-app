@@ -1,6 +1,6 @@
 const { injectBabelPlugin, getBabelLoader } = require("../../utils/rewired");
 
-function babelPluginsConfigurator(config, env, options) {
+function babelPluginsConfigurator(api, config, options, env) {
   // modify babel to include all our code paths
   getBabelLoader(config).include = env.includePaths;
 

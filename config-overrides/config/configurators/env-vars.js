@@ -3,7 +3,7 @@ const get = require("lodash/get");
 const git = require("create-reacticoon-app/cli-utils/git");
 const paths = require("create-reacticoon-app/utils/paths");
 
-function envVarsConfigurator(config, env, options) {
+function envVarsConfigurator(api, config, options, env) {
   const __DEV__ = process.env.NODE_ENV !== "production";
   const __PROD__ = process.env.NODE_ENV === "production";
 
@@ -116,6 +116,8 @@ function envVarsConfigurator(config, env, options) {
       ...finalEnvVars
     };
   }
+
+  Object.assign(env, finalEnvVars)
 }
 
 module.exports = envVarsConfigurator;

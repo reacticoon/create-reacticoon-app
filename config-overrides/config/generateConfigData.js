@@ -9,13 +9,13 @@ const defaultOptions = {
   debugMode: false,
   autoImport: [],
   webpackAliases: {},
-  env: {}
+  env: {},
 };
 
 function generateConfigData(
   isDev = true,
   isTesting = false,
-  config,
+  webpackConfig,
   nodeEnv,
   reacticoonOptions,
   reacticoonWebpackOverride,
@@ -23,7 +23,7 @@ function generateConfigData(
 ) {
   const {
     pluginsOverrides = {},
-    pluginsOverridesDebugInfo = {}
+    pluginsOverridesDebugInfo = {},
   } = retrievePluginsOverridesData;
 
   const options = merge(
@@ -81,10 +81,10 @@ function generateConfigData(
 
   const includePaths = [
     reacticoonPaths.appSrc,
-    reacticoonPaths.reacticoonSrc
+    reacticoonPaths.reacticoonSrc,
     // reacticoonPaths.reactRefresPath
   ].concat(
-    reacticoonPluginsList.map(reacticoonPlugin => {
+    reacticoonPluginsList.map((reacticoonPlugin) => {
       return reacticoonPlugin + "/src";
     })
   );
@@ -103,7 +103,7 @@ function generateConfigData(
     appPackageJson,
     reacticoonConfig,
     __ENV__,
-    __ENV_FILEPATH__
+    __ENV_FILEPATH__,
   };
 
   //
@@ -116,20 +116,24 @@ function generateConfigData(
   // - configure our following override (for example if we want to toggle features)
   //    - debugMode: true -> Will display the webpack configuration and quit
   //
+  const RewireApi = require("./configurators/RewireApi");
 
   const configurators = [
+    require("./configurators/env-vars"), // should be first, we add the env vars to our env data
     require("./configurators/auto-import"),
     require("./configurators/babel-plugins"),
     require("./configurators/webpack-aliases"),
     require("./configurators/webpack-plugins"),
-    require("./configurators/env-vars"),
     require("./configurators/rewires"),
     require("./configurators/moduleScopePlugin"),
-    require("./configurators/react-refresh/rewire-react-refresh")
+    require("./configurators/react-refresh/rewire-react-refresh"),
+    // TODO: only if env building extension
+    require("./configurators/browser-extension-build"),
   ];
 
-  configurators.forEach(configurator => {
-    configurator(config, env, options);
+  configurators.forEach((configurator) => {
+    const rewireApi = new RewireApi();
+    configurator(rewireApi, webpackConfig, options, env);
   });
 
   //
@@ -149,15 +153,32 @@ function generateConfigData(
   //
   //
   const reacticoonPluginsNodeModules = reacticoonPluginsList.map(
-    reacticoonPlugin => reacticoonPlugin + "/node_modules"
+    (reacticoonPlugin) => reacticoonPlugin + "/node_modules"
   );
 
-  config.resolve.modules = [
+  webpackConfig.resolve.modules = [
     reacticoonPaths.reacticoonNodeModules,
     reactScriptPaths.appNodeModules,
     "node_modules",
-    ...reacticoonPluginsNodeModules
+    ...reacticoonPluginsNodeModules,
   ];
+
+  //
+  //
+  //
+
+  // TODO:
+  // https://github.com/stephencookdev/speed-measure-webpack-plugin
+  // const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+  // const smp = new SpeedMeasurePlugin({
+  //   disable: false // TODO: only on reacticoon dev mode
+  // });
+
+  // webpackConfig = smp.wrap(webpackConfig);
+
+  //
+  //
+  //
 
   //
   // No config modification after this
@@ -179,7 +200,7 @@ function generateConfigData(
   //
   if (options.debugMode) {
     console.log("-------- config");
-    console.log(JSON.stringify(config, null, 4));
+    console.log(JSON.stringify(webpackConfig, null, 4));
     console.log("-------- plugins override configuration");
     console.log(JSON.stringify(pluginsOverridesDebugInfo, null, 4));
     console.log("-------- plugins override final");
@@ -200,13 +221,13 @@ function generateConfigData(
   }
 
   const {
-    getBabelLoader
+    getBabelLoader,
   } = require("create-reacticoon-app/config-overrides/utils/rewired");
 
   const configData = {
-    webpackConfig: config,
-    babelConfig: getBabelLoader(config).options,
-    options
+    webpackConfig,
+    babelConfig: getBabelLoader(webpackConfig).options,
+    options,
   };
 
   return configData;
