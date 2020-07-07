@@ -11,6 +11,14 @@ function webpackAliasesConfigurator(api, config, options, env) {
     ] = `${reacticoonPluginPath}/src`;
   });
 
+  // TODO: check __ENV_FILEPATH__ exists before start / build
+  if (!env.__ENV_FILEPATH__) {
+    console.error('missing __ENV_FILEPATH__')
+    process.exit()
+  }
+  // console.log({filepath: env.__ENV_FILEPATH__ }) 
+  // die();
+
   //
   // Add webpack aliases
   //
@@ -39,7 +47,6 @@ function webpackAliasesConfigurator(api, config, options, env) {
 
     // define the app-environment alias that points to the user configuration for the current env
     // by default it points to app/config/environment.js
-    // TODO: check __ENV_FILEPATH__ exists before start / build
     "app-environment": env.__ENV_FILEPATH__,
 
     // TODO: remove, temporary to use reacticoon from app/src/reacticoon since we does not compile it to

@@ -35,7 +35,8 @@ resetCache();
 // TODO: fix
 process.env.DIR = "/home/loic/dev/reacticoon/create-reacticoon-app";
 // trick for our scripts such as checkup to think we run from the app
-process.chdir("/home/loic/dev/bm/bm-website-v2");
+// process.chdir("/home/loic/dev/bm/bm-website-v2");
+process.chdir("/home/loic/dev/baylife/tasv3-website");
 
 // initializa an express app server.
 const reacticoonServer = express();
