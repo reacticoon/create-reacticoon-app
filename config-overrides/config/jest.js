@@ -102,18 +102,18 @@ const rewireJestConfigBabel = (jestConfig, babelConfig, webpackConfig) => {
 // - autoImport
 
 module.exports = createJestOverride = (
-  isTesting,
+  isEnvTesting,
   reacticoonOptions,
   reacticoonWebpackOverride,
   retrievePluginsOverridesData = {}
 ) => (jestConfig, webpackConfig) => {
-  if (!isTesting) {
+  if (!isEnvTesting) {
     return () => jestConfig;
   }
 
   const configData = generateConfigData(
     false, // in testing mode, we consider being in dev mode too for now. TODO: change this behaviour?
-    isTesting,
+    isEnvTesting,
     webpackConfig,
     "testing",
     reacticoonOptions,

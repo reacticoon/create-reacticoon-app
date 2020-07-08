@@ -15,7 +15,7 @@ const { findResolvePlugin } = require("../../utils/rewired");
  * We add the reacticoon and reacticoon-plugins paths.
  */
 function moduleScopePluginConfigurator(api, config, options, env) {
-  if (env.isTesting) {
+  if (env.isEnvTesting) {
     return config;
   }
 

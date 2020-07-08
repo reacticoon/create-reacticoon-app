@@ -13,8 +13,8 @@ const defaultOptions = {
 };
 
 function generateConfigData(
-  isDev = true,
-  isTesting = false,
+  isEnvDev = true,
+  isEnvTesting = false,
   webpackConfig,
   nodeEnv,
   reacticoonOptions,
@@ -38,12 +38,11 @@ function generateConfigData(
   // by default we use 'local' for local development, and
   let __ENV__ = process.env.__ENV__;
   if (!__ENV__) {
-    // TODO: fix
-    // if (__PROD__) {
-    //   __ENV__ = "production";
-    // } else {
-    //   __ENV__ = "local";
-    // }
+    if (process.env.NODE_ENV === "production") {
+      __ENV__ = "production";
+    } else {
+      __ENV__ = "local";
+    }
   }
 
   const reactScriptPaths = require(require.resolve(
@@ -95,9 +94,10 @@ function generateConfigData(
 
   // add some data to our env
   const env = {
-    isDev,
-    isTesting,
+    isEnvDev,
+    isEnvTesting,
     // reactScriptPaths,
+    isEnvProduction: process.env.NODE_ENV === "production",
     includePaths,
     reacticoonPaths,
     appPackageJson,

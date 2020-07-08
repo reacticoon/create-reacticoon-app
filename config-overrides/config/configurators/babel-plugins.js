@@ -17,7 +17,7 @@ function babelPluginsConfigurator(api, config, options, env) {
     [
       require.resolve("babel-plugin-transform-prune-unused-imports"),
       {
-        truthyExpressions: env.isDev ? ["__DEV__"] : ["__PROD__"]
+        truthyExpressions: env.isEnvDev ? ["__DEV__"] : ["__PROD__"]
       }
     ],
 

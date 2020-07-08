@@ -21,13 +21,13 @@ const generateConfigData = require("create-reacticoon-app/config-overrides/confi
 // - autoImport
 
 module.exports = createWebpackOverride = (
-  isDev,
+  isEnvDev,
   reacticoonOptions,
   reacticoonWebpackOverride,
   retrievePluginsOverridesData = {}
 ) => (config, nodeEnv) => {
   const configData = generateConfigData(
-    isDev,
+    isEnvDev,
     false,
     config,
     nodeEnv,

@@ -31,7 +31,7 @@ try {
   override = {};
 }
 
-// allow override to be a function, receives an isDev parameter.
+// allow override to be a function, receives an isEnvDev parameter.
 const reacticoonOptions = isFunction(override)
   ? override(IS_DEV).options
   : override.options || {};

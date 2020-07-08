@@ -22,7 +22,7 @@
  * }
  *
  */
-function retrievePluginsOverridesData(isDev) {
+function retrievePluginsOverridesData(isEnvDev) {
   // take overrides for the defined plugins.
   let pluginsOverrides = {
     rewires: []

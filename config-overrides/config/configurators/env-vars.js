@@ -7,7 +7,7 @@ function envVarsConfigurator(api, config, options, env) {
   const __DEV__ = process.env.NODE_ENV !== "production";
   const __PROD__ = process.env.NODE_ENV === "production";
 
-  if (env.isTesting) {
+  if (env.isEnvTesting) {
     return config;
   }
 
@@ -109,7 +109,7 @@ function envVarsConfigurator(api, config, options, env) {
   });
 
   // TODO: better way
-  const proccessEnvIndex = env.isDev ? 3 : 4;
+  const proccessEnvIndex = env.isEnvDev ? 3 : 4;
   if (config.plugins[proccessEnvIndex].definitions) {
     config.plugins[proccessEnvIndex].definitions["process.env"] = {
       ...config.plugins[proccessEnvIndex].definitions["process.env"],

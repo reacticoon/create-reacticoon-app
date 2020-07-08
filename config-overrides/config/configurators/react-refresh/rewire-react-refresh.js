@@ -11,7 +11,7 @@ const {
 const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
 
 function rewireReactRefresh(api, config, options, env) {
-  if (!env.isDev) {
+  if (!env.isEnvDev) {
     return config;
   }
 

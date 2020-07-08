@@ -53,7 +53,7 @@ class LocalPackageManager {
 
   async install() {}
 
-  async add(packageName, isDev = true) {}
+  async add(packageName, isEnvDev = true) {}
 
   async upgrade(packageName) {}
 

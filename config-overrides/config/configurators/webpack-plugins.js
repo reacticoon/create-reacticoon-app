@@ -1,7 +1,7 @@
 const { injectWebpackPlugin } = require("../../utils/rewired");
 
 function webpackPluginsConfigurator(api, config, options, env) {
-  if (env.isTesting) {
+  if (env.isEnvTesting) {
     return config;
   }
 

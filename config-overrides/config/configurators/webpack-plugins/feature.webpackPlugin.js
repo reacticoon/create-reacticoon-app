@@ -46,7 +46,7 @@ function getConfiguredFeatureFlags(env) {
 module.exports = env => {
   return new DefinePlugin({
     __DEV__: !env.isEnvProduction,
-    __PROD__: !env.isEnvProduction,
+    __PROD__: env.isEnvProduction,
     __TEST__: false, // TODO: handle
     // TODO: allow to configure on env, to allow heavy debug on "production" build.
     // TODO: allow plugins/project to add their own features on config.

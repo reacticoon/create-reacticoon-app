@@ -227,12 +227,12 @@ class PackageManager {
     return executeCommand(this.bin, args, this.context);
   }
 
-  async add(packageName, isDev = true) {
+  async add(packageName, isEnvDev = true) {
     await this.setBinaryMirrors();
     const args = await this.addRegistryToArgs([
       ...PACKAGE_MANAGER_CONFIG[this.bin].add,
       packageName,
-      ...(isDev ? ["-D"] : [])
+      ...(isEnvDev ? ["-D"] : [])
     ]);
     return executeCommand(this.bin, args, this.context);
   }

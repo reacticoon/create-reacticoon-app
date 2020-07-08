@@ -10,10 +10,10 @@ console.jsonDie = obj => {
   process.exit();
 };
 
-const isTesting = process.env.NODE_ENV === "test";
+const isEnvTesting = process.env.NODE_ENV === "test";
 
 //Allow custom overrides package location
-const projectDir = isTesting
+const projectDir = isEnvTesting
   ? "" // TODO:
   : path.resolve(fs.realpathSync(process.cwd()));
 var config_overrides = projectDir + "/config/overrides.js";
@@ -112,7 +112,7 @@ const reacticoonCliPluginsList = getOfficialPluginsList().map(
 const appNodeModules = `${projectDir}/node_modules/`;
 
 const scriptVersion = createReacticoonAppReactScripts || "react-scripts";
-const modulePath = isTesting
+const modulePath = isEnvTesting
   ? ""
   : path.join(require.resolve(`${scriptVersion}/package.json`), "..");
 
@@ -122,8 +122,8 @@ const modulePath = isTesting
 // '..'
 // );
 
-// TODO: isTesting
-const paths = isTesting ? {} : require(modulePath + "/config/paths");
+// TODO: isEnvTesting
+const paths = isEnvTesting ? {} : require(modulePath + "/config/paths");
 
 //
 //
