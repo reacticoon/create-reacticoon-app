@@ -85,7 +85,9 @@ function webpackPluginsConfigurator(api, config, options, env) {
     // https://github.com/webpack-contrib/webpack-bundle-analyzer
     // Webpack plugin and CLI utility that represents bundle content as convenient interactive zoomable treemap
     //
-    env.isEnvProduction && new BundleAnalyzerPlugin()
+    // TODO: commented because of scripts on server side who were blocked
+    // TODO: make it an option
+    //env.isEnvProduction && new BundleAnalyzerPlugin()
 
     //
     //

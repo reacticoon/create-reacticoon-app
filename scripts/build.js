@@ -9,6 +9,8 @@ ReacticoonChecks.run(() => {
   const paths = require("../utils/paths");
   const overrides = require("../config-overrides");
 
+  process.env.__ENV__ = 'production'
+
   const webpackConfigPath = `${paths.scriptVersion}/config/webpack.config.js`;
 
   // load original config
