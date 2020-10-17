@@ -83,6 +83,7 @@ try {
 
 // TODO: automatic discover
 const reacticoonPluginsList = [
+  `${reacticoonPluginsDir}/reacticoon-plugin-dnd`,
   `${reacticoonPluginsDir}/reacticoon-plugin-flash-messages`,
   `${reacticoonPluginsDir}/reacticoon-plugin-form`,
   `${reacticoonPluginsDir}/reacticoon-plugin-helmet`,

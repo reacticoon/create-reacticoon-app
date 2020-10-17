@@ -22,3 +22,4 @@ cd reacticoon-plugin-form && yarn install ; cd ..
 cd reacticoon-plugin-hibp  && yarn install ; cd ..
 cd reacticoon-plugin-logger && yarn install ; cd ..
 cd reacticoon-plugin-sentry && yarn install ; cd ..
+cd reacticoon-plugin-dnd && yarn install ; cd ..
